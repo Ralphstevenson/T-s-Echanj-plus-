@@ -162,3 +162,80 @@ body {
 .logout-btn i {
     color: #ff4d4d !important;
                      }
+
+
+
+
+
+
+
+/* --- BOTTOM NAVIGATION BAR --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px; /* Wotè ideyal pou pous la ka rive fasil */
+    background: rgba(22, 22, 22, 0.9); /* Nwa ak yon ti transparans */
+    backdrop-filter: blur(15px); /* Efè flou dèyè a (Premium) */
+    border-top: 1px solid #333;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 2500; /* Pi wo pase tout lòt bagay */
+    padding-bottom: env(safe-area-inset-bottom); /* Pou iPhone ki gen baren anba */
+}
+
+/* Chak bouton nan nav la */
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #888; /* Koulè gri lè l pa klike */
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    flex: 1;
+    height: 100%;
+}
+
+/* Ikon yo */
+.nav-item i {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+    transition: transform 0.3s ease;
+}
+
+/* Lè yon bouton "Active" (Paj ou ye a) */
+.nav-item.active {
+    color: #FFD700; /* Jòn lò a */
+}
+
+.nav-item.active i {
+    transform: translateY(-3px); /* Ti animasyon moute */
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+/* Tèks anba ikon lan */
+.nav-item span {
+    letter-spacing: 0.3px;
+}
+
+/* Ti pwen anba bouton ki active a (Opsyonèl pou style) */
+.nav-item.active::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: #FFD700;
+    border-radius: 50%;
+    margin-top: 4px;
+}
+
+/* Feedback lè w klike sou li (Mobile Ripple effect) */
+.nav-item:active {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+}
