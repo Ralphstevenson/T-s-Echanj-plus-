@@ -1,112 +1,120 @@
-/* --- FULL SCREEN OVERLAY LOGIC --- */
+/* --- 1. ESTRIKTI PAJ LA (FULL SCREEN OVERLAY) --- */
 #paj-parametre {
-    position: fixed;
+    position: fixed; /* Dekole paj la nan rès kòd la */
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000; /* Nwa total pou kouvri tout bagay */
-    z-index: 5000; /* Pi wo pase sidebar ak nav */
-    overflow-y: auto;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000000; /* Nwa total pou kouvri lòt paj yo nèt */
+    z-index: 9999; /* Nimewo sa a dwe pi wo pase tout lòt bagay nan App la */
+    overflow-y: auto; /* Pou n ka scroll si gen anpil opsyon */
+    padding-bottom: 50px;
     
-    /* Animasyon "Slide Up" */
+    /* Animasyon pou l slide soti anba moute */
     transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
+    display: none; /* Kache l pa defo */
 }
 
-/* Lè paj la louvri (retire .hidden epi ajoute .active nan JS) */
+/* Lè nou ajoute klas .active nan JS */
 #paj-parametre.active {
+    display: block !important;
     transform: translateY(0);
 }
 
-/* Bouton fèmen */
+/* --- 2. HEADER PAJ LA --- */
+.settings-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #111;
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
 .close-settings {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+    width: 40px;
+    height: 40px;
     background: #222;
-    color: #fff;
-    width: 45px;
-    height: 45px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
     cursor: pointer;
-    z-index: 5001;
+    color: #FFD700; /* Koulè jòn an lò a */
+    font-size: 1.3rem;
     border: 1px solid #333;
 }
 
-/* --- DESIGN PARAMÈT --- */
+/* --- 3. KONTNI (CONTAINER) --- */
 .settings-container {
-    padding: 30px 20px;
+    padding: 25px 20px;
     max-width: 500px;
     margin: 0 auto;
 }
 
-.page-title {
-    color: var(--primary);
-    font-size: 1.8rem;
-    margin-bottom: 30px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
 .group-label {
-    font-size: 0.7rem;
-    font-weight: 900;
+    font-size: 0.75rem;
+    font-weight: 800;
     color: #555;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
+    letter-spacing: 1.5px;
+    margin: 20px 0 10px 5px;
     display: block;
+    text-transform: uppercase;
 }
 
+/* --- 4. ITEM PROFIL --- */
 .setting-item-glass {
-    background: linear-gradient(145deg, #111, #080808);
+    background: linear-gradient(145deg, #151515, #0a0a0a);
     border: 1px solid #222;
     padding: 20px;
-    border-radius: 25px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 25px;
 }
 
 .avatar-circle {
-    width: 65px;
-    height: 65px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    border: 2px solid var(--primary);
+    border: 2px solid #FFD700;
     overflow: hidden;
 }
 
 .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
 
+.item-info b { font-size: 1.1rem; color: #fff; display: block; }
+.item-info p { font-size: 0.8rem; color: #777; margin: 0; }
+
+/* --- 5. RANJE OPSYON YO (ROWS) --- */
 .setting-row {
     background: #111;
-    padding: 18px;
-    border-radius: 18px;
+    padding: 16px 20px;
+    border-radius: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
     cursor: pointer;
-    border: 1px solid transparent;
     transition: 0.2s;
+    border: 1px solid transparent;
 }
 
 .setting-row:active {
-    background: #181818;
+    background: #1a1a1a;
     border-color: #333;
 }
 
-.row-left { display: flex; align-items: center; gap: 15px; color: #eee; }
-.row-left i { color: var(--primary); font-size: 1.1rem; width: 25px; text-align: center; }
+.row-left { display: flex; align-items: center; gap: 15px; }
+.row-left i { color: #FFD700; font-size: 1.1rem; width: 25px; text-align: center; }
+.row-left span { color: #eee; font-size: 0.95rem; }
 
-/* --- SWITCH TOGGLE --- */
-.switch { position: relative; display: inline-block; width: 45px; height: 24px; }
+/* --- 6. SWITCH TOGGLE --- */
+.switch { position: relative; width: 45px; height: 24px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {
     position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
@@ -116,7 +124,8 @@
     position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
     background-color: white; transition: .4s; border-radius: 50%;
 }
-input:checked + .slider { background-color: var(--primary); }
+input:checked + .slider { background-color: #FFD700; }
 input:checked + .slider:before { transform: translateX(21px); }
 
-.version-tag { background: #222; color: #777; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; }
+.version-tag { color: #555; font-size: 0.8rem; font-weight: 700; }
+    
