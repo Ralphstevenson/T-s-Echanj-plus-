@@ -107,6 +107,158 @@ body {
 
 
 
+/* --- SEKSYON AKÈY (DASHBOARD) --- */
+#paj-akey {
+    padding: 20px;
+    padding-bottom: 100px;
+}
+
+/* Kat Balans Prensipal */
+.balance-card-premium {
+    background: linear-gradient(135deg, #FFD700 0%, #ccac00 100%);
+    border-radius: 25px;
+    padding: 30px;
+    color: #000;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+    margin-bottom: 25px;
+}
+
+.balance-card-premium::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.balance-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.balance-amount-box {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.balance-amount-box h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.balance-amount-box span {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.user-ars-id-tag {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    display: inline-block;
+}
+
+/* Aksyon Rapid (Quick Actions) */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.action-btn-card {
+    background: var(--card-bg);
+    border: 1px solid #333;
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.action-btn-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-5px);
+}
+
+.action-btn-card i {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 10px;
+    display: block;
+}
+
+.action-btn-card span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Seksyon Reklam / Promo */
+.promo-banner {
+    background: #1e1e1e;
+    border-radius: 20px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #2a2a2a;
+}
+
+.promo-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.promo-text b {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--primary);
+}
+
+.promo-text p {
+    font-size: 0.8rem;
+    color: var(--text-sub);
+}
+
+/* Ti Tit Seksyon */
+.section-title-home {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view-all {
+    font-size: 0.75rem;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+
+
+
+
 /* --- SEKSYON ECHANJ PREMIUM --- */
 #paj-echanj {
     padding: 20px;
