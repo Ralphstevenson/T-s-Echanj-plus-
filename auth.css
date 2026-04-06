@@ -1,0 +1,219 @@
+/* --- CONTAINER PRENSIPAL --- */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-dark); /* Sèvi ak background nwa a */
+    padding: 20px;
+}
+
+/* --- KAT BLANCHE/GRI KI GEN FÒM LAN --- */
+.auth-card {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 30px;
+    border-radius: 30px;
+    border: 1px solid #333;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+.auth-logo {
+    width: 120px;
+    margin-bottom: 25px;
+    filter: drop-shadow(0 5px 15px rgba(255, 215, 0, 0.2));
+}
+
+.auth-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 30px;
+}
+
+/* --- INPUT GROUPS --- */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary); /* Icon yo an lò */
+    font-size: 1.1rem;
+}
+
+.input-group input, 
+#sponsor-input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    background: #252525;
+    border: 1.5px solid #333;
+    border-radius: 15px;
+    color: white;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+#sponsor-input {
+    padding-left: 15px; /* Sponsor pa gen icon */
+    margin-bottom: 20px;
+    border-style: dashed; /* Pou montre li opsyonèl */
+}
+
+.input-group input:focus, 
+#sponsor-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #2a2a2a;
+}/* --- CONTAINER PRENSIPAL --- */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-dark); /* Sèvi ak background nwa a */
+    padding: 20px;
+}
+
+/* --- KAT BLANCHE/GRI KI GEN FÒM LAN --- */
+.auth-card {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 30px;
+    border-radius: 30px;
+    border: 1px solid #333;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+.auth-logo {
+    width: 120px;
+    margin-bottom: 25px;
+    filter: drop-shadow(0 5px 15px rgba(255, 215, 0, 0.2));
+}
+
+.auth-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 30px;
+}
+
+/* --- INPUT GROUPS --- */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary); /* Icon yo an lò */
+    font-size: 1.1rem;
+}
+
+.input-group input, 
+#sponsor-input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    background: #252525;
+    border: 1.5px solid #333;
+    border-radius: 15px;
+    color: white;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+#sponsor-input {
+    padding-left: 15px; /* Sponsor pa gen icon */
+    margin-bottom: 20px;
+    border-style: dashed; /* Pou montre li opsyonèl */
+}
+
+.input-group input:focus, 
+#sponsor-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #2a2a2a;
+}
+
+/* --- BOUTON PRIMARY --- */
+.btn-primary-pro {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary);
+    color: #000;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 10px;
+}
+
+.btn-primary-pro:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+}
+
+/* --- FOOTER (CHANJE PAJ) --- */
+.auth-footer {
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: var(--text-sub);
+}
+
+.auth-footer span {
+    color: var(--primary);
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
+/* --- BOUTON PRIMARY --- */
+.btn-primary-pro {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary);
+    color: #000;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 10px;
+}
+
+.btn-primary-pro:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+}
+
+/* --- FOOTER (CHANJE PAJ) --- */
+.auth-footer {
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: var(--text-sub);
+}
+
+.auth-footer span {
+    color: var(--primary);
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
