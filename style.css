@@ -359,3 +359,156 @@ body {
     border-left: 4px solid var(--primary);
 }
 
+
+
+
+
+
+/* --- SEKSYON PARENNAJ ELITE --- */
+#paj-parennaj {
+    padding: 20px;
+    padding-bottom: 100px;
+}
+
+.referral-card-glass {
+    background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+    border-radius: 25px;
+    padding: 30px;
+    text-align: center;
+    border: 1px solid var(--primary);
+    position: relative;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    margin-bottom: 25px;
+}
+
+.referral-badge-gold {
+    background: var(--primary);
+    color: black;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 0.7rem;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.ref-label {
+    color: var(--text-sub);
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+}
+
+.balance-display-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.balance-display-box h1 {
+    font-size: 2.8rem;
+    color: var(--text-main);
+}
+
+.currency-tag {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.stats-grid-luxury {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    color: var(--text-sub);
+}
+
+.stat-val {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.btn-premium-transfer-flash {
+    background: var(--primary);
+    color: black;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 50px;
+    font-weight: 800;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* --- KÒD PARENNAJ --- */
+.input-luxury-group {
+    display: flex;
+    background: #111;
+    border: 1px dashed var(--primary);
+    padding: 5px;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+.input-luxury-group input {
+    background: transparent;
+    border: none;
+    color: var(--primary);
+    width: 100%;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    outline: none;
+}
+
+.copy-premium-btn {
+    background: var(--primary);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* --- SHARE ICONS --- */
+.share-grid-elite {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.share-icon-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+    cursor: pointer;
+}
+
+.wa { background: #25D366; }
+.fb { background: #1877F2; }
+.tg { background: #0088cc; }
+
+
+
+
+
+
+
+    
