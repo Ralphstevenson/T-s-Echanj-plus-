@@ -32,7 +32,7 @@ body {
 
 
 
-HEADER PROFESSIONAL 
+*// HEADER PROFESSIONAL 
 
 .main-header {
     position: fixed;
@@ -114,7 +114,7 @@ HEADER PROFESSIONAL
 
 
 
-SIDEBAR ELITE 
+*// SIDEBAR ELITE 
 
     .sidebar-pro {
     position: fixed;
