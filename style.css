@@ -260,3 +260,102 @@ body {
     margin-bottom: 10px;
     cursor: pointer;
 }
+
+
+
+
+
+        /* --- SEKSYON RETRÈ --- */
+#paj-retre {
+    padding: 20px;
+    padding-bottom: 100px;
+}
+
+.user-status-bar-simple {
+    background: linear-gradient(135deg, #1e1e1e, #252525);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border: 1px solid #333;
+}
+
+.status-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.status-info .label {
+    font-size: 0.75rem;
+    color: var(--text-sub);
+    text-transform: uppercase;
+}
+
+.status-info .value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.form-container {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid #333;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-sub);
+}
+
+.form-group label i {
+    color: var(--primary);
+    margin-right: 5px;
+}
+
+.form-group input, 
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 10px;
+    color: white;
+    outline: none;
+    transition: var(--transition);
+}
+
+.form-group input:focus {
+    border-color: var(--primary);
+}
+
+/* --- STIL POU MODAL PIN --- */
+.input-group-modal input {
+    width: 100%;
+    padding: 15px;
+    background: #111;
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    color: var(--primary);
+    text-align: center;
+    font-size: 24px;
+    letter-spacing: 10px;
+}
+
+.recap-box {
+    background: #252525;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+    text-align: left;
+    border-left: 4px solid var(--primary);
+}
+
