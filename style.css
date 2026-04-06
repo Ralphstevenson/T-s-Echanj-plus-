@@ -642,3 +642,136 @@ body {
 
 
 
+/* --- SEKSYON PARAMÈT --- */
+#paj-parametre {
+    padding: 20px;
+    padding-bottom: 100px;
+}
+
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.group-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: 1.5px;
+    margin-left: 10px;
+    text-transform: uppercase;
+}
+
+/* --- ITEM GLASS DESIGN --- */
+.setting-item-glass {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #333;
+}
+
+.avatar-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--primary);
+}
+
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-info b {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+.item-info p {
+    font-size: 0.85rem;
+    color: var(--text-sub);
+}
+
+/* --- SETTING ROWS --- */
+.setting-row {
+    background: var(--card-bg);
+    padding: 15px 20px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid transparent;
+}
+
+.setting-row:hover {
+    background: #252525;
+    border-color: #444;
+}
+
+.row-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.row-left i {
+    color: var(--primary);
+    width: 20px;
+    text-align: center;
+}
+
+/* --- TOGGLE SWITCH (CHECKBOX) --- */
+input[type="checkbox"] {
+    appearance: none;
+    width: 40px;
+    height: 20px;
+    background: #444;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+input[type="checkbox"]:checked {
+    background: var(--primary);
+}
+
+input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: 0.3s;
+}
+
+input[type="checkbox"]:checked::before {
+    left: 22px;
+    background: black;
+}
+
+.version-tag {
+    background: #333;
+    padding: 3px 10px;
+    border-radius: 5px;
+    font-size: 0.7rem;
+    color: var(--text-sub);
+    }
