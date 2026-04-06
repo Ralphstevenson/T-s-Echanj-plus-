@@ -549,7 +549,12 @@
             
 
 
-<div id="paj-parametre" class="page-content hidden">
+            <section id="paj-parametre" class="page-content hidden">
+    
+    <div class="close-settings" onclick="closeSettings()">
+        <i class="fa-solid fa-xmark"></i>
+    </div>
+
     <div class="settings-container">
         <h3 class="page-title"><i class="fa fa-gear"></i> Paramètres</h3>
 
@@ -568,12 +573,10 @@
 
         <div class="settings-group">
             <span class="group-label">SEKIRITE</span>
-            
             <div class="setting-row" onclick="window.openModal('modal-password')">
                 <div class="row-left"><i class="fa fa-lock"></i> <span>Chanje Modpas</span></div>
                 <i class="fa fa-chevron-right"></i>
             </div>
-
             <div class="setting-row" onclick="window.openPinManager()">
                 <div class="row-left"><i class="fa fa-shield-halved"></i> <span>PIN Tranzaksyon</span></div>
                 <i class="fa fa-chevron-right"></i>
@@ -584,17 +587,19 @@
             <span class="group-label">SISTÈM</span>
             <div class="setting-row">
                 <div class="row-left"><i class="fa fa-moon"></i> <span>Dash Night</span></div>
-                <input type="checkbox" id="dark-mode-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle" checked>
+                    <span class="slider round"></span>
+                </label>
             </div>
-
             <div class="setting-row">
-    <div class="row-left">
-        <i class="fa fa-envelope"></i> 
-        <span>Notifikasyon Gmail</span>
-    </div>
-    <input type="checkbox" id="gmail-notif-toggle">
-</div>
-
+                <div class="row-left"><i class="fa fa-envelope"></i> <span>Notifikasyon Gmail</span></div>
+                <label class="switch">
+                    <input type="checkbox" id="gmail-notif-toggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
 
         <div class="settings-group">
             <span class="group-label">ENFÒMASYON</span>
@@ -604,50 +609,43 @@
             </div>
             <a href="https://wa.me/50947111123" target="_blank" class="setting-row" style="text-decoration: none;">
                 <div class="row-left"><i class="fab fa-whatsapp"></i> <span>Sipò WhatsApp</span></div>
-                <i class="fa fa-external-link" style="font-size: 12px; opacity: 0.5;"></i>
+                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px; opacity: 0.5;"></i>
             </a>
         </div>
+    </div>
 
-        <div id="modal-password" class="modal-overlay hidden">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4><i class="fa fa-envelope-open-text"></i> Reyajiste Modpas</h4>
-                </div>
-                <div class="modal-body" style="text-align: center; padding: 15px;">
-                    <p style="font-size: 14px; margin-bottom: 10px;">
-                        Peze bouton anba a pou n voye yon lien sekirize sou Gmail ou:
-                    </p>
-                    <b id="email-display-reset" style="color: #109121; font-size: 15px;">...</b>
-                    <p style="font-size: 12px; color: #888; margin-top: 15px;">
-                        W ap bezwen klike sou lien ki nan email la pou w chwazi yon nouvo modpas.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-cancel" onclick="closeModal('modal-password')">ANILE</button>
-                    <button id="btn-send-reset-link" class="btn-confirm">VOYE LIEN AN</button>
-                </div>
+    <div id="modal-password" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Reyajiste Modpas</h4>
+            </div>
+            <div class="modal-body">
+                <p>Yon lien sekirize ap voye sou:</p>
+                <b id="email-display-reset" style="color: var(--primary);">...</b>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('modal-password')">ANILE</button>
+                <button id="btn-send-reset-link" class="btn-confirm">VOYE LIEN</button>
             </div>
         </div>
+    </div>
 
-        <div id="modal-pin" class="modal-overlay hidden">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 id="pin-title">PIN Sekirite</h4>
-                </div>
-                <div class="modal-body">
-                    <p id="pin-msg">Antre 4 chif pou sekirize retrè w yo.</p>
-                    <div class="input-group-modal">
-                        <input type="number" id="pin-input" placeholder="****" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4)">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-cancel" onclick="closeModal('modal-pin')">FÈMEN</button>
-                    <button id="btn-save-pin" class="btn-confirm">KONFIME PIN</button>
-                </div>
+    <div id="modal-pin" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h4 id="pin-title">PIN Sekirite</h4>
+            <p id="pin-msg">Antre 4 chif pou sekirize retrè w yo.</p>
+            <div class="input-group-modal">
+                <input type="number" id="pin-input" placeholder="****" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4)">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('modal-pin')">FÈMEN</button>
+                <button id="btn-save-pin" class="btn-confirm">SOVE</button>
             </div>
         </div>
+    </div>
+            </section>
+            
 
-    </div> </div> 
                                                                      
 
         
@@ -667,7 +665,7 @@
                 Ou debloke yon rabè <strong>2%</strong> sou premye echanj ou gras ak kòd parennaj sa a :
             </p>
 
-            <div class="sponsor-display-box">
+            <div lass="sponsor-display-box">
                 <span id="display-sponsor-id">Kòd: ARS-CHACHE</span>
             </div>
         </div>
