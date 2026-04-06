@@ -3,10 +3,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// 2. Import Modil Separe nou yo
+// 2. Import Modil Separe yo
 import { updateSidebarUI } from './sidebar-manager.js';
-import { initCarousel, updateHomeBalance, setFlashInfo } from './carousel-manager.js'; // Nou ka mete updateHomeBalance nan carousel-manager oswa home-manager
 import { initNavigation } from './navigation-manager.js';
+import { initAkeyFeatures, updateAkeyBalance, setFlashInfo } from './akey-manager.js';
 
 // 3. Firebase Config
 const firebaseConfig = {
@@ -25,10 +25,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// Inisyalize Navigasyon an
+// Inisyalize Navigasyon Global la
 initNavigation();
 
-// --- FONKSYON GLOBAL (Pou HTML a ka wè yo) ---
+// --- FONKSYON GLOBAL (Pou bouton nan HTML wè yo) ---
 
 window.toggleAuth = function(type) {
     const loginSec = document.getElementById('login-section');
@@ -44,20 +44,26 @@ window.toggleAuth = function(type) {
 
 window.handleLogout = function() {
     if(confirm("Èske w vle dekonekte tèlman?")) {
-        signOut(auth).then(() => { location.reload(); });
+        signOut(auth).then(() => { 
+            sessionStorage.clear(); // Netwaye sesyon an
+            location.reload(); 
+        });
     }
 };
 
-// --- LOGIK SÈVÈ ---
+// --- LOGIK SÈVÈ AN TAN REYÈL ---
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
+        // 1. Chaje done itilizatè a
         loadUserData(user.uid);
-        // Limen Carousel la yon sèl fwa
-        initCarousel();
-        // Mete mesaj akey la
-        setFlashInfo("Pwofite rabe 13.5% sou premye transaksyon ou! 🚀");
+        
+        // 2. Limen Carousel ak Flash Info (Paj Akèy)
+        initAkeyFeatures();
+        setFlashInfo("Byenveni! Pwofite 13.5% rabe sou premye transaksyon ou! 🚀");
+        
     } else {
+        // Si moun nan pa konekte, montre paj login la
         document.getElementById('auth-page').classList.remove('hidden');
         document.getElementById('home-page').classList.add('hidden');
     }
@@ -65,20 +71,20 @@ onAuthStateChanged(auth, (user) => {
 
 function loadUserData(uid) {
     const userRef = ref(db, 'users/' + uid);
+    
+    // Koute chanjman nan database la an tan reyèl (onValue)
     onValue(userRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            // 1. Mete ajou Sidebar la (via sidebar-manager.js)
-            updateSidebarUI(data);
+            // A. Mete ajou tout UI a san rafrechi paj
+            updateSidebarUI(data);     // Sidebar (ID, Non, Email)
+            updateAkeyBalance(data.balance); // Balans nan Akèy
             
-            // 2. Mete ajou Balans nan Akèy (via home/carousel manager)
-            updateHomeBalance(data.balance);
-            
-            // 3. Montre paj prensipal la
+            // B. Montre Dashboard la
             document.getElementById('auth-page').classList.add('hidden');
             document.getElementById('home-page').classList.remove('hidden');
             
-            // 4. Afiche Alèt Byenveni
+            // C. Afiche Alèt Byenveni yon sèl fwa
             if(!sessionStorage.getItem('welcomed')) {
                 showWelcomeAlert(data.name);
                 sessionStorage.setItem('welcomed', 'true');
@@ -87,12 +93,31 @@ function loadUserData(uid) {
     });
 }
 
-// Ti alèt animasyon (Nou ka kite l isit la paske li jeneral)
+// Alèt Byenveni
 function showWelcomeAlert(name) {
     const alertBox = document.createElement('div');
     alertBox.className = 'welcome-toast animated bounceInRight';
-    alertBox.style = "position: fixed; top: 20px; right: 20px; background: #FFD700; color: black; padding: 15px; border-radius: 10px; z-index: 9999; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3);";
-    alertBox.innerHTML = `<i class="fas fa-hand-wave"></i> Bonswa, ${name}! 👋`;
+    alertBox.style = `
+        position: fixed; 
+        top: 20px; 
+        right: 20px; 
+        background: #FFD700; 
+        color: black; 
+        padding: 15px; 
+        border-radius: 12px; 
+        z-index: 9999; 
+        font-weight: bold; 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    `;
+    alertBox.innerHTML = `<span>👋</span> Bonswa, ${name}!`;
     document.body.appendChild(alertBox);
-    setTimeout(() => alertBox.remove(), 4000);
-                                       }
+    
+    setTimeout(() => {
+        alertBox.style.opacity = "0";
+        alertBox.style.transition = "0.5s";
+        setTimeout(() => alertBox.remove(), 500);
+    }, 4000);
+               }
