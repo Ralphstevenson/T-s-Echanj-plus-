@@ -134,4 +134,4 @@ function showWelcomeAlert(name) {
     alertBox.innerHTML = `<i class="fas fa-hand-wave"></i> Bonswa, ${name}! 👋`;
     document.body.appendChild(alertBox);
     setTimeout(() => alertBox.remove(), 4000);
-}
+      }
