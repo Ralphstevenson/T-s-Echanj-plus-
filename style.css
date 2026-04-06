@@ -83,7 +83,7 @@ body {
     width: 100%;
     background: var(--card-bg);
     display: flex;
-    justify-content: space-around;
+    justify-content:space-around;
     padding: 10px 0;    border-top: 1px solid #333;
 }
 
@@ -101,80 +101,6 @@ body {
 
 /* --- UTILS --- */
 .hidden { display: none !important; }
-
-
-
-
-
-
-
-/* --- HEADER STYLING --- */
-.main-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Sa ap separe eleman yo de bout an bout */
-    padding: 10px 15px;
-    background: #121212; /* Nwa pwofesyonèl */
-    border-bottom: 1px solid #333;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    height: 60px;
-}
-
-/* Sidebar Toggle Icon */
-.fa-bars-staggered {
-    font-size: 1.4rem;
-    color: #FFD700; /* Koulè jòn lò a */
-    cursor: pointer;
-    flex: 0 0 40px;
-}
-
-/* Logo nan mitan */
-.logo-text {
-    font-weight: 800;
-    font-size: 1.1rem;
-    color: #ffffff;
-    flex-grow: 1;
-    text-align: left;
-    margin-left: 10px;
-}
-
-/* Group pou Notifikasyon ak Balans */
-.header-right-group {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.quick-balance {
-    background: rgba(255, 215, 0, 0.1);
-    color: #FFD700;
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    border: 1px solid rgba(255, 215, 0, 0.3);
-}
-
-.notif-wrapper {
-    position: relative;
-    font-size: 1.3rem;
-    color: #fff;
-    cursor: pointer;
-}
-
-.notif-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #ff3b3b;
-    font-size: 0.65rem;
-    padding: 2px 5px;
-    border-radius: 50%;
-}
-
-
 
 
 
