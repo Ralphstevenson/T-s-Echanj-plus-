@@ -1,41 +1,200 @@
-/* --- FULL SCREEN OVERLAY STYLE --- */
+/* --- 1. ESTRIKTI PAJ LA (FULL SCREEN OVERLAY) --- */
 #paj-parametre {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--bg-dark); /* Oswa #000 */
-    z-index: 3000; /* Pi wo pase Sidebar ak Bottom Nav */
+    width: 100vw;
+    height: 100vh;
+    background: #000000; /* Nwa fonse pou l kouvri tout bagay */
+    z-index: 9999; /* Pi wo pase sidebar ak bottom nav */
     overflow-y: auto;
-    padding-bottom: 50px;
+    padding-top: 60px; /* Espas pou bouton fèmen an */
     
-    /* Animasyon pou l ouvri sot anba moute */
+    /* Animasyon "Slide Up" */
     transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    display: block !important; /* Force display la pou tranzisyon an ka mache */
 }
 
-/* Lè paj la aktif (lè nou retire klas .hidden la) */
+/* Lè paj la aktif */
 #paj-parametre.active {
     transform: translateY(0);
-    display: block !important;
 }
 
-/* Ajoute yon bouton pou fèmen paj la anwo */
+/* Bouton pou fèmen fenèt la */
 .close-settings {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: #222;
-    color: #fff;
     width: 40px;
     height: 40px;
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #fff;
     font-size: 1.2rem;
     cursor: pointer;
-    border: 1px solid #333;
-    z-index: 3001;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    transition: 0.3s;
 }
+
+.close-settings:active {
+    background: var(--primary);
+    color: #000;
+}
+
+/* --- 2. KONTNI AK PROFIL --- */
+.settings-container {
+    padding: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.settings-group {
+    margin-bottom: 30px;
+}
+
+.group-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+    padding-left: 5px;
+}
+
+.setting-item-glass {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.avatar-circle {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    padding: 3px;
+    background: #000;
+}
+
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.item-info b {
+    font-size: 1.2rem;
+    color: #fff;
+    display: block;
+}
+
+.item-info p {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+/* --- 3. RANJE YO (ROWS) --- */
+.setting-row {
+    background: #151515;
+    padding: 18px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 1px solid #222;
+}
+
+.setting-row:active {
+    background: #1a1a1a;
+    border-color: var(--primary);
+}
+
+.row-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.row-left i {
+    width: 25px;
+    color: var(--primary);
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.row-left span {
+    color: #eee;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.version-tag {
+    background: #252525;
+    color: #666;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* --- 4. TOGGLE SWITCH DESIGN --- */
+input[type="checkbox"] {
+    position: relative;
+    width: 45px;
+    height: 24px;
+    appearance: none;
+    background: #333;
+    border-radius: 20px;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+input[type="checkbox"]:checked {
+    background: var(--primary);
+}
+
+input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    background: #fff;
+    transition: 0.3s;
+}
+
+input[type="checkbox"]:checked::before {
+    left: 23px;
+}
+
+/* --- 5. MODALS NAN PARAMETRES --- */
+.modal-overlay {
+    z-index: 10000; /* Pi wo pase paj paramètre a li menm */
+}
+
+.modal-content {
+    background: #111;
+    border: 1.5px solid #333;
+    border-radius: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+    
