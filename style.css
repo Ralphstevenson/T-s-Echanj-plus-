@@ -84,8 +84,7 @@ body {
     background: var(--card-bg);
     display: flex;
     justify-content: space-around;
-    padding: 10px 0;
-    border-top: 1px solid #333;
+    padding: 10px 0;    border-top: 1px solid #333;
 }
 
 .nav-item 
@@ -109,68 +108,59 @@ body {
 
 
 
-/* --- HEADER DESIGN --- */
-header {
+/* --- HEADER STYLING --- */
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Sa ap separe eleman yo de bout an bout */
+    padding: 10px 15px;
+    background: #121212; /* Nwa pwofesyonèl */
+    border-bottom: 1px solid #333;
     position: sticky;
     top: 0;
-    width: 100%;
-    height: 65px;
-    background: var(--card-bg);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    border-bottom: 1px solid #333;
     z-index: 1000;
-    backdrop-filter: blur(10px);
+    height: 60px;
 }
 
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.menu-toggle-btn {
-    font-size: 1.2rem;
-    color: var(--primary);
+/* Sidebar Toggle Icon */
+.fa-bars-staggered {
+    font-size: 1.4rem;
+    color: #FFD700; /* Koulè jòn lò a */
     cursor: pointer;
-    background: rgba(255, 215, 0, 0.1);
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    transition: var(--transition);
+    flex: 0 0 40px;
 }
 
-.menu-toggle-btn:hover {
-    background: var(--primary);
-    color: black;
-}
-
-.brand-logo {
+/* Logo nan mitan */
+.logo-text {
     font-weight: 800;
-    font-size: 1.3rem;
-    color: var(--text-main);
-    letter-spacing: -1px;
+    font-size: 1.1rem;
+    color: #ffffff;
+    flex-grow: 1;
+    text-align: left;
+    margin-left: 10px;
 }
 
-.brand-logo span {
-    color: var(--primary);
-}
-
-.header-right {
+/* Group pou Notifikasyon ak Balans */
+.header-right-group {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
-.notif-btn {
+.quick-balance {
+    background: rgba(255, 215, 0, 0.1);
+    color: #FFD700;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.notif-wrapper {
     position: relative;
-    font-size: 1.2rem;
-    color: var(--text-sub);
+    font-size: 1.3rem;
+    color: #fff;
     cursor: pointer;
 }
 
@@ -178,97 +168,12 @@ header {
     position: absolute;
     top: -5px;
     right: -5px;
-    background: var(--danger);
-    color: white;
-    font-size: 0.6rem;
-    font-weight: 800;
-    width: 15px;
-    height: 15px;
+    background: #ff3b3b;
+    font-size: 0.65rem;
+    padding: 2px 5px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid var(--card-bg);
 }
 
-/* --- SIDEBAR (MENI SOU KOTE) --- */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: -280px;
-    width: 280px;
-    height: 100%;
-    background: #1a1a1a;
-    z-index: 2000;
-    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-    padding: 30px 20px;
-}
-
-.sidebar.active {
-    left: 0;
-}
-
-.sidebar-header {
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-.sidebar-logo {
-    width: 100px;
-    margin-bottom: 15px;
-}
-
-.menu-links {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    border-radius: 12px;
-    color: var(--text-sub);
-    text-decoration: none;
-    font-weight: 600;
-    transition: var(--transition);
-}
-
-.menu-item i {
-    width: 20px;
-    color: var(--primary);
-}
-
-.menu-item:hover, .menu-item.active {
-    background: rgba(255, 215, 0, 0.1);
-    color: var(--primary);
-}
-
-.logout-btn-sidebar {
-    margin-top: auto;
-    color: var(--danger) !important;
-    border-top: 1px solid #333;
-    padding-top: 20px;
-}
-
-/* --- OVERLAY LÈ SIDEBAR LOUVRI --- */
-.overlay-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
-    z-index: 1500;
-    display: none;
-}
-
-.overlay-sidebar.active {
-    display: block;
-}
 
 
 
@@ -276,7 +181,7 @@ header {
 
 
 /* --- SEKSYON ECHANJ PREMIUM --- */
-#paj-echanj {
+#paj-ecanj {
     padding: 20px;
     padding-bottom: 100px; /* Pou evite nav-bar la kache kòd la */
 }
