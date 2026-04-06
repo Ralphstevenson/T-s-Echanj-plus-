@@ -88,7 +88,7 @@ body {
     border-top: 1px solid #333;
 }
 
-.nav-item {
+.nav-item 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -107,153 +107,169 @@ body {
 
 
 
-/* --- SEKSYON AKÈY (DASHBOARD) --- */
-#paj-akey {
-    padding: 20px;
-    padding-bottom: 100px;
-}
 
-/* Kat Balans Prensipal */
-.balance-card-premium {
-    background: linear-gradient(135deg, #FFD700 0%, #ccac00 100%);
-    border-radius: 25px;
-    padding: 30px;
-    color: #000;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
-    margin-bottom: 25px;
-}
 
-.balance-card-premium::after {
-    content: '';
-    position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 150px;
-    height: 150px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-}
-
-.balance-label {
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    opacity: 0.8;
-}
-
-.balance-amount-box {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    margin: 10px 0;
-}
-
-.balance-amount-box h1 {
-    font-size: 2.5rem;
-    font-weight: 800;
-}
-
-.balance-amount-box span {
-    font-weight: 700;
-    font-size: 1.1rem;
-}
-
-.user-ars-id-tag {
-    background: rgba(0, 0, 0, 0.1);
-    padding: 5px 12px;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    display: inline-block;
-}
-
-/* Aksyon Rapid (Quick Actions) */
-.quick-actions-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.action-btn-card {
+/* --- HEADER DESIGN --- */
+header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 65px;
     background: var(--card-bg);
-    border: 1px solid #333;
-    padding: 20px;
-    border-radius: 20px;
-    text-align: center;
-    transition: var(--transition);
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid #333;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
 }
 
-.action-btn-card:hover {
-    border-color: var(--primary);
-    transform: translateY(-5px);
-}
-
-.action-btn-card i {
-    font-size: 1.5rem;
-    color: var(--primary);
-    margin-bottom: 10px;
-    display: block;
-}
-
-.action-btn-card span {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-main);
-}
-
-/* Seksyon Reklam / Promo */
-.promo-banner {
-    background: #1e1e1e;
-    border-radius: 20px;
-    padding: 15px;
+.header-left {
     display: flex;
     align-items: center;
     gap: 15px;
-    border: 1px solid #2a2a2a;
 }
 
-.promo-icon {
-    width: 50px;
-    height: 50px;
+.menu-toggle-btn {
+    font-size: 1.2rem;
+    color: var(--primary);
+    cursor: pointer;
     background: rgba(255, 215, 0, 0.1);
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+.menu-toggle-btn:hover {
+    background: var(--primary);
+    color: black;
+}
+
+.brand-logo {
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--text-main);
+    letter-spacing: -1px;
+}
+
+.brand-logo span {
     color: var(--primary);
-    font-size: 1.2rem;
 }
 
-.promo-text b {
-    display: block;
-    font-size: 0.95rem;
-    color: var(--primary);
-}
-
-.promo-text p {
-    font-size: 0.8rem;
-    color: var(--text-sub);
-}
-
-/* Ti Tit Seksyon */
-.section-title-home {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 15px;
+.header-right {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 15px;
 }
 
-.view-all {
-    font-size: 0.75rem;
-    color: var(--primary);
-    text-decoration: none;
+.notif-btn {
+    position: relative;
+    font-size: 1.2rem;
+    color: var(--text-sub);
+    cursor: pointer;
 }
+
+.notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--danger);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 800;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--card-bg);
+}
+
+/* --- SIDEBAR (MENI SOU KOTE) --- */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background: #1a1a1a;
+    z-index: 2000;
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    padding: 30px 20px;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar-header {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.sidebar-logo {
+    width: 100px;
+    margin-bottom: 15px;
+}
+
+.menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    color: var(--text-sub);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.menu-item i {
+    width: 20px;
+    color: var(--primary);
+}
+
+.menu-item:hover, .menu-item.active {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--primary);
+}
+
+.logout-btn-sidebar {
+    margin-top: auto;
+    color: var(--danger) !important;
+    border-top: 1px solid #333;
+    padding-top: 20px;
+}
+
+/* --- OVERLAY LÈ SIDEBAR LOUVRI --- */
+.overlay-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1500;
+    display: none;
+}
+
+.overlay-sidebar.active {
+    display: block;
+}
+
 
 
 
