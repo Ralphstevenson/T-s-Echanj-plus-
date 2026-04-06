@@ -1,0 +1,88 @@
+/* --- FLASH INFO BAR --- */
+.flash-info-bar {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--primary);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    border: 1px dashed var(--primary);
+}
+
+/* --- CAROUSEL (SLIDESHOW) --- */
+.carousel-container {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide {
+    min-width: 100%;
+}
+
+.slide img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+/* --- KAT BALANS (RECTANGLE) --- */
+.card-balance-rect {
+    background: linear-gradient(135deg, #1e1e1e 0%, #111 100%);
+    border: 1px solid #333;
+    padding: 25px;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+/* Ti dekorasyon an lò nan kwen kat la */
+.card-balance-rect::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    background: var(--primary);
+    opacity: 0.1;
+    border-radius: 50%;
+}
+
+.card-balance-rect p {
+    color: var(--text-sub);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.balance-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.balance-row h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--primary); /* Nimewo kòb la an lò */
+}
+
+.balance-row span {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
