@@ -511,4 +511,134 @@ body {
 
 
 
-    
+    /* --- SEKSYON ISTORIK --- */
+#paj-trans {
+    padding: 20px;
+    padding-bottom: 100px;
+}
+
+.header-paj {
+    margin-bottom: 20px;
+}
+
+/* --- TABS DESIGN --- */
+.tabs-istorik-wrapper {
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+}
+
+.tabs-istorik {
+    display: flex;
+    gap: 10px;
+}
+
+.tab-btn-ist {
+    background: #252525;
+    color: var(--text-sub);
+    border: 1px solid #333;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.tab-btn-ist.active {
+    background: var(--primary);
+    color: black;
+    border-color: var(--primary);
+}
+
+/* --- LIS TRANZAKSYON --- */
+.item-trans {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-left: 4px solid #444;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.item-trans:hover {
+    background: #252525;
+}
+
+.item-trans.success { border-left-color: var(--success); }
+.item-trans.failed { border-left-color: var(--danger); }
+
+.trans-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-box-ist {
+    width: 40px;
+    height: 40px;
+    background: #2a2a2a;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+.trans-info b {
+    display: block;
+    font-size: 0.95rem;
+}
+
+.trans-info small {
+    color: var(--text-sub);
+    font-size: 0.75rem;
+}
+
+.trans-right {
+    text-align: right;
+}
+
+.trans-amount {
+    display: block;
+    font-weight: 800;
+    font-size: 1rem;
+}
+
+.trans-status {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.success-text { color: var(--success); }
+.failed-text { color: var(--danger); }
+
+/* --- RESI (RECEIPT CARD) --- */
+.receipt-card {
+    background: white;
+    color: #121212;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+}
+
+.logo-receipt {
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    color: #000;
+    }
+
+
+
+
+
+
