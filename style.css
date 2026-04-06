@@ -32,100 +32,17 @@ body {
 
 
 
-*// HEADER PROFESSIONAL 
-
-.main-header {
+/* --- SIDEBAR CONTAINER --- */
+.sidebar-pro {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 65px;
-    background: rgba(26, 26, 26, 0.95);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 15px;
-    border-bottom: 1px solid #333;
-    z-index: 1000;
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.fa-bars-staggered {
-    font-size: 1.3rem;
-    color: var(--primary);
-    cursor: pointer;
-    padding: 10px;
-}
-
-.logo-text {
-    font-weight: 800;
-    font-size: 1.2rem;
-    letter-spacing: -0.5px;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.quick-balance {
-    background: rgba(255, 215, 0, 0.1);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.notif-wrapper {
-    position: relative;
-    font-size: 1.3rem;
-    color: var(--text-main);
-    cursor: pointer;
-}
-
-.notif-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: var(--danger);
-    color: white;
-    font-size: 0.65rem;
-    min-width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
-
-
-
-
-
-
-*// SIDEBAR ELITE 
-
-    .sidebar-pro {
-    position: fixed;
-    top: 0;
-    left: -100%; /* Kache */
-    width: 280px;
+    left: -100%; /* Kache pa defo */
+    width: 290px;
     height: 100%;
-    background: var(--card-bg);
+    background: #161616; /* Nwa pwofesyonèl */
     z-index: 2000;
-    transition: var(--transition);
-    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 15px 0 40px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
 }
@@ -134,84 +51,114 @@ body {
     left: 0;
 }
 
+/* --- SIDEBAR HEADER --- */
 .sidebar-header {
-    padding: 30px 20px;
-    background: linear-gradient(to bottom, #222, var(--card-bg));
+    padding: 40px 25px 30px;
+    background: linear-gradient(180deg, #1e1e1e 0%, #161616 100%);
+    border-bottom: 1px solid #2a2a2a;
     position: relative;
 }
 
 .close-sidebar {
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 20px;
+    right: 20px;
+    font-size: 1.2rem;
     color: var(--text-sub);
     cursor: pointer;
+    padding: 5px;
 }
 
+/* User Info Styling */
 .user-greeting {
-    font-size: 0.9rem;
-    color: var(--primary);
+    font-size: 0.85rem;
+    color: var(--primary); /* Jòn lò */
     font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.user-id-badge {
-    display: inline-block;
-    background: #333;
-    color: #fff;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-.sidebar-header h4 {
-    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     margin-bottom: 5px;
 }
 
-.sidebar-header p#side-email {
-    font-size: 0.8rem;
-    color: var(--text-sub);
+.security-status {
+    font-size: 0.7rem;
+    color: #00c853; /* Vè sekirite */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
 }
 
-/* Menu Links */
+.security-status::before {
+    content: '●';
+    font-size: 10px;
+}
+
+.user-id-badge {
+    background: #2a2a2a;
+    color: #eee;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    display: inline-block;
+    border: 1px solid #333;
+    margin-bottom: 8px;
+}
+
+#side-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+}
+
+#side-email {
+    font-size: 0.8rem;
+    color: var(--text-sub);
+    margin-top: 2px;
+}
+
+/* --- SIDEBAR MENU --- */
 .sidebar-menu {
-    padding: 10px;
-    flex-grow: 1;
+    padding: 20px 10px;
+    overflow-y: auto;
 }
 
 .menu-item {
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 14px 15px;
-    margin-bottom: 5px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
     border-radius: 12px;
-    color: var(--text-sub);
-    text-decoration: none;
+    color: #ccc;
     font-weight: 600;
+    font-size: 0.95rem;
     transition: var(--transition);
     cursor: pointer;
 }
 
 .menu-item i {
-    width: 20px;
     font-size: 1.1rem;
     color: var(--primary);
+    width: 25px;
+    text-align: center;
 }
 
-.menu-item:hover, .menu-item.active {
-    background: rgba(255, 215, 0, 0.08);
+.menu-item:hover, 
+.menu-item.active {
+    background: rgba(255, 215, 0, 0.1);
     color: var(--primary);
 }
 
+/* Logout Button espesyal */
 .logout-btn {
-    margin-top: auto;
-    border-top: 1px solid #333;
-    color: var(--danger) !important;
-        }
-    
+    margin-top: 20px;
+    color: #ff4d4d !important;
+    border-top: 1px solid #2a2a2a;
+    padding-top: 25px;
+}
 
-
+.logout-btn i {
+    color: #ff4d4d !important;
+                     }
