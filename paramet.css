@@ -1,131 +1,181 @@
-/* --- 1. ESTRIKTI PAJ LA (FULL SCREEN OVERLAY) --- */
-#paj-parametre {
-    position: fixed; /* Dekole paj la nan rès kòd la */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #000000; /* Nwa total pou kouvri lòt paj yo nèt */
-    z-index: 9999; /* Nimewo sa a dwe pi wo pase tout lòt bagay nan App la */
-    overflow-y: auto; /* Pou n ka scroll si gen anpil opsyon */
-    padding-bottom: 50px;
-    
-    /* Animasyon pou l slide soti anba moute */
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
-    display: none; /* Kache l pa defo */
+/* --- CONTAINER PRENSIPAL --- */
+#paj-parennaj {
+    padding-bottom: 100px;
+    background: #000;
 }
 
-/* Lè nou ajoute klas .active nan JS */
-#paj-parametre.active {
-    display: block !important;
-    transform: translateY(0);
+.premium-header {
+    padding: 30px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
 }
 
-/* --- 2. HEADER PAJ LA --- */
-.settings-header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
+.page-title {
+    color: var(--primary); /* Jòn/Lò */
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.subtitle-paj {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+/* --- KAT BALANS (GOLD STYLE) --- */
+.referral-card-glass {
     background: #111;
-    border-bottom: 1px solid #222;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    margin: 0 20px;
+    padding: 35px 20px;
+    border-radius: 28px;
+    border: 1px solid #222;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-.close-settings {
+.referral-badge-gold {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: #000;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.balance-display-box h1 {
+    font-size: 3.2rem;
+    color: #fff;
+    margin: 10px 0;
+    font-weight: 900;
+}
+
+/* --- STATS GRID --- */
+.stats-grid-luxury {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px;
+    border-radius: 20px;
+    margin: 20px 0;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stat-label { font-size: 0.6rem; color: #666; text-transform: uppercase; }
+.stat-val { font-size: 0.9rem; color: #fff; font-weight: 700; }
+
+/* --- BOUTON TRANSFERE (PWOFEZYONÈL) --- */
+.btn-premium-transfer-flash {
+    background: transparent;
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
+    width: 100%;
+    padding: 15px;
+    border-radius: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-premium-transfer-flash:active {
+    background: var(--primary);
+    color: #000;
+}
+
+/* --- SEKSYON KÒD (GLASS CONTAINER) --- */
+.glass-container-luxury {
+    background: #0a0a0a;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid #111;
+}
+
+.logic-info-card {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    background: rgba(255, 215, 0, 0.05);
+    padding: 15px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+}
+
+.logic-icon-circle {
+    background: var(--primary);
+    color: #000;
     width: 40px;
     height: 40px;
-    background: #222;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    color: #FFD700; /* Koulè jòn an lò a */
-    font-size: 1.3rem;
-    border: 1px solid #333;
 }
 
-/* --- 3. KONTNI (CONTAINER) --- */
-.settings-container {
-    padding: 25px 20px;
-    max-width: 500px;
-    margin: 0 auto;
-}
+.logic-text h4 { color: #fff; margin-bottom: 5px; font-size: 0.9rem; }
+.logic-text p { color: #888; font-size: 0.75rem; line-height: 1.4; }
 
-.group-label {
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: #555;
-    letter-spacing: 1.5px;
-    margin: 20px 0 10px 5px;
-    display: block;
-    text-transform: uppercase;
-}
-
-/* --- 4. ITEM PROFIL --- */
-.setting-item-glass {
-    background: linear-gradient(145deg, #151515, #0a0a0a);
-    border: 1px solid #222;
-    padding: 20px;
-    border-radius: 20px;
+/* --- INPUT KÒD --- */
+.input-luxury-group {
     display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.avatar-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid #FFD700;
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 15px;
+    margin-top: 10px;
     overflow: hidden;
 }
 
-.avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+.input-luxury-group input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 15px;
+    color: var(--primary);
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-align: center;
+}
 
-.item-info b { font-size: 1.1rem; color: #fff; display: block; }
-.item-info p { font-size: 0.8rem; color: #777; margin: 0; }
-
-/* --- 5. RANJE OPSYON YO (ROWS) --- */
-.setting-row {
-    background: #111;
-    padding: 16px 20px;
-    border-radius: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+.copy-premium-btn {
+    background: #222;
+    border: none;
+    color: var(--primary);
+    width: 55px;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: 0.2s;
-    border: 1px solid transparent;
 }
 
-.setting-row:active {
-    background: #1a1a1a;
-    border-color: #333;
+/* --- SHARE SOCIAL --- */
+.share-grid-elite {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
 }
 
-.row-left { display: flex; align-items: center; gap: 15px; }
-.row-left i { color: #FFD700; font-size: 1.1rem; width: 25px; text-align: center; }
-.row-left span { color: #eee; font-size: 0.95rem; }
-
-/* --- 6. SWITCH TOGGLE --- */
-.switch { position: relative; width: 45px; height: 24px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider {
-    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #333; transition: .4s; border-radius: 34px;
+.share-icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #fff;
 }
-.slider:before {
-    position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
-    background-color: white; transition: .4s; border-radius: 50%;
-}
-input:checked + .slider { background-color: #FFD700; }
-input:checked + .slider:before { transform: translateX(21px); }
 
-.version-tag { color: #555; font-size: 0.8rem; font-weight: 700; }
+.wa { background: #25D366; }
+.fb { background: #1877F2; }
+.tg { background: #0088cc; }
+.sms { background: #555; }
     
