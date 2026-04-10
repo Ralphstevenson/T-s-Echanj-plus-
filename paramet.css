@@ -1,39 +1,39 @@
-/* --- 1. FULLSCREEN OVERLAY --- */
+/* =============================================
+   PAJ PARAMÈTRES - PROFESSIONAL UI (1000%)
+   ============================================= */
+
+/* --- 1. OVERLAY PRENSIPAL --- */
 #paj-parametre {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-    background: #000; /* Nwa total pou kouvri dezòd la */
+    background-color: #000000; /* Kouvri tout bagay */
     z-index: 9999;
     overflow-y: auto;
-    padding-bottom: 80px;
-    display: none; /* JS ap chanje sa an block */
-    font-family: 'Segoe UI', Roboto, sans-serif;
+    padding-bottom: 100px;
+    
+    /* Animasyon & Display Control */
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
 }
 
-#paj-parametre.active {
+/* Lè li kache */
+#paj-parametre.hidden {
+    display: none !important;
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+/* Lè li aktif */
+#paj-parametre.active, 
+#paj-parametre:not(.hidden) {
     display: block !important;
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* --- 2. HEADER TOP --- */
-.settings-container {
-    padding: 20px;
-    max-width: 450px;
-    margin: 0 auto;
-}
-
-.page-title {
-    color: #FFD700; /* Gold */
-    font-size: 1.8rem;
-    font-weight: 800;
-    margin: 40px 0 25px 0;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
+/* --- 2. BOUTON FÈMEN & HEADER --- */
 .close-settings {
     position: fixed;
     top: 25px;
@@ -48,12 +48,34 @@
     color: #fff;
     cursor: pointer;
     border: 1px solid #333;
-    z-index: 10000;
+    z-index: 10001;
+    transition: 0.3s;
 }
 
-/* --- 3. GROUPS & ROWS --- */
+.close-settings:active {
+    transform: scale(0.9);
+    background: #333;
+}
+
+.settings-container {
+    padding: 20px;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.page-title {
+    color: #FFD700; /* Gold */
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 60px 0 30px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* --- 3. GWOUP AK ETIKÈT --- */
 .settings-group {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .group-label {
@@ -62,12 +84,11 @@
     color: #555;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin: 0 0 12px 5px;
     display: block;
-    padding-left: 5px;
 }
 
-/* PROFIL BOX */
+/* --- 4. BLÒK PWOFIL --- */
 .setting-item-glass {
     background: linear-gradient(145deg, #111, #080808);
     border: 1px solid #222;
@@ -75,8 +96,9 @@
     border-radius: 25px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 18px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    margin-bottom: 15px;
 }
 
 .avatar-circle {
@@ -85,45 +107,84 @@
     border-radius: 50%;
     border: 2px solid #FFD700;
     overflow: hidden;
+    background: #222;
 }
 
-.avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-.item-info b { font-size: 1.2rem; color: #fff; display: block; }
-.item-info p { font-size: 0.85rem; color: #777; margin-top: 3px; }
+.item-info b {
+    font-size: 1.15rem;
+    color: #fff;
+    display: block;
+}
 
-/* REGULAR ROWS */
+.item-info p {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 3px 0 0 0;
+}
+
+/* --- 5. RANJE OPSYON (ROWS) --- */
 .setting-row {
     background: #111;
-    padding: 18px 20px;
+    padding: 16px 20px;
     border-radius: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     cursor: pointer;
-    border: 1px solid #1a1a1a;
-    transition: 0.3s ease;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
 }
 
 .setting-row:active {
     background: #1a1a1a;
+    border-color: #333;
     transform: scale(0.98);
 }
 
-.row-left { display: flex; align-items: center; gap: 15px; }
-.row-left i { color: #FFD700; font-size: 1.2rem; width: 25px; text-align: center; }
-.row-left span { color: #eee; font-size: 1rem; font-weight: 500; }
+.row-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
-/* --- 4. PREMIUM SWITCH --- */
+.row-left i {
+    color: #FFD700;
+    font-size: 1.1rem;
+    width: 25px;
+    text-align: center;
+}
+
+.row-left span {
+    color: #eee;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.fa-chevron-right {
+    font-size: 0.8rem;
+    color: #444;
+}
+
+/* --- 6. SWITCH (TOGGLE) --- */
 .switch {
     position: relative;
     display: inline-block;
-    width: 45px;
+    width: 44px;
     height: 24px;
 }
 
-.switch input { opacity: 0; width: 0; height: 0; }
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
 .slider {
     position: absolute;
@@ -146,15 +207,92 @@
     border-radius: 50%;
 }
 
-input:checked + .slider { background-color: #FFD700; }
-input:checked + .slider:before { transform: translateX(21px); }
+input:checked + .slider {
+    background-color: #FFD700;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
 
 .version-tag {
-    background: #222;
-    color: #666;
-    padding: 5px 12px;
-    border-radius: 12px;
+    color: #555;
     font-size: 0.8rem;
-    font-weight: bold;
-  }
-  
+    font-weight: 700;
+    background: #1a1a1a;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+/* --- 7. MODAL UI (PASSWORD/PIN) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 11000;
+}
+
+.modal-content {
+    background: #111;
+    width: 85%;
+    max-width: 350px;
+    padding: 30px;
+    border-radius: 30px;
+    border: 1px solid #222;
+    text-align: center;
+    animation: zoomIn 0.3s ease;
+}
+
+.modal-header h4 {
+    color: #FFD700;
+    margin: 0 0 15px 0;
+}
+
+.modal-body p {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.modal-footer {
+    margin-top: 25px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn-cancel, .btn-confirm {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 800;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.btn-cancel { background: #222; color: #fff; }
+.btn-confirm { background: #FFD700; color: #000; }
+
+.input-group-modal input {
+    width: 100%;
+    background: #000;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 12px;
+    color: #FFD700;
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 5px;
+    margin-top: 15px;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+    }
