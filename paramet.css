@@ -1,1 +1,160 @@
+/* --- 1. FULLSCREEN OVERLAY --- */
+#paj-parametre {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #000; /* Nwa total pou kouvri dezòd la */
+    z-index: 9999;
+    overflow-y: auto;
+    padding-bottom: 80px;
+    display: none; /* JS ap chanje sa an block */
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
 
+#paj-parametre.active {
+    display: block !important;
+}
+
+/* --- 2. HEADER TOP --- */
+.settings-container {
+    padding: 20px;
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.page-title {
+    color: #FFD700; /* Gold */
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 40px 0 25px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.close-settings {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    background: #1a1a1a;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    border: 1px solid #333;
+    z-index: 10000;
+}
+
+/* --- 3. GROUPS & ROWS --- */
+.settings-group {
+    margin-bottom: 30px;
+}
+
+.group-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #555;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+    padding-left: 5px;
+}
+
+/* PROFIL BOX */
+.setting-item-glass {
+    background: linear-gradient(145deg, #111, #080808);
+    border: 1px solid #222;
+    padding: 20px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.avatar-circle {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    border: 2px solid #FFD700;
+    overflow: hidden;
+}
+
+.avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+.item-info b { font-size: 1.2rem; color: #fff; display: block; }
+.item-info p { font-size: 0.85rem; color: #777; margin-top: 3px; }
+
+/* REGULAR ROWS */
+.setting-row {
+    background: #111;
+    padding: 18px 20px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    cursor: pointer;
+    border: 1px solid #1a1a1a;
+    transition: 0.3s ease;
+}
+
+.setting-row:active {
+    background: #1a1a1a;
+    transform: scale(0.98);
+}
+
+.row-left { display: flex; align-items: center; gap: 15px; }
+.row-left i { color: #FFD700; font-size: 1.2rem; width: 25px; text-align: center; }
+.row-left span { color: #eee; font-size: 1rem; font-weight: 500; }
+
+/* --- 4. PREMIUM SWITCH --- */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 45px;
+    height: 24px;
+}
+
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #333;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider { background-color: #FFD700; }
+input:checked + .slider:before { transform: translateX(21px); }
+
+.version-tag {
+    background: #222;
+    color: #666;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+  
