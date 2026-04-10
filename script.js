@@ -1,9 +1,12 @@
-// Import Firebase Modules (VÃ¨syon 10 pou 2026)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+// ==========================================
+// SCRIPT.JS - SÈVO ECHANJ PLUS (CENTRAL HUB)
+// ==========================================
 
-// 1. Firebase Config
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// --- 1. KONFIGIRASYON (Done ou te bay yo) ---
 const firebaseConfig = {
   apiKey: "AIzaSyB1VTPakleoggsbLdpm_HS7nSb3A7A99Qw",
   authDomain: "echanj-plus-778cd.firebaseapp.com",
@@ -15,123 +18,93 @@ const firebaseConfig = {
   measurementId: "G-J1BQRF32ZW"
 };
 
-// Inisyalize Firebase
+// Inisyalizasyon
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getDatabase(app);
+const auth = getAuth(app);
 
-// --- FONKSYON GLOBAL POU BOUTON YO KA MACHE ---
-
-// 2. Chanje ant Login ak Signup
-window.toggleAuth = function(type) {
-    const loginSec = document.getElementById('login-section');
-    const signupSec = document.getElementById('signup-section');
-    
-    if (type === 'signup') {
-        loginSec.classList.add('hidden');
-        signupSec.classList.remove('hidden');
-    } else {
-        loginSec.classList.remove('hidden');
-        signupSec.classList.add('hidden');
-    }
+// Global State pou lòt modil yo ka itilize (export)
+export let appData = {
+    user: null,
+    settings: null
 };
 
-// 3. Navigasyon ant paj yo
-window.showPage = function(pageId, element) {
-    // Kache tout seksyon yo
-    document.querySelectorAll('section').forEach(section => {
-        section.classList.add('hidden');
-        section.style.opacity = "0";
-    });
-
-    const activePage = document.getElementById(pageId);
-    if (activePage) {
-        activePage.classList.remove('hidden');
-        setTimeout(() => { activePage.style.opacity = "1"; }, 50);
-    }
-
-    // Mizajou klas "active" nan meni yo
-    document.querySelectorAll('.nav-item, .menu-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    if (element) element.classList.add('active');
-    
-    // FÃ¨men sidebar otomatikman sou mobil
-    const sidebar = document.getElementById('sidebar');
-    if(sidebar) sidebar.classList.remove('active');
-};
-
-// 4. Louvri/FÃ¨men Sidebar
-window.toggleSidebar = function() {
-    document.getElementById('sidebar').classList.toggle('active');
-};
-
-// 5. Dekonekte
-window.handleLogout = function() {
-    if(confirm("Ãˆske w vle dekonekte tÃ¨lman?")) {
-        signOut(auth).then(() => {
-            location.reload();
-        });
-    }
-};
-
-// --- LOGIK SISTÃˆM NAN ---
-
-// Kontwole si itilizatÃ¨ a konekte
+// --- 2. LOJIK STRIK: AUTH OBSERVER ---
+// Sa a se premye lojik: Si w pa konekte, ou pa ka wè dashboard la
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        loadUserData(user.uid);
+        console.log("Koneksyon detekte pou:", user.uid);
+        startGlobalListeners(user.uid);
     } else {
-        document.getElementById('auth-page').classList.remove('hidden');
-        document.getElementById('home-page').classList.add('hidden');
+        console.log("Pa gen itilizatè konekte.");
+        // Si nou nan dashboard la, voye moun nan nan login
+        if (!window.location.href.includes("login.html")) {
+            window.location.href = "login.html";
+        }
     }
 });
 
-// Chaje done itilizatÃ¨ a depi nan Database la
-function loadUserData(uid) {
-    const userRef = ref(db, 'users/' + uid);
+// --- 3. LOJIK STRIK: GLOBAL LISTENERS ---
+// Fonksyon sa a koute tout sa k ap pase nan Firebase an tan reyèl
+function startGlobalListeners(uid) {
+    // A. Koute done itilizatè a
+    const userRef = ref(db, `users/${uid}`);
     onValue(userRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            updateUI(data);
-            document.getElementById('auth-page').classList.add('hidden');
-            document.getElementById('home-page').classList.remove('hidden');
-            
-            // AlÃ¨t Byenveni yon sÃ¨l fwa pa sesyon
-            if(!sessionStorage.getItem('welcomed')) {
-                showWelcomeAlert(data.name);
-                sessionStorage.setItem('welcomed', 'true');
-            }
+            appData.user = data;
+            syncUserUI(data); // Mete UI a ajou
+        }
+    });
+
+    // B. Koute anviwònman sistèm nan (to echanj 16.5% la)
+    const settingsRef = ref(db, `settings`);
+    onValue(settingsRef, (snapshot) => {
+        const settings = snapshot.val();
+        if (settings) {
+            appData.settings = settings;
+            console.log("Paramèt sistèm ajou:", settings.to_echanj);
         }
     });
 }
 
-// Mete done yo nan HTML la
-function updateUI(data) {
-    const elements = {
-        'side-name': data.name,
-        'side-email': data.email,
-        'side-id': data.arsId || 'ARS-XXXX',
-        'user-balance': parseFloat(data.balance || 0).toFixed(2),
-        'display-balance': parseFloat(data.balance || 0).toFixed(2) + " HTG",
-        'display-ars-id': data.arsId || '---',
-        'sett-name': data.name,
-        'sett-email': data.email,
-        'komisyon-balans': parseFloat(data.commissions || 0).toFixed(2)
-    };
+// --- 4. LOJIK STRIK: SYNC UI (ANTI-UNDEFINED) ---
+// Sa asire tout non, email ak balans yo parèt byen
+function syncUserUI(data) {
+    // Ranje Non an (Lojik #16)
+    const fullName = data.fullName || "Itilizatè Echanj Plus";
+    const email = data.email || "Pa gen imèl";
+    
+    // Mete non nan Header ak Paramètre
+    const nameDisplays = document.querySelectorAll('.user-name-text, #sett-name');
+    nameDisplays.forEach(el => el.innerText = fullName);
 
-    for (let id in elements) {
-        const el = document.getElementById(id);
-        if (el) el.innerText = elements[id];
-    }
+    const emailDisplays = document.querySelectorAll('.user-email-text, #sett-email');
+    emailDisplays.forEach(el => el.innerText = email);
+
+    // Ranje Balans lan (Lojik #7)
+    const mainBalance = data.balance || 0;
+    const balanceElements = document.querySelectorAll('.main-bal-val, #main-balance');
+    balanceElements.forEach(el => {
+        el.innerText = `${mainBalance.toLocaleString()} HTG`;
+    });
+
+    // Ranje Balans Komisyon (Parennaj)
+    const refBalance = data.referralBalance || 0;
+    const refElements = document.querySelectorAll('#komisyon-balans');
+    refElements.forEach(el => {
+        el.innerText = refBalance.toFixed(2);
+    });
+
+    // Ranje Kòd ARS la
+    const arsCode = data.referralCode || "ARS-WAIT";
+    const arsElements = document.querySelectorAll('#my-ref-code-text');
+    arsElements.forEach(el => el.innerText = arsCode);
 }
 
-// Ti alÃ¨t animasyon
-function showWelcomeAlert(name) {
-    const alertBox = document.createElement('div');
-    alertBox.className = 'welcome-toast animated bounceInRight';
-    alertBox.style = "position: fixed; top: 20px; right: 20px; background: #FFD700; color: black; padding: 15px; border-radius: 10px; z-index: 9999; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3);";
-    alertBox.innerHTML = `<i class="fas fa-hand-wave"></i> Bonswa, ${name}! ðŸ‘‹`;
-    document.body.appendChild(alertBox);
-    setTimeout(() => alertBox.remove(), 4000);
-  }
+// --- 5. INITIALIZE APP ---
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("Echanj Plus v3.2 pare.");
+    // Isit la nou ka inisyalize lòt ti bagay global si sa nesesè
+});
+  
