@@ -1,8 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// 1. Konfigirasyon Firebase
+// 1. Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyB1VTPakleoggsbLdpm_HS7nSb3A7A99Qw",
   authDomain: "echanj-plus-778cd.firebaseapp.com",
@@ -17,92 +17,92 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// Sere done yo pou tout lòt JS ka wè yo
-export let appData = { user: null, settings: null };
+// --- A. JENERE ARS ID POU NOUVO MOUN ---
+// Lojik strik pou chak moun gen yon ID inik
+async function generateArsId(uid) {
+    const randomNum = Math.floor(1000 + Math.random() * 9000); // Jenere 4 chif
+    const newId = `ARS-${randomNum}`;
+    
+    // Sove ID a nan Firebase si li pa t egziste
+    await update(ref(db, `users/${uid}`), { arsId: newId });
+    return newId;
+}
 
-// --- A. LOJIK NIGHT MODE (PREMYE BAGAY KI CHAJE) ---
-// Pou evite flach blan si moun nan te nan Night Mode
-(function applyTheme() {
-    const isNight = localStorage.getItem('nightMode') === 'true';
-    if (isNight) document.body.classList.add('dark-theme');
-})();
-
-// --- B. AUTH OBSERVER & ROUTING ---
+// --- B. AUTH OBSERVER (SÈVO A) ---
 onAuthStateChanged(auth, (user) => {
-    const authPage = document.getElementById('auth-page');
-    const homePage = document.getElementById('home-page');
-
     if (user) {
-        startSystem(user.uid); // Koneksyon ak tout lòt pati yo
-        if(authPage) authPage.classList.add('hidden');
-        if(homePage) homePage.classList.remove('hidden');
+        setupUserEnvironment(user);
     } else {
-        if(authPage) authPage.classList.remove('hidden');
-        if(homePage) homePage.classList.add('hidden');
+        window.location.href = "login.html"; // Redirect si pa gen sesyon
     }
 });
 
-// --- C. SISTÈM NÈ (KONEKSYON DONE) ---
-function startSystem(uid) {
-    // 1. Koute Itilizatè a (Balans, Komisyon, Gmail Notif)
-    onValue(ref(db, `users/${uid}`), (snapshot) => {
-        const data = snapshot.val();
+function setupUserEnvironment(user) {
+    const userRef = ref(db, `users/${user.uid}`);
+    
+    onValue(userRef, (snapshot) => {
+        let data = snapshot.val();
+        
+        // Si itilizatè a pa gen ARS ID toujou, nou kreye l
+        if (data && !data.arsId) {
+            generateArsId(user.uid);
+        }
+
         if (data) {
-            appData.user = data;
-            syncUI(data);
-            checkEmailNotification(data); // Lojik Gmail la
+            updateGlobalUI(data, user.email);
         }
     });
-
-    // 2. Koute Settings (To 16.5%)
-    onValue(ref(db, `settings`), (snapshot) => {
-        appData.settings = snapshot.val();
-    });
 }
 
-// --- D. BRIDGE PARENNAJ (AKÒ TRANSFÈ 100 HTG) ---
-// Lojik sa a konekte script.js ak parenn.js
-window.executeReferralTransfer = async function() {
-    const commission = appData.user.commissions || 0;
+// --- C. MIZAJOU UI (Mete tout done yo kote yo dwe ye) ---
+function updateGlobalUI(data, email) {
+    // 1. Balans Prensipal
+    const mainBalance = parseFloat(data.balance || 0).toFixed(2);
+    const balEl = document.getElementById('display-balance');
+    if (balEl) balEl.innerText = `${mainBalance} HTG`;
+
+    // 2. Sidebar & Profil (Non, Email, ARS ID)
+    const sideName = document.getElementById('side-name');
+    const sideEmail = document.getElementById('side-email');
+    const sideId = document.getElementById('side-id'); // Sa ki nan tèt sidebar a
+
+    if (sideName) sideName.innerText = data.name || "Itilizatè";
+    if (sideEmail) sideEmail.innerText = email || data.email;
+    if (sideId) sideId.innerText = data.arsId || "ARS-XXXX";
+
+    // 3. Kòd ARS pou kopye nan paj Parennaj la
+    const arsDisplay = document.getElementById('display-ars-id');
+    if (arsDisplay) arsDisplay.innerText = data.arsId || "---";
+}
+
+// --- D. BOUTON NAVBAR & AKSYON ---
+document.addEventListener('DOMContentLoaded', () => {
     
-    if (commission < 100) {
-        alert("Ou dwe gen omwen 100 HTG pou w transfere.");
-        return;
-    }
-
-    try {
-        const newBalance = (appData.user.balance || 0) + commission;
-        await update(ref(db, `users/${auth.currentUser.uid}`), {
-            balance: newBalance,
-            commissions: 0 // Reset komisyon apre transfè
+    // 1. Bouton Dekoneksyon
+    const logoutBtn = document.getElementById('btn-logout'); // Asire w ID sa nan sidebar a
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            if (confirm("Èske w vle dekonekte vrèman?")) {
+                signOut(auth).then(() => location.reload());
+            }
         });
-        alert("Komisyon ou transfere nan Balans Prensipal!");
-    } catch (e) {
-        console.error("Transfè echwe", e);
     }
-};
 
-// --- E. LOJIK GMAIL NOTIFIKASYON ---
-function checkEmailNotification(data) {
-    // Si itilizatè a aktive "Notifikasyon Gmail" nan Paramèt
-    if (data.gmailNotifEnabled) {
-        // Isit la nou pral ploge EmailJS oswa Cloud Function
-        console.log("Sistèm Gmail pare pou voye alèt bay:", data.email);
+    // 2. Klòch Notifikasyon (Lojik senp pou kounye a)
+    const notifBtn = document.querySelector('.fa-bell');
+    if (notifBtn) {
+        notifBtn.addEventListener('click', () => {
+            alert("Ou pa gen nouvo notifikasyon pou kounye a.");
+        });
     }
-}
 
-// --- F. SYNC UI (ID KI SOTI NAN ANSYEN KÒD LA) ---
-function syncUI(data) {
-    const elements = {
-        'display-balance': (data.balance || 0).toFixed(2) + " HTG",
-        'komisyon-balans': (data.commissions || 0).toFixed(2),
-        'sett-name': data.name || "Itilizatè",
-        'sett-email': data.email || "Pa gen imèl",
-        'side-id': data.arsId || 'ARS-XXXX'
-    };
-
-    for (let id in elements) {
-        const el = document.getElementById(id);
-        if (el) el.innerText = elements[id];
-    }
-}
+    // 3. Navigasyon Navbar anba a
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const page = item.getAttribute('data-page');
+            if (window.showPage) window.showPage(page, item);
+        });
+    });
+});
+        
