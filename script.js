@@ -1,12 +1,8 @@
-// ==========================================
-// SCRIPT.JS - SÈVO ECHANJ PLUS (CENTRAL HUB)
-// ==========================================
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// --- 1. KONFIGIRASYON (Done ou te bay yo) ---
+// 1. Konfigirasyon Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyB1VTPakleoggsbLdpm_HS7nSb3A7A99Qw",
   authDomain: "echanj-plus-778cd.firebaseapp.com",
@@ -14,97 +10,99 @@ const firebaseConfig = {
   projectId: "echanj-plus-778cd",
   storageBucket: "echanj-plus-778cd.firebasestorage.app",
   messagingSenderId: "111144762929",
-  appId: "1:111144762929:web:e64ce9a6da65781c289f10",
-  measurementId: "G-J1BQRF32ZW"
+  appId: "1:111144762929:web:e64ce9a6da65781c289f10"
 };
 
-// Inisyalizasyon
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 const auth = getAuth(app);
+const db = getDatabase(app);
 
-// Global State pou lòt modil yo ka itilize (export)
-export let appData = {
-    user: null,
-    settings: null
-};
+// Sere done yo pou tout lòt JS ka wè yo
+export let appData = { user: null, settings: null };
 
-// --- 2. LOJIK STRIK: AUTH OBSERVER ---
-// Sa a se premye lojik: Si w pa konekte, ou pa ka wè dashboard la
+// --- A. LOJIK NIGHT MODE (PREMYE BAGAY KI CHAJE) ---
+// Pou evite flach blan si moun nan te nan Night Mode
+(function applyTheme() {
+    const isNight = localStorage.getItem('nightMode') === 'true';
+    if (isNight) document.body.classList.add('dark-theme');
+})();
+
+// --- B. AUTH OBSERVER & ROUTING ---
 onAuthStateChanged(auth, (user) => {
+    const authPage = document.getElementById('auth-page');
+    const homePage = document.getElementById('home-page');
+
     if (user) {
-        console.log("Koneksyon detekte pou:", user.uid);
-        startGlobalListeners(user.uid);
+        startSystem(user.uid); // Koneksyon ak tout lòt pati yo
+        if(authPage) authPage.classList.add('hidden');
+        if(homePage) homePage.classList.remove('hidden');
     } else {
-        console.log("Pa gen itilizatè konekte.");
-        // Si nou nan dashboard la, voye moun nan nan login
-        if (!window.location.href.includes("login.html")) {
-            window.location.href = "login.html";
-        }
+        if(authPage) authPage.classList.remove('hidden');
+        if(homePage) homePage.classList.add('hidden');
     }
 });
 
-// --- 3. LOJIK STRIK: GLOBAL LISTENERS ---
-// Fonksyon sa a koute tout sa k ap pase nan Firebase an tan reyèl
-function startGlobalListeners(uid) {
-    // A. Koute done itilizatè a
-    const userRef = ref(db, `users/${uid}`);
-    onValue(userRef, (snapshot) => {
+// --- C. SISTÈM NÈ (KONEKSYON DONE) ---
+function startSystem(uid) {
+    // 1. Koute Itilizatè a (Balans, Komisyon, Gmail Notif)
+    onValue(ref(db, `users/${uid}`), (snapshot) => {
         const data = snapshot.val();
         if (data) {
             appData.user = data;
-            syncUserUI(data); // Mete UI a ajou
+            syncUI(data);
+            checkEmailNotification(data); // Lojik Gmail la
         }
     });
 
-    // B. Koute anviwònman sistèm nan (to echanj 16.5% la)
-    const settingsRef = ref(db, `settings`);
-    onValue(settingsRef, (snapshot) => {
-        const settings = snapshot.val();
-        if (settings) {
-            appData.settings = settings;
-            console.log("Paramèt sistèm ajou:", settings.to_echanj);
-        }
+    // 2. Koute Settings (To 16.5%)
+    onValue(ref(db, `settings`), (snapshot) => {
+        appData.settings = snapshot.val();
     });
 }
 
-// --- 4. LOJIK STRIK: SYNC UI (ANTI-UNDEFINED) ---
-// Sa asire tout non, email ak balans yo parèt byen
-function syncUserUI(data) {
-    // Ranje Non an (Lojik #16)
-    const fullName = data.fullName || "Itilizatè Echanj Plus";
-    const email = data.email || "Pa gen imèl";
+// --- D. BRIDGE PARENNAJ (AKÒ TRANSFÈ 100 HTG) ---
+// Lojik sa a konekte script.js ak parenn.js
+window.executeReferralTransfer = async function() {
+    const commission = appData.user.commissions || 0;
     
-    // Mete non nan Header ak Paramètre
-    const nameDisplays = document.querySelectorAll('.user-name-text, #sett-name');
-    nameDisplays.forEach(el => el.innerText = fullName);
+    if (commission < 100) {
+        alert("Ou dwe gen omwen 100 HTG pou w transfere.");
+        return;
+    }
 
-    const emailDisplays = document.querySelectorAll('.user-email-text, #sett-email');
-    emailDisplays.forEach(el => el.innerText = email);
+    try {
+        const newBalance = (appData.user.balance || 0) + commission;
+        await update(ref(db, `users/${auth.currentUser.uid}`), {
+            balance: newBalance,
+            commissions: 0 // Reset komisyon apre transfè
+        });
+        alert("Komisyon ou transfere nan Balans Prensipal!");
+    } catch (e) {
+        console.error("Transfè echwe", e);
+    }
+};
 
-    // Ranje Balans lan (Lojik #7)
-    const mainBalance = data.balance || 0;
-    const balanceElements = document.querySelectorAll('.main-bal-val, #main-balance');
-    balanceElements.forEach(el => {
-        el.innerText = `${mainBalance.toLocaleString()} HTG`;
-    });
-
-    // Ranje Balans Komisyon (Parennaj)
-    const refBalance = data.referralBalance || 0;
-    const refElements = document.querySelectorAll('#komisyon-balans');
-    refElements.forEach(el => {
-        el.innerText = refBalance.toFixed(2);
-    });
-
-    // Ranje Kòd ARS la
-    const arsCode = data.referralCode || "ARS-WAIT";
-    const arsElements = document.querySelectorAll('#my-ref-code-text');
-    arsElements.forEach(el => el.innerText = arsCode);
+// --- E. LOJIK GMAIL NOTIFIKASYON ---
+function checkEmailNotification(data) {
+    // Si itilizatè a aktive "Notifikasyon Gmail" nan Paramèt
+    if (data.gmailNotifEnabled) {
+        // Isit la nou pral ploge EmailJS oswa Cloud Function
+        console.log("Sistèm Gmail pare pou voye alèt bay:", data.email);
+    }
 }
 
-// --- 5. INITIALIZE APP ---
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("Echanj Plus v3.2 pare.");
-    // Isit la nou ka inisyalize lòt ti bagay global si sa nesesè
-});
-  
+// --- F. SYNC UI (ID KI SOTI NAN ANSYEN KÒD LA) ---
+function syncUI(data) {
+    const elements = {
+        'display-balance': (data.balance || 0).toFixed(2) + " HTG",
+        'komisyon-balans': (data.commissions || 0).toFixed(2),
+        'sett-name': data.name || "Itilizatè",
+        'sett-email': data.email || "Pa gen imèl",
+        'side-id': data.arsId || 'ARS-XXXX'
+    };
+
+    for (let id in elements) {
+        const el = document.getElementById(id);
+        if (el) el.innerText = elements[id];
+    }
+}
