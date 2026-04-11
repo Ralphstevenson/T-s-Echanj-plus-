@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // 1. Firebase Config
 const firebaseConfig = {
@@ -17,92 +17,109 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// --- A. JENERE ARS ID POU NOUVO MOUN ---
-// Lojik strik pou chak moun gen yon ID inik
-async function generateArsId(uid) {
-    const randomNum = Math.floor(1000 + Math.random() * 9000); // Jenere 4 chif
-    const newId = `ARS-${randomNum}`;
-    
-    // Sove ID a nan Firebase si li pa t egziste
-    await update(ref(db, `users/${uid}`), { arsId: newId });
-    return newId;
-}
+// --- A. JESYON NAVIGASYON (NAVBAR) ---
+// Fonksyon sa a kache paj yo epi montre sa w klike a
+window.showPage = function(pageId, element) {
+    // 1. Kache tout seksyon/paj ki gen klas "page-content" oswa "section"
+    document.querySelectorAll('section, .page-content, .auth-container').forEach(p => {
+        p.classList.add('hidden');
+    });
 
-// --- B. AUTH OBSERVER (SÈVO A) ---
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        setupUserEnvironment(user);
+    // 2. Montre paj ki mande a
+    const target = document.getElementById(pageId);
+    if (target) target.classList.remove('hidden');
+
+    // 3. Jere klas "active" nan navbar la
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    if (element) element.classList.add('active');
+};
+
+// --- B. JESYON AUTH (LOGIN & SIGNUP) ---
+
+// 1. Chanje ant fòm Login ak Signup
+window.toggleAuth = function(type) {
+    const loginSec = document.getElementById('login-section');
+    const signupSec = document.getElementById('signup-section');
+    if (type === 'signup') {
+        loginSec.classList.add('hidden');
+        signupSec.classList.remove('hidden');
     } else {
-        window.location.href = "login.html"; // Redirect si pa gen sesyon
+        loginSec.classList.remove('hidden');
+        signupSec.classList.add('hidden');
+    }
+};
+
+// 2. Lojik Koneksyon (Login)
+window.handleLogin = async function() {
+    const email = document.getElementById('login-email').value;
+    const pass = document.getElementById('login-pass').value;
+
+    if (!email || !pass) return alert("Ranpli tout bwat yo!");
+
+    try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        console.log("Byenveni!");
+    } catch (error) {
+        alert("Erè: " + error.message);
+    }
+};
+
+// 3. Lojik Enskripsyon (Signup) ak ARS ID
+window.handleSignup = async function() {
+    const name = document.getElementById('sign-name').value;
+    const phone = document.getElementById('sign-phone').value;
+    const email = document.getElementById('sign-email').value;
+    const pass = document.getElementById('sign-pass').value;
+    const sponsor = document.getElementById('sponsor-input').value;
+
+    if (!name || !email || !pass) return alert("Non, Email ak Modpas obligatwa!");
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+        const uid = userCredential.user.uid;
+        const randomId = "ARS-" + Math.floor(1000 + Math.random() * 9000); // Jenere ID
+
+        // Kreye pwofil nan Database
+        await set(ref(db, 'users/' + uid), {
+            name: name,
+            phone: phone,
+            email: email,
+            arsId: randomId,
+            balance: 0,
+            commissions: 0,
+            sponsor: sponsor || "Okenn",
+            joinedAt: new Date().toISOString()
+        });
+
+        alert("Kont ou kreye ak siksè! ID ou se: " + randomId);
+    } catch (error) {
+        alert("Erè nan enskripsyon: " + error.message);
+    }
+};
+
+// --- C. AUTH OBSERVER (SÈVO A) ---
+onAuthStateChanged(auth, (user) => {
+    const authPage = document.getElementById('auth-page');
+    const homePage = document.getElementById('paj-akey'); // Paj akèy ou a
+
+    if (user) {
+        // Si moun nan konekte, kache auth-page epi montre dashboard
+        if(authPage) authPage.classList.add('hidden');
+        window.showPage('paj-akey'); // Paj default apre login
+        loadUserData(user.uid);
+    } else {
+        // Si moun nan dekonekte, montre paj login nan
+        if(authPage) authPage.classList.remove('hidden');
     }
 });
 
-function setupUserEnvironment(user) {
-    const userRef = ref(db, `users/${user.uid}`);
-    
-    onValue(userRef, (snapshot) => {
-        let data = snapshot.val();
-        
-        // Si itilizatè a pa gen ARS ID toujou, nou kreye l
-        if (data && !data.arsId) {
-            generateArsId(user.uid);
-        }
-
+function loadUserData(uid) {
+    onValue(ref(db, 'users/' + uid), (snapshot) => {
+        const data = snapshot.val();
         if (data) {
-            updateGlobalUI(data, user.email);
+            // Isit la nou pral mete fonksyon updateUI a pita
+            console.log("Done itilizatè chaje:", data.name);
         }
     });
-}
-
-// --- C. MIZAJOU UI (Mete tout done yo kote yo dwe ye) ---
-function updateGlobalUI(data, email) {
-    // 1. Balans Prensipal
-    const mainBalance = parseFloat(data.balance || 0).toFixed(2);
-    const balEl = document.getElementById('display-balance');
-    if (balEl) balEl.innerText = `${mainBalance} HTG`;
-
-    // 2. Sidebar & Profil (Non, Email, ARS ID)
-    const sideName = document.getElementById('side-name');
-    const sideEmail = document.getElementById('side-email');
-    const sideId = document.getElementById('side-id'); // Sa ki nan tèt sidebar a
-
-    if (sideName) sideName.innerText = data.name || "Itilizatè";
-    if (sideEmail) sideEmail.innerText = email || data.email;
-    if (sideId) sideId.innerText = data.arsId || "ARS-XXXX";
-
-    // 3. Kòd ARS pou kopye nan paj Parennaj la
-    const arsDisplay = document.getElementById('display-ars-id');
-    if (arsDisplay) arsDisplay.innerText = data.arsId || "---";
-}
-
-// --- D. BOUTON NAVBAR & AKSYON ---
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // 1. Bouton Dekoneksyon
-    const logoutBtn = document.getElementById('btn-logout'); // Asire w ID sa nan sidebar a
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            if (confirm("Èske w vle dekonekte vrèman?")) {
-                signOut(auth).then(() => location.reload());
-            }
-        });
-    }
-
-    // 2. Klòch Notifikasyon (Lojik senp pou kounye a)
-    const notifBtn = document.querySelector('.fa-bell');
-    if (notifBtn) {
-        notifBtn.addEventListener('click', () => {
-            alert("Ou pa gen nouvo notifikasyon pou kounye a.");
-        });
-    }
-
-    // 3. Navigasyon Navbar anba a
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const page = item.getAttribute('data-page');
-            if (window.showPage) window.showPage(page, item);
-        });
-    });
-});
-        
+          }
+      
