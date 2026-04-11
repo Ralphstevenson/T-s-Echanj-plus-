@@ -18,25 +18,19 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 // --- A. JESYON NAVIGASYON (NAVBAR) ---
-// Fonksyon sa a kache paj yo epi montre sa w klike a
 window.showPage = function(pageId, element) {
-    // 1. Kache tout seksyon/paj ki gen klas "page-content" oswa "section"
     document.querySelectorAll('section, .page-content, .auth-container').forEach(p => {
         p.classList.add('hidden');
     });
 
-    // 2. Montre paj ki mande a
     const target = document.getElementById(pageId);
     if (target) target.classList.remove('hidden');
 
-    // 3. Jere klas "active" nan navbar la
     document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
     if (element) element.classList.add('active');
 };
 
 // --- B. JESYON AUTH (LOGIN & SIGNUP) ---
-
-// 1. Chanje ant fòm Login ak Signup
 window.toggleAuth = function(type) {
     const loginSec = document.getElementById('login-section');
     const signupSec = document.getElementById('signup-section');
@@ -49,22 +43,17 @@ window.toggleAuth = function(type) {
     }
 };
 
-// 2. Lojik Koneksyon (Login)
 window.handleLogin = async function() {
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-pass').value;
-
     if (!email || !pass) return alert("Ranpli tout bwat yo!");
-
     try {
         await signInWithEmailAndPassword(auth, email, pass);
-        console.log("Byenveni!");
     } catch (error) {
         alert("Erè: " + error.message);
     }
 };
 
-// 3. Lojik Enskripsyon (Signup) ak ARS ID
 window.handleSignup = async function() {
     const name = document.getElementById('sign-name').value;
     const phone = document.getElementById('sign-phone').value;
@@ -77,9 +66,8 @@ window.handleSignup = async function() {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
         const uid = userCredential.user.uid;
-        const randomId = "ARS-" + Math.floor(1000 + Math.random() * 9000); // Jenere ID
+        const randomId = "ARS-" + Math.floor(1000 + Math.random() * 9000);
 
-        // Kreye pwofil nan Database
         await set(ref(db, 'users/' + uid), {
             name: name,
             phone: phone,
@@ -90,25 +78,46 @@ window.handleSignup = async function() {
             sponsor: sponsor || "Okenn",
             joinedAt: new Date().toISOString()
         });
-
-        alert("Kont ou kreye ak siksè! ID ou se: " + randomId);
+        alert("Kont ou kreye! ID: " + randomId);
     } catch (error) {
-        alert("Erè nan enskripsyon: " + error.message);
+        alert("Erè: " + error.message);
     }
 };
 
-// --- C. AUTH OBSERVER (SÈVO A) ---
+// --- C. PATI 2: MIZAJOU UI (REAL-TIME) ---
+window.updateUI = function(data) {
+    if (!data) return;
+
+    // Done Sekirite (Anti-Undefined)
+    const name = data.name || "Itilizatè";
+    const email = data.email || "---";
+    const arsId = data.arsId || "ARS-XXXX";
+    const balance = parseFloat(data.balance || 0).toFixed(2);
+    const comms = parseFloat(data.commissions || 0).toFixed(2);
+
+    // 1. Sidebar (Non, Email, ID nan tèt la)
+    if (document.getElementById('side-name')) document.getElementById('side-name').innerText = name;
+    if (document.getElementById('side-email')) document.getElementById('side-email').innerText = email;
+    if (document.getElementById('side-id')) document.getElementById('side-id').innerText = arsId;
+
+    // 2. Balans (Mizajou tout kote ki gen klas sa yo)
+    document.querySelectorAll('#display-balance, .user-balance').forEach(el => {
+        el.innerText = `${balance} HTG`;
+    });
+
+    // 3. Paj Parennaj (Komisyon ak ARS ID)
+    if (document.getElementById('komisyon-balans')) document.getElementById('komisyon-balans').innerText = comms;
+    if (document.getElementById('display-ars-id')) document.getElementById('display-ars-id').innerText = arsId;
+};
+
+// --- D. AUTH OBSERVER & LOAD DATA ---
 onAuthStateChanged(auth, (user) => {
     const authPage = document.getElementById('auth-page');
-    const homePage = document.getElementById('paj-akey'); // Paj akèy ou a
-
     if (user) {
-        // Si moun nan konekte, kache auth-page epi montre dashboard
         if(authPage) authPage.classList.add('hidden');
-        window.showPage('paj-akey'); // Paj default apre login
+        window.showPage('paj-akey');
         loadUserData(user.uid);
     } else {
-        // Si moun nan dekonekte, montre paj login nan
         if(authPage) authPage.classList.remove('hidden');
     }
 });
@@ -117,9 +126,13 @@ function loadUserData(uid) {
     onValue(ref(db, 'users/' + uid), (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            // Isit la nou pral mete fonksyon updateUI a pita
-            console.log("Done itilizatè chaje:", data.name);
+            window.updateUI(data); // Rele updateUI otomatikman
+            
+            if(!sessionStorage.getItem('welcomed')) {
+                console.log("Byenveni, " + data.name);
+                sessionStorage.setItem('welcomed', 'true');
+            }
         }
     });
-          }
-      
+      }
+        
