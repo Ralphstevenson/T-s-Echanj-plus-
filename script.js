@@ -1,4 +1,3 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -20,18 +19,13 @@ const db = getDatabase(app);
 
 // --- A. JESYON NAVIGASYON ---
 window.showPage = function(pageId, element) {
-    // Kache tout seksyon yo
     document.querySelectorAll('section, .page-content').forEach(p => p.classList.add('hidden'));
-    
-    // Montre paj ki mande a
     const target = document.getElementById(pageId);
     if (target) target.classList.remove('hidden');
 
-    // Jere klas "active" nan navbar ak sidebar
     document.querySelectorAll('.nav-item, .menu-item').forEach(nav => nav.classList.remove('active'));
     if (element) element.classList.add('active');
 
-    // Fèmen sidebar si l te louvri
     const sidebar = document.getElementById('sidebar');
     if(sidebar) sidebar.classList.remove('active');
 };
@@ -40,35 +34,60 @@ window.toggleSidebar = function() {
     document.getElementById('sidebar').classList.toggle('active');
 };
 
-// --- B. MIZAJOU UI AN TAN REYÈL (PATI 2) ---
+// --- B. JESYON NOTIFIKASYON (TAB SYSTEM) ---
+window.activeNotifTab = 'koneksyon';
+
+window.switchNotifTab = function(tab) {
+    window.activeNotifTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    const btnId = tab === 'koneksyon' ? 'tab-koneksyon' : 'tab-transak';
+    const btnEl = document.getElementById(btnId);
+    if (btnEl) btnEl.classList.add('active');
+    loadNotifications(); 
+};
+
+function loadNotifications() {
+    const content = document.getElementById('notif-content');
+    if (!content) return;
+
+    if (window.activeNotifTab === 'koneksyon') {
+        content.innerHTML = `<div class="notif-item"><i class="fa fa-shield-check"></i> Kont ou aktif epi sekirize. Byenveni!</div>`;
+    } else {
+        content.innerHTML = `<p class="empty-msg">Pa gen tranzaksyon ki disponib.</p>`;
+    }
+}
+
+// --- C. MIZAJOU UI AN TAN REYÈL (Tout ID HTML yo) ---
 window.updateUI = function(data) {
     if (!data) return;
 
-    // Done pèsonèl
     const name = data.name || "Itilizatè";
     const email = data.email || "---";
     const arsId = data.arsId || "ARS-XXXX";
     const balance = parseFloat(data.balance || 0).toFixed(2);
     const comms = parseFloat(data.commissions || 0).toFixed(2);
 
-    // 1. Sidebar & Header
+    // 1. Header & Quick Balance
+    if (document.getElementById('header-quick-balance')) document.getElementById('header-quick-balance').innerText = `${balance} HTG`;
+    
+    // 2. Sidebar & Profile
     if (document.getElementById('side-name')) document.getElementById('side-name').innerText = name;
     if (document.getElementById('side-email')) document.getElementById('side-email').innerText = email;
     if (document.getElementById('side-id')) document.getElementById('side-id').innerText = arsId;
     if (document.getElementById('sett-name')) document.getElementById('sett-name').innerText = name;
     if (document.getElementById('sett-email')) document.getElementById('sett-email').innerText = email;
 
-    // 2. Balans yo (Dashboard & Retrè)
+    // 3. Balans yo (Dashboard & Retrè)
     if (document.getElementById('user-balance')) document.getElementById('user-balance').innerText = balance;
     if (document.getElementById('display-balance')) document.getElementById('display-balance').innerText = `${balance} HTG`;
 
-    // 3. Paj Parennaj
+    // 4. Paj Parennaj
     if (document.getElementById('komisyon-balans')) document.getElementById('komisyon-balans').innerText = comms;
     if (document.getElementById('display-ars-id')) document.getElementById('display-ars-id').innerText = arsId;
     if (document.getElementById('my-ref-code')) document.getElementById('my-ref-code').value = arsId;
     if (document.getElementById('my-sponsor')) document.getElementById('my-sponsor').innerText = data.sponsor || "Okenn";
 
-    // 4. Night Mode
+    // 5. Night Mode
     const toggle = document.getElementById('dark-mode-toggle');
     if (data.nightMode) {
         document.body.classList.add('dark-theme');
@@ -79,24 +98,16 @@ window.updateUI = function(data) {
     }
 };
 
-// --- C. JESYON PARAMÈT (NIGHT MODE & LOGOUT) ---
-// Sove preferans Night Mode nan Firebase
+// --- D. PARAMÈT & AUTH ---
 document.getElementById('dark-mode-toggle')?.addEventListener('change', (e) => {
     const user = auth.currentUser;
-    if (user) {
-        update(ref(db, 'users/' + user.uid), { nightMode: e.target.checked });
-    }
+    if (user) update(ref(db, 'users/' + user.uid), { nightMode: e.target.checked });
 });
 
 window.handleLogout = function() {
-    if (confirm("Èske w vle dekonekte tèlman?")) {
-        signOut(auth).then(() => {
-            location.reload();
-        });
-    }
+    if (confirm("Èske w vle dekonekte?")) signOut(auth).then(() => location.reload());
 };
 
-// --- D. JESYON AUTH ---
 window.toggleAuth = function(type) {
     document.getElementById('login-section').classList.toggle('hidden', type === 'signup');
     document.getElementById('signup-section').classList.toggle('hidden', type === 'login');
@@ -106,11 +117,8 @@ window.handleLogin = async function() {
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-pass').value;
     if (!email || !pass) return alert("Ranpli tout bwat yo!");
-    try {
-        await signInWithEmailAndPassword(auth, email, pass);
-    } catch (error) {
-        alert("Erè: " + error.message);
-    }
+    try { await signInWithEmailAndPassword(auth, email, pass); } 
+    catch (e) { alert("Erè: " + e.message); }
 };
 
 window.handleSignup = async function() {
@@ -121,40 +129,33 @@ window.handleSignup = async function() {
     const sponsor = document.getElementById('sponsor-input').value;
 
     if (!name || !email || !pass) return alert("Ranpli tout bwat yo!");
-
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-        const uid = userCredential.user.uid;
+        const cred = await createUserWithEmailAndPassword(auth, email, pass);
         const randomId = "ARS-" + Math.floor(1000 + Math.random() * 9000);
-
-        await set(ref(db, 'users/' + uid), {
+        await set(ref(db, 'users/' + cred.user.uid), {
             name, email, phone, arsId: randomId,
             balance: 0, commissions: 0, 
             sponsor: sponsor || "Okenn",
-            nightMode: false,
-            joinedAt: new Date().toISOString()
+            nightMode: false, joinedAt: new Date().toISOString()
         });
-    } catch (error) {
-        alert("Erè: " + error.message);
-    }
+    } catch (e) { alert("Erè: " + e.message); }
 };
 
-// --- E. SÈVO A (AUTH OBSERVER) ---
+// --- E. SÈVO A (OBSERVER) ---
 onAuthStateChanged(auth, (user) => {
     if (user) {
         document.getElementById('auth-page').classList.add('hidden');
         document.getElementById('home-page').classList.remove('hidden');
-        loadUserData(user.uid);
+        onValue(ref(db, 'users/' + user.uid), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                window.updateUI(data);
+                loadNotifications();
+            }
+        });
     } else {
         document.getElementById('auth-page').classList.remove('hidden');
         document.getElementById('home-page').classList.add('hidden');
     }
 });
-
-function loadUserData(uid) {
-    onValue(ref(db, 'users/' + uid), (snapshot) => {
-        const data = snapshot.val();
-        if (data) window.updateUI(data);
-    });
-      }
       
