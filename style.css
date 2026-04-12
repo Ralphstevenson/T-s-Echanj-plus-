@@ -239,3 +239,16 @@ body {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
 }
+
+
+
+
+/* Kache tout kontni app a pa defo */
+#home-page, header, .bottom-nav {
+    display: none;
+}
+
+/* Klas pou kache eleman nan JS */
+.hidden {
+    display: none !important;
+}
