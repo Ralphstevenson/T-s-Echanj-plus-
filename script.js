@@ -17,33 +17,40 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// --- A. NAVIGASYON PAJ (index.html) ---
+// --- FONKSYON POU FÒMATE DAT (KREYÒL) ---
+function formatDateTime(dateStr) {
+    const d = dateStr ? new Date(dateStr) : new Date();
+    return d.toLocaleString('fr-FR', {
+        day: 'numeric', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    });
+}
+
+// --- A. JESYON NAVIGASYON (PAJ YO) ---
 window.showPage = function(pageId, element) {
-    // 1. Kache tout seksyon ki ka kontni paj
-    document.querySelectorAll('section, .tab-content, .page-content').forEach(p => {
+    // Kache tout seksyon yo
+    document.querySelectorAll('section, .page-content, .tab-content').forEach(p => {
         p.classList.add('hidden');
-        p.style.display = 'none'; // Sekirite anplis
+        p.style.display = 'none';
     });
 
-    // 2. Montre paj ki mande a
+    // Montre paj ki klike a
     const target = document.getElementById(pageId);
     if (target) {
         target.classList.remove('hidden');
         target.style.display = 'block';
     }
 
-    // 3. Jere klas "active" nan Bottom Nav ak Sidebar
-    document.querySelectorAll('.nav-item, .menu-item').forEach(nav => nav.classList.remove('active'));
+    // Aktive bouton nan Navbar anba a
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
     if (element) element.classList.add('active');
 
-    // 4. Fèmen sidebar otomatikman
-    const sidebar = document.getElementById('sidebar');
-    if(sidebar) sidebar.classList.remove('active');
+    // Fèmen sidebar otomatikman si l te louvri
+    document.getElementById('sidebar')?.classList.remove('active');
 };
 
 window.toggleSidebar = function() {
-    const sb = document.getElementById('sidebar');
-    if(sb) sb.classList.toggle('active');
+    document.getElementById('sidebar')?.classList.toggle('active');
 };
 
 // --- B. JESYON AUTH (LOGIN / SIGNUP) ---
@@ -52,24 +59,20 @@ window.toggleAuth = function(type) {
     const signupSec = document.getElementById('signup-section');
     
     if (type === 'signup') {
-        loginSec.classList.add('hidden');
-        signupSec.classList.remove('hidden');
+        loginSec?.classList.add('hidden');
+        signupSec?.classList.remove('hidden');
     } else {
-        signupSec.classList.add('hidden');
-        loginSec.classList.remove('hidden');
+        signupSec?.classList.add('hidden');
+        loginSec?.classList.remove('hidden');
     }
 };
 
 window.handleLogin = async function() {
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-pass').value;
-    if (!email || !pass) return alert("Tanpri antre email ak modpas ou!");
-    
-    try {
-        await signInWithEmailAndPassword(auth, email, pass);
-    } catch (e) {
-        alert("Erè koneksyon: " + e.message);
-    }
+    if (!email || !pass) return alert("Antre enfòmasyon ou yo!");
+    try { await signInWithEmailAndPassword(auth, email, pass); } 
+    catch (e) { alert("Erè: " + e.message); }
 };
 
 window.handleSignup = async function() {
@@ -79,86 +82,124 @@ window.handleSignup = async function() {
     const phone = document.getElementById('sign-phone').value;
     const sponsor = document.getElementById('sponsor-input').value;
 
-    if (!name || !email || !pass) return alert("Ranpli tout bwat obligatwa yo!");
-
+    if (!name || !email || !pass) return alert("Ranpli bwat yo!");
     try {
         const cred = await createUserWithEmailAndPassword(auth, email, pass);
         const randomId = "ARS-" + Math.floor(1000 + Math.random() * 9000);
-        
         await set(ref(db, 'users/' + cred.user.uid), {
             name, email, phone, arsId: randomId,
             balance: 0, commissions: 0, 
             sponsor: sponsor || "Okenn",
-            nightMode: false,
-            joinedAt: new Date().toISOString()
+            nightMode: false, joinedAt: new Date().toISOString()
         });
-        alert("Kont ou kreye! ID ou se: " + randomId);
-    } catch (e) { alert("Erè enskripsyon: " + e.message); }
+    } catch (e) { alert("Erè: " + e.message); }
 };
 
 window.handleLogout = function() {
-    if (confirm("Èske w vle dekonekte?")) {
-        signOut(auth).then(() => location.reload());
-    }
+    if (confirm("Dekonekte?")) signOut(auth).then(() => location.reload());
 };
 
-// --- C. MIZAJOU UI AN TAN REYÈL ---
+// --- C. KLÒCH NOTIFIKASYON AK DAT/LÈ ---
+window.toggleNotifPanel = function() {
+    document.getElementById('notif-panel')?.classList.toggle('active');
+};
+
+window.activeNotifTab = 'koneksyon';
+window.switchNotifTab = function(tab) {
+    window.activeNotifTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`tab-${tab === 'koneksyon' ? 'koneksyon' : 'transak'}`)?.classList.add('active');
+    loadNotifications();
+};
+
+function loadNotifications() {
+    const content = document.getElementById('notif-content');
+    const user = auth.currentUser;
+    if (!content || !user) return;
+
+    onValue(ref(db, `users/${user.uid}`), (snapshot) => {
+        const data = snapshot.val();
+        const kounye a = formatDateTime();
+        if (window.activeNotifTab === 'koneksyon') {
+            const joinDate = data?.joinedAt ? formatDateTime(data.joinedAt) : "---";
+            content.innerHTML = `
+                <div class="notif-item">
+                    <i class="fa fa-user-shield"></i>
+                    <div class="notif-text">
+                        <p>Kont kreye ak siksè</p>
+                        <small><i class="fa fa-calendar-alt"></i> ${joinDate}</small>
+                    </div>
+                </div>
+                <div class="notif-item">
+                    <i class="fa fa-clock"></i>
+                    <div class="notif-text">
+                        <p>Koneksyon sekirize</p>
+                        <small>${kounye a}</small>
+                    </div>
+                </div>`;
+        } else {
+            content.innerHTML = `<p class="empty-msg">Pa gen istorik tranzaksyon pou kounye a.</p>`;
+        }
+    });
+}
+
+// --- D. MIZAJOU UI (BALANCE, DONE PÈSONÈL) ---
 window.updateUI = function(data) {
     if (!data) return;
     const balance = parseFloat(data.balance || 0).toFixed(2);
-
-    // Ranpli enfòmasyon nan Header ak Sidebar
-    if (document.getElementById('side-name')) document.getElementById('side-name').innerText = data.name;
-    if (document.getElementById('side-email')) document.getElementById('side-email').innerText = data.email;
-    if (document.getElementById('side-id')) document.getElementById('side-id').innerText = data.arsId || "ARS-XXXX";
-    if (document.getElementById('header-quick-balance')) document.getElementById('header-quick-balance').innerText = `${balance} HTG`;
     
-    // Balans nan Paj Akèy ak Retrè
-    if (document.getElementById('user-balance')) document.getElementById('user-balance').innerText = balance;
-    if (document.getElementById('display-balance')) document.getElementById('display-balance').innerText = `${balance} HTG`;
-    if (document.getElementById('display-ars-id')) document.getElementById('display-ars-id').innerText = data.arsId || "---";
+    // Tout IDs ki soti nan HTML ou a
+    const elements = {
+        'header-quick-balance': `${balance} HTG`,
+        'user-balance': balance,
+        'display-balance': `${balance} HTG`,
+        'side-name': data.name,
+        'side-id': data.arsId,
+        'display-ars-id': data.arsId,
+        'komisyon-balans': parseFloat(data.commissions || 0).toFixed(2),
+        'my-ref-code': data.arsId
+    };
 
-    // Paj Parennaj
-    if (document.getElementById('komisyon-balans')) document.getElementById('komisyon-balans').innerText = parseFloat(data.commissions || 0).toFixed(2);
-    if (document.getElementById('my-ref-code')) document.getElementById('my-ref-code').value = data.arsId || "";
-    if (document.getElementById('my-sponsor')) document.getElementById('my-sponsor').innerText = data.sponsor || "Okenn";
+    for (let id in elements) {
+        const el = document.getElementById(id);
+        if (el) {
+            if (el.tagName === 'INPUT') el.value = elements[id];
+            else el.innerText = elements[id];
+        }
+    }
 
     // Night Mode
-    if (data.nightMode) {
-        document.body.classList.add('dark-theme');
-        if(document.getElementById('dark-mode-toggle')) document.getElementById('dark-mode-toggle').checked = true;
-    } else {
-        document.body.classList.remove('dark-theme');
-    }
+    if (data.nightMode) document.body.classList.add('dark-theme');
+    else document.body.classList.remove('dark-theme');
 };
 
-// --- D. AUTH OBSERVER (SÈVO A) ---
+// --- E. SÈVO A (AUTH OBSERVER) ---
 onAuthStateChanged(auth, (user) => {
     const authPage = document.getElementById('auth-page');
     const homePage = document.getElementById('home-page');
 
     if (user) {
-        // Moun nan konekte
-        if(authPage) authPage.classList.add('hidden');
-        if(homePage) homePage.classList.remove('hidden');
-        
-        // Asire n montre paj Akèy la premye fwa
-        window.showPage('paj-akey');
-
+        authPage?.classList.add('hidden');
+        homePage?.classList.remove('hidden');
+        window.showPage('paj-akey'); // Louvri paj akèy pa defo
         onValue(ref(db, 'users/' + user.uid), (snapshot) => {
-            const data = snapshot.val();
-            if (data) window.updateUI(data);
+            window.updateUI(snapshot.val());
         });
     } else {
-        // Moun nan dekonekte
-        if(authPage) authPage.classList.remove('hidden');
-        if(homePage) homePage.classList.add('hidden');
+        authPage?.classList.remove('hidden');
+        homePage?.classList.add('hidden');
     }
 });
 
-// Listener pou Night Mode
+// Listener pou Night Mode nan Settings
 document.getElementById('dark-mode-toggle')?.addEventListener('change', (e) => {
     const user = auth.currentUser;
     if (user) update(ref(db, 'users/' + user.uid), { nightMode: e.target.checked });
 });
-          
+
+// Konekte klòch la lè paj la fin chaje
+document.addEventListener('DOMContentLoaded', () => {
+    const bell = document.querySelector('.notif-wrapper') || document.querySelector('.fa-bell');
+    if (bell) bell.onclick = window.toggleNotifPanel;
+});
+      
