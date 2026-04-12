@@ -252,3 +252,22 @@ body {
 .hidden {
     display: none !important;
 }
+
+
+/* Kache tout kontni aplikasyon an pa defo */
+#home-page, 
+header, 
+.bottom-nav, 
+#sidebar {
+    display: none !important;
+}
+
+/* Klas sa a pral retire "display: none" lan sèlman lè nou deside */
+.show-app {
+    display: flex !important; /* Pou header ak nav */
+}
+
+section.show-app {
+    display: block !important; /* Pou paj akèy la */
+}
+
