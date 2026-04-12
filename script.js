@@ -34,7 +34,19 @@ window.toggleSidebar = function() {
     document.getElementById('sidebar').classList.toggle('active');
 };
 
-// --- B. JESYON NOTIFIKASYON (TAB SYSTEM) ---
+// --- B. SISTÈM NOTIFIKASYON AVANSE ---
+
+// 1. Louvri/Fèmen Panèl la
+window.toggleNotifPanel = function() {
+    const panel = document.getElementById('notif-panel');
+    if (panel) {
+        panel.classList.toggle('active');
+        if (panel.classList.contains('active')) {
+            loadNotifications();
+        }
+    }
+};
+
 window.activeNotifTab = 'koneksyon';
 
 window.switchNotifTab = function(tab) {
@@ -50,14 +62,47 @@ function loadNotifications() {
     const content = document.getElementById('notif-content');
     if (!content) return;
 
-    if (window.activeNotifTab === 'koneksyon') {
-        content.innerHTML = `<div class="notif-item"><i class="fa fa-shield-check"></i> Kont ou aktif epi sekirize. Byenveni!</div>`;
-    } else {
-        content.innerHTML = `<p class="empty-msg">Pa gen tranzaksyon ki disponib.</p>`;
-    }
+    const user = auth.currentUser;
+    if (!user) return;
+
+    // Nou rale done yo pou nou ka gen dat koneksyon elatriye
+    onValue(ref(db, `users/${user.uid}`), (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+
+        if (window.activeNotifTab === 'koneksyon') {
+            const joinDate = data.joinedAt ? new Date(data.joinedAt).toLocaleString('ht-HT') : "Sistèm";
+            content.innerHTML = `
+                <div class="notif-item">
+                    <i class="fa fa-user-shield" style="color: #109121;"></i>
+                    <div class="notif-text">
+                        <p>Kont kreye ak siksè</p>
+                        <small>${joinDate}</small>
+                    </div>
+                </div>
+                <div class="notif-item">
+                    <i class="fa fa-sign-in-alt" style="color: #1a73e8;"></i>
+                    <div class="notif-text">
+                        <p>Dènye koneksyon anrejistre</p>
+                        <small>Kounye a (Sekirize)</small>
+                    </div>
+                </div>`;
+        } else {
+            // Isit la se pou tranzaksyon
+            content.innerHTML = `
+                <div class="notif-item success">
+                    <i class="fa fa-check-circle" style="color: #28a745;"></i>
+                    <div class="notif-text">
+                        <p>Byenveni! Sistèm ou an pare pou echanj.</p>
+                        <small>Echanj Plus Ofisyèl</small>
+                    </div>
+                </div>
+                <p class="empty-msg" style="font-size: 11px;">Mesaj tranzaksyon valide yo ap parèt isit la.</p>`;
+        }
+    });
 }
 
-// --- C. MIZAJOU UI AN TAN REYÈL (Tout ID HTML yo) ---
+// --- C. MIZAJOU UI AN TAN REYÈL ---
 window.updateUI = function(data) {
     if (!data) return;
 
@@ -67,27 +112,19 @@ window.updateUI = function(data) {
     const balance = parseFloat(data.balance || 0).toFixed(2);
     const comms = parseFloat(data.commissions || 0).toFixed(2);
 
-    // 1. Header & Quick Balance
     if (document.getElementById('header-quick-balance')) document.getElementById('header-quick-balance').innerText = `${balance} HTG`;
-    
-    // 2. Sidebar & Profile
     if (document.getElementById('side-name')) document.getElementById('side-name').innerText = name;
     if (document.getElementById('side-email')) document.getElementById('side-email').innerText = email;
     if (document.getElementById('side-id')) document.getElementById('side-id').innerText = arsId;
     if (document.getElementById('sett-name')) document.getElementById('sett-name').innerText = name;
     if (document.getElementById('sett-email')) document.getElementById('sett-email').innerText = email;
-
-    // 3. Balans yo (Dashboard & Retrè)
     if (document.getElementById('user-balance')) document.getElementById('user-balance').innerText = balance;
     if (document.getElementById('display-balance')) document.getElementById('display-balance').innerText = `${balance} HTG`;
-
-    // 4. Paj Parennaj
     if (document.getElementById('komisyon-balans')) document.getElementById('komisyon-balans').innerText = comms;
     if (document.getElementById('display-ars-id')) document.getElementById('display-ars-id').innerText = arsId;
     if (document.getElementById('my-ref-code')) document.getElementById('my-ref-code').value = arsId;
     if (document.getElementById('my-sponsor')) document.getElementById('my-sponsor').innerText = data.sponsor || "Okenn";
 
-    // 5. Night Mode
     const toggle = document.getElementById('dark-mode-toggle');
     if (data.nightMode) {
         document.body.classList.add('dark-theme');
@@ -150,7 +187,7 @@ onAuthStateChanged(auth, (user) => {
             const data = snapshot.val();
             if (data) {
                 window.updateUI(data);
-                loadNotifications();
+                // Nou pa chaje notif isit la pou evite ralanti paj la, n ap chaje yo lè l louvri panèl la
             }
         });
     } else {
@@ -158,4 +195,11 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById('home-page').classList.add('hidden');
     }
 });
-      
+
+// Konekte klòch la nan Header a lè paj la chaje
+document.addEventListener('DOMContentLoaded', () => {
+    const bell = document.querySelector('.fa-bell');
+    if (bell) {
+        bell.parentElement.onclick = window.toggleNotifPanel;
+    }
+});
