@@ -17,7 +17,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// --- FONKSYON POU DAT (KREYÒL/FRANSÈ) ---
+// --- FONKSYON POU DAT (FÒMA KREYÒL) ---
 function formatDateTime(dateStr) {
     const d = dateStr ? new Date(dateStr) : new Date();
     return d.toLocaleString('fr-FR', {
@@ -32,6 +32,7 @@ function formatDateTime(dateStr) {
 // --- A. JESYON NAVIGASYON ---
 window.showPage = function(pageId, element) {
     document.querySelectorAll('section, .page-content').forEach(p => p.classList.add('hidden'));
+    
     const target = document.getElementById(pageId);
     if (target) target.classList.remove('hidden');
 
@@ -46,7 +47,7 @@ window.toggleSidebar = function() {
     document.getElementById('sidebar').classList.toggle('active');
 };
 
-// --- B. SISTÈM NOTIFIKASYON AVANSE ---
+// --- B. SISTÈM NOTIFIKASYON AVANSE (AVÈK DAT AK LÈ) ---
 window.toggleNotifPanel = function() {
     const panel = document.getElementById('notif-panel');
     if (panel) {
@@ -86,6 +87,7 @@ function loadNotifications() {
                     <i class="fa fa-user-shield" style="color: #109121;"></i>
                     <div class="notif-text">
                         <p><b>Kont kreye ak siksè</b></p>
+                        <p>Byenveni nan Echanj Plus.</p>
                         <small><i class="fa fa-calendar-alt"></i> ${joinDate}</small>
                     </div>
                 </div>
@@ -93,8 +95,8 @@ function loadNotifications() {
                     <i class="fa fa-sign-in-alt" style="color: #1a73e8;"></i>
                     <div class="notif-text">
                         <p><b>Dènye koneksyon</b></p>
-                        <p>Sesyon sekirize kounye a.</p>
-                        <small><i class="fa fa-clock"></i> ${kounye a}</small>
+                        <p>Sesyon ou an sekirize.</p>
+                        <small><i class="fa fa-clock"></i> Jodi a, ${new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})}</small>
                     </div>
                 </div>`;
         } else {
@@ -102,12 +104,12 @@ function loadNotifications() {
                 <div class="notif-item success">
                     <i class="fa fa-check-circle" style="color: #28a745;"></i>
                     <div class="notif-text">
-                        <p><b>Byenveni nan Echanj Plus!</b></p>
-                        <p>Tranzaksyon ou yo ap parèt isit la.</p>
+                        <p><b>Sistèm ou an aktif</b></p>
+                        <p>W ap resevwa detay tranzaksyon ou yo isit la.</p>
                         <small><i class="fa fa-calendar-check"></i> ${kounye a}</small>
                     </div>
                 </div>
-                <p class="empty-msg" style="font-size: 11px;">Chak fwa yon tranzaksyon valide, w ap jwenn mesaj la ak dat egzak li isit la.</p>`;
+                <p class="empty-msg" style="font-size: 11px; margin-top:10px;">Istorik tranzaksyon yo ap parèt otomatikman isit la apre validasyon.</p>`;
         }
     });
 }
@@ -122,19 +124,25 @@ window.updateUI = function(data) {
     const balance = parseFloat(data.balance || 0).toFixed(2);
     const comms = parseFloat(data.commissions || 0).toFixed(2);
 
-    if (document.getElementById('header-quick-balance')) document.getElementById('header-quick-balance').innerText = `${balance} HTG`;
+    // Sidebar & Header
     if (document.getElementById('side-name')) document.getElementById('side-name').innerText = name;
     if (document.getElementById('side-email')) document.getElementById('side-email').innerText = email;
     if (document.getElementById('side-id')) document.getElementById('side-id').innerText = arsId;
     if (document.getElementById('sett-name')) document.getElementById('sett-name').innerText = name;
     if (document.getElementById('sett-email')) document.getElementById('sett-email').innerText = email;
+    if (document.getElementById('header-quick-balance')) document.getElementById('header-quick-balance').innerText = `${balance} HTG`;
+
+    // Balans Dashboard & Retrè
     if (document.getElementById('user-balance')) document.getElementById('user-balance').innerText = balance;
     if (document.getElementById('display-balance')) document.getElementById('display-balance').innerText = `${balance} HTG`;
+
+    // Parennaj
     if (document.getElementById('komisyon-balans')) document.getElementById('komisyon-balans').innerText = comms;
     if (document.getElementById('display-ars-id')) document.getElementById('display-ars-id').innerText = arsId;
     if (document.getElementById('my-ref-code')) document.getElementById('my-ref-code').value = arsId;
     if (document.getElementById('my-sponsor')) document.getElementById('my-sponsor').innerText = data.sponsor || "Okenn";
 
+    // Night Mode
     const toggle = document.getElementById('dark-mode-toggle');
     if (data.nightMode) {
         document.body.classList.add('dark-theme');
@@ -152,7 +160,9 @@ document.getElementById('dark-mode-toggle')?.addEventListener('change', (e) => {
 });
 
 window.handleLogout = function() {
-    if (confirm("Èske w vle dekonekte?")) signOut(auth).then(() => location.reload());
+    if (confirm("Èske w vle dekonekte?")) {
+        signOut(auth).then(() => location.reload());
+    }
 };
 
 window.toggleAuth = function(type) {
@@ -188,7 +198,7 @@ window.handleSignup = async function() {
     } catch (e) { alert("Erè: " + e.message); }
 };
 
-// --- E. SÈVO A (OBSERVER) ---
+// --- E. SÈVO A (AUTH OBSERVER) ---
 onAuthStateChanged(auth, (user) => {
     if (user) {
         document.getElementById('auth-page').classList.add('hidden');
@@ -203,8 +213,9 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+// Konekte klòch la ak lòt eleman apre paj la chaje
 document.addEventListener('DOMContentLoaded', () => {
-    const bell = document.querySelector('.fa-bell');
-    if (bell) bell.parentElement.onclick = window.toggleNotifPanel;
+    const bell = document.querySelector('.notif-wrapper');
+    if (bell) bell.onclick = window.toggleNotifPanel;
 });
   
