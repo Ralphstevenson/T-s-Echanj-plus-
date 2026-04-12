@@ -241,19 +241,6 @@ body {
 }
 
 
-
-
-/* Kache tout kontni app a pa defo */
-#home-page, header, .bottom-nav {
-    display: none;
-}
-
-/* Klas pou kache eleman nan JS */
-.hidden {
-    display: none !important;
-}
-
-
 /* Kache tout kontni aplikasyon an pa defo */
 #home-page, 
 header, 
