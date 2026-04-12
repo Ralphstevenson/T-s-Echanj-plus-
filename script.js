@@ -17,6 +17,18 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
+// --- FONKSYON POU DAT (KREYÒL/FRANSÈ) ---
+function formatDateTime(dateStr) {
+    const d = dateStr ? new Date(dateStr) : new Date();
+    return d.toLocaleString('fr-FR', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
 // --- A. JESYON NAVIGASYON ---
 window.showPage = function(pageId, element) {
     document.querySelectorAll('section, .page-content').forEach(p => p.classList.add('hidden'));
@@ -35,15 +47,11 @@ window.toggleSidebar = function() {
 };
 
 // --- B. SISTÈM NOTIFIKASYON AVANSE ---
-
-// 1. Louvri/Fèmen Panèl la
 window.toggleNotifPanel = function() {
     const panel = document.getElementById('notif-panel');
     if (panel) {
         panel.classList.toggle('active');
-        if (panel.classList.contains('active')) {
-            loadNotifications();
-        }
+        if (panel.classList.contains('active')) loadNotifications();
     }
 };
 
@@ -65,39 +73,41 @@ function loadNotifications() {
     const user = auth.currentUser;
     if (!user) return;
 
-    // Nou rale done yo pou nou ka gen dat koneksyon elatriye
     onValue(ref(db, `users/${user.uid}`), (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
 
+        const kounye a = formatDateTime();
+
         if (window.activeNotifTab === 'koneksyon') {
-            const joinDate = data.joinedAt ? new Date(data.joinedAt).toLocaleString('ht-HT') : "Sistèm";
+            const joinDate = data.joinedAt ? formatDateTime(data.joinedAt) : "---";
             content.innerHTML = `
                 <div class="notif-item">
                     <i class="fa fa-user-shield" style="color: #109121;"></i>
                     <div class="notif-text">
-                        <p>Kont kreye ak siksè</p>
-                        <small>${joinDate}</small>
+                        <p><b>Kont kreye ak siksè</b></p>
+                        <small><i class="fa fa-calendar-alt"></i> ${joinDate}</small>
                     </div>
                 </div>
                 <div class="notif-item">
                     <i class="fa fa-sign-in-alt" style="color: #1a73e8;"></i>
                     <div class="notif-text">
-                        <p>Dènye koneksyon anrejistre</p>
-                        <small>Kounye a (Sekirize)</small>
+                        <p><b>Dènye koneksyon</b></p>
+                        <p>Sesyon sekirize kounye a.</p>
+                        <small><i class="fa fa-clock"></i> ${kounye a}</small>
                     </div>
                 </div>`;
         } else {
-            // Isit la se pou tranzaksyon
             content.innerHTML = `
                 <div class="notif-item success">
                     <i class="fa fa-check-circle" style="color: #28a745;"></i>
                     <div class="notif-text">
-                        <p>Byenveni! Sistèm ou an pare pou echanj.</p>
-                        <small>Echanj Plus Ofisyèl</small>
+                        <p><b>Byenveni nan Echanj Plus!</b></p>
+                        <p>Tranzaksyon ou yo ap parèt isit la.</p>
+                        <small><i class="fa fa-calendar-check"></i> ${kounye a}</small>
                     </div>
                 </div>
-                <p class="empty-msg" style="font-size: 11px;">Mesaj tranzaksyon valide yo ap parèt isit la.</p>`;
+                <p class="empty-msg" style="font-size: 11px;">Chak fwa yon tranzaksyon valide, w ap jwenn mesaj la ak dat egzak li isit la.</p>`;
         }
     });
 }
@@ -185,10 +195,7 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById('home-page').classList.remove('hidden');
         onValue(ref(db, 'users/' + user.uid), (snapshot) => {
             const data = snapshot.val();
-            if (data) {
-                window.updateUI(data);
-                // Nou pa chaje notif isit la pou evite ralanti paj la, n ap chaje yo lè l louvri panèl la
-            }
+            if (data) window.updateUI(data);
         });
     } else {
         document.getElementById('auth-page').classList.remove('hidden');
@@ -196,10 +203,8 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Konekte klòch la nan Header a lè paj la chaje
 document.addEventListener('DOMContentLoaded', () => {
     const bell = document.querySelector('.fa-bell');
-    if (bell) {
-        bell.parentElement.onclick = window.toggleNotifPanel;
-    }
+    if (bell) bell.parentElement.onclick = window.toggleNotifPanel;
 });
+  
