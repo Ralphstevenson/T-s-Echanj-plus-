@@ -1,6 +1,7 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // 1. Firebase Config
 const firebaseConfig = {
@@ -17,30 +18,88 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// --- A. JESYON NAVIGASYON (NAVBAR) ---
+// --- A. JESYON NAVIGASYON ---
 window.showPage = function(pageId, element) {
-    document.querySelectorAll('section, .page-content, .auth-container').forEach(p => {
-        p.classList.add('hidden');
-    });
-
+    // Kache tout seksyon yo
+    document.querySelectorAll('section, .page-content').forEach(p => p.classList.add('hidden'));
+    
+    // Montre paj ki mande a
     const target = document.getElementById(pageId);
     if (target) target.classList.remove('hidden');
 
-    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    // Jere klas "active" nan navbar ak sidebar
+    document.querySelectorAll('.nav-item, .menu-item').forEach(nav => nav.classList.remove('active'));
     if (element) element.classList.add('active');
+
+    // Fèmen sidebar si l te louvri
+    const sidebar = document.getElementById('sidebar');
+    if(sidebar) sidebar.classList.remove('active');
 };
 
-// --- B. JESYON AUTH (LOGIN & SIGNUP) ---
-window.toggleAuth = function(type) {
-    const loginSec = document.getElementById('login-section');
-    const signupSec = document.getElementById('signup-section');
-    if (type === 'signup') {
-        loginSec.classList.add('hidden');
-        signupSec.classList.remove('hidden');
+window.toggleSidebar = function() {
+    document.getElementById('sidebar').classList.toggle('active');
+};
+
+// --- B. MIZAJOU UI AN TAN REYÈL (PATI 2) ---
+window.updateUI = function(data) {
+    if (!data) return;
+
+    // Done pèsonèl
+    const name = data.name || "Itilizatè";
+    const email = data.email || "---";
+    const arsId = data.arsId || "ARS-XXXX";
+    const balance = parseFloat(data.balance || 0).toFixed(2);
+    const comms = parseFloat(data.commissions || 0).toFixed(2);
+
+    // 1. Sidebar & Header
+    if (document.getElementById('side-name')) document.getElementById('side-name').innerText = name;
+    if (document.getElementById('side-email')) document.getElementById('side-email').innerText = email;
+    if (document.getElementById('side-id')) document.getElementById('side-id').innerText = arsId;
+    if (document.getElementById('sett-name')) document.getElementById('sett-name').innerText = name;
+    if (document.getElementById('sett-email')) document.getElementById('sett-email').innerText = email;
+
+    // 2. Balans yo (Dashboard & Retrè)
+    if (document.getElementById('user-balance')) document.getElementById('user-balance').innerText = balance;
+    if (document.getElementById('display-balance')) document.getElementById('display-balance').innerText = `${balance} HTG`;
+
+    // 3. Paj Parennaj
+    if (document.getElementById('komisyon-balans')) document.getElementById('komisyon-balans').innerText = comms;
+    if (document.getElementById('display-ars-id')) document.getElementById('display-ars-id').innerText = arsId;
+    if (document.getElementById('my-ref-code')) document.getElementById('my-ref-code').value = arsId;
+    if (document.getElementById('my-sponsor')) document.getElementById('my-sponsor').innerText = data.sponsor || "Okenn";
+
+    // 4. Night Mode
+    const toggle = document.getElementById('dark-mode-toggle');
+    if (data.nightMode) {
+        document.body.classList.add('dark-theme');
+        if(toggle) toggle.checked = true;
     } else {
-        loginSec.classList.remove('hidden');
-        signupSec.classList.add('hidden');
+        document.body.classList.remove('dark-theme');
+        if(toggle) toggle.checked = false;
     }
+};
+
+// --- C. JESYON PARAMÈT (NIGHT MODE & LOGOUT) ---
+// Sove preferans Night Mode nan Firebase
+document.getElementById('dark-mode-toggle')?.addEventListener('change', (e) => {
+    const user = auth.currentUser;
+    if (user) {
+        update(ref(db, 'users/' + user.uid), { nightMode: e.target.checked });
+    }
+});
+
+window.handleLogout = function() {
+    if (confirm("Èske w vle dekonekte tèlman?")) {
+        signOut(auth).then(() => {
+            location.reload();
+        });
+    }
+};
+
+// --- D. JESYON AUTH ---
+window.toggleAuth = function(type) {
+    document.getElementById('login-section').classList.toggle('hidden', type === 'signup');
+    document.getElementById('signup-section').classList.toggle('hidden', type === 'login');
 };
 
 window.handleLogin = async function() {
@@ -56,12 +115,12 @@ window.handleLogin = async function() {
 
 window.handleSignup = async function() {
     const name = document.getElementById('sign-name').value;
-    const phone = document.getElementById('sign-phone').value;
     const email = document.getElementById('sign-email').value;
     const pass = document.getElementById('sign-pass').value;
+    const phone = document.getElementById('sign-phone').value;
     const sponsor = document.getElementById('sponsor-input').value;
 
-    if (!name || !email || !pass) return alert("Non, Email ak Modpas obligatwa!");
+    if (!name || !email || !pass) return alert("Ranpli tout bwat yo!");
 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
@@ -69,70 +128,33 @@ window.handleSignup = async function() {
         const randomId = "ARS-" + Math.floor(1000 + Math.random() * 9000);
 
         await set(ref(db, 'users/' + uid), {
-            name: name,
-            phone: phone,
-            email: email,
-            arsId: randomId,
-            balance: 0,
-            commissions: 0,
+            name, email, phone, arsId: randomId,
+            balance: 0, commissions: 0, 
             sponsor: sponsor || "Okenn",
+            nightMode: false,
             joinedAt: new Date().toISOString()
         });
-        alert("Kont ou kreye! ID: " + randomId);
     } catch (error) {
         alert("Erè: " + error.message);
     }
 };
 
-// --- C. PATI 2: MIZAJOU UI (REAL-TIME) ---
-window.updateUI = function(data) {
-    if (!data) return;
-
-    // Done Sekirite (Anti-Undefined)
-    const name = data.name || "Itilizatè";
-    const email = data.email || "---";
-    const arsId = data.arsId || "ARS-XXXX";
-    const balance = parseFloat(data.balance || 0).toFixed(2);
-    const comms = parseFloat(data.commissions || 0).toFixed(2);
-
-    // 1. Sidebar (Non, Email, ID nan tèt la)
-    if (document.getElementById('side-name')) document.getElementById('side-name').innerText = name;
-    if (document.getElementById('side-email')) document.getElementById('side-email').innerText = email;
-    if (document.getElementById('side-id')) document.getElementById('side-id').innerText = arsId;
-
-    // 2. Balans (Mizajou tout kote ki gen klas sa yo)
-    document.querySelectorAll('#display-balance, .user-balance').forEach(el => {
-        el.innerText = `${balance} HTG`;
-    });
-
-    // 3. Paj Parennaj (Komisyon ak ARS ID)
-    if (document.getElementById('komisyon-balans')) document.getElementById('komisyon-balans').innerText = comms;
-    if (document.getElementById('display-ars-id')) document.getElementById('display-ars-id').innerText = arsId;
-};
-
-// --- D. AUTH OBSERVER & LOAD DATA ---
+// --- E. SÈVO A (AUTH OBSERVER) ---
 onAuthStateChanged(auth, (user) => {
-    const authPage = document.getElementById('auth-page');
     if (user) {
-        if(authPage) authPage.classList.add('hidden');
-        window.showPage('paj-akey');
+        document.getElementById('auth-page').classList.add('hidden');
+        document.getElementById('home-page').classList.remove('hidden');
         loadUserData(user.uid);
     } else {
-        if(authPage) authPage.classList.remove('hidden');
+        document.getElementById('auth-page').classList.remove('hidden');
+        document.getElementById('home-page').classList.add('hidden');
     }
 });
 
 function loadUserData(uid) {
     onValue(ref(db, 'users/' + uid), (snapshot) => {
         const data = snapshot.val();
-        if (data) {
-            window.updateUI(data); // Rele updateUI otomatikman
-            
-            if(!sessionStorage.getItem('welcomed')) {
-                console.log("Byenveni, " + data.name);
-                sessionStorage.setItem('welcomed', 'true');
-            }
-        }
+        if (data) window.updateUI(data);
     });
       }
-        
+      
