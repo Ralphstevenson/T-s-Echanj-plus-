@@ -17,57 +17,63 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getDatabase(app);
 
-// --- A. NAVIGASYON PAJ (GWO LOJIK) ---
+// --- A. NAVIGASYON PAJ ---
 window.showPage = function(pageId, element) {
-    // Kache tout sa ki ka kontni paj
     document.querySelectorAll('section, .tab-content, .page-content').forEach(p => {
         p.classList.add('hidden');
         p.style.display = 'none';
     });
 
-    // Montre paj ki mande a
     const target = document.getElementById(pageId);
     if (target) {
         target.classList.remove('hidden');
         target.style.display = 'block';
     }
 
-    // Mizajou klas "active" nan Bottom Nav
     document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
     if (element) element.classList.add('active');
-
-    // Fèmen sidebar otomatikman
     document.getElementById('sidebar')?.classList.remove('active');
 };
 
-// --- B. AUTH OBSERVER (SÈVO A) ---
+// --- B. MIZAJOU BALANS (SENP) ---
+function updateBalanceUI(data) {
+    if (!data) return;
+    const balance = parseFloat(data.balance || 0).toFixed(2);
+    
+    // Header (ti balans anlè a)
+    const headerBal = document.getElementById('header-quick-balance');
+    if (headerBal) headerBal.innerText = `${balance} HTG`;
+
+    // Dashboard (gwo balans nan mitan an)
+    const mainBal = document.getElementById('user-balance');
+    if (mainBal) mainBal.innerText = balance;
+}
+
+// --- C. AUTH OBSERVER ---
 onAuthStateChanged(auth, (user) => {
     const authPage = document.getElementById('auth-page');
     const homePage = document.getElementById('home-page');
 
     if (user) {
-        // Itilizatè a konekte
         if(authPage) authPage.classList.add('hidden');
         if(homePage) homePage.classList.remove('hidden');
         
-        // Louvri paj akèy la pa defo
         window.showPage('paj-akey');
 
-        // Nou ka koute done itilizatè a isit la pou mete ajou Header a sèlman
+        // Koute balans lan an tan reyèl
         onValue(ref(db, 'users/' + user.uid), (snapshot) => {
             const data = snapshot.val();
-            if (data && window.updateHeaderUI) {
-                window.updateHeaderUI(data);
-            }
+            updateBalanceUI(data);
+            
+            // Si w gen lòt fichye ki bezwen done sa yo, yo ka koute l tou
+            if (window.syncOtherModules) window.syncOtherModules(data);
         });
     } else {
-        // Itilizatè a dekonekte
         if(authPage) authPage.classList.remove('hidden');
         if(homePage) homePage.classList.add('hidden');
     }
 });
 
-// Fonksyon pou louvri sidebar la
 window.toggleSidebar = function() {
     document.getElementById('sidebar')?.classList.toggle('active');
 };
