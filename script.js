@@ -20,10 +20,10 @@ const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 export const auth = getAuth(app);
 
-// 4. State Global (Done ki disponib pou tout aplikasyon an)
+// 4. State Global
 export let CurrentUser = null;
 
-// 5. Fonksyon Navigasyon (Piblik pou HTML ka wè li)
+// 5. Fonksyon Navigasyon (MIZAJOU POU ISTORIK)
 window.showPage = (pageId, element) => {
     // Kache tout seksyon yo
     document.querySelectorAll('.page-content, section, .tab-content').forEach(p => {
@@ -36,6 +36,15 @@ window.showPage = (pageId, element) => {
         targetPage.classList.remove('hidden');
     }
 
+    // --- DEKLANCHE ISTORIK LA SI SE PAJ TRANSAKSYON ---
+    if (pageId === 'paj-trans') {
+        if (typeof window.aficheTranzaksyon === 'function') {
+            window.aficheTranzaksyon('tout');
+        } else {
+            console.log("Ap tann istorik.js chaje...");
+        }
+    }
+
     // Jere klas 'active' nan menu an
     document.querySelectorAll('.nav-item, .menu-item').forEach(nav => {
         nav.classList.remove('active');
@@ -45,7 +54,7 @@ window.showPage = (pageId, element) => {
     }
 };
 
-// 6. Obsèvatè Koneksyon (Auth Observer)
+// 6. Obsèvatè Koneksyon
 onAuthStateChanged(auth, (user) => {
     const authPage = document.getElementById('auth-page');
     const homePage = document.getElementById('home-page');
@@ -54,8 +63,6 @@ onAuthStateChanged(auth, (user) => {
         CurrentUser = user;
         authPage.classList.add('hidden');
         homePage.classList.remove('hidden');
-        
-        // Kòmanse koute done itilizatè a an tan reyèl
         listenToUserData(user.uid);
     } else {
         CurrentUser = null;
@@ -64,7 +71,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// 7. Koute done itilizatè (Balans, PIN, ID) an tan reyèl
+// 7. Koute done itilizatè an tan reyèl
 function listenToUserData(uid) {
     const userRef = ref(db, 'users/' + uid);
     onValue(userRef, (snapshot) => {
@@ -75,25 +82,23 @@ function listenToUserData(uid) {
     });
 }
 
-// 8. Mete UI a ajou toupatou sou sit la
+// 8. Mete UI a ajou
 function updateGlobalUI(data) {
     const balance = parseFloat(data.balance || 0).toFixed(2);
     
-    // Balans toupatou
     const balElements = ['user-balance', 'header-quick-balance', 'display-balance'];
     balElements.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerText = (id === 'user-balance') ? balance : balance + " HTG";
     });
 
-    // Profil sidebar
     const sideName = document.getElementById('side-name');
     const sideId = document.getElementById('side-id');
     const displayArsId = document.getElementById('display-ars-id');
     const greeting = document.getElementById('header-user-greeting');
 
     if (sideName) sideName.innerText = data.full_name || "Itilizatè";
-    if (sideId) sideId.innerText = data.ars_id || "ARS-PENDING";
+    if (sideId) sideId.innerText = data.ars_id || "ARS-ID";
     if (displayArsId) displayArsId.innerText = data.ars_id || "---";
     if (greeting) {
         const pwoon = data.full_name ? data.full_name.split(' ')[0] : "Itilizatè";
@@ -101,7 +106,7 @@ function updateGlobalUI(data) {
     }
 }
 
-// 9. Fonksyon pou bò kote sidebar a (Toggle Sidebar)
+// 9. Sidebar
 window.toggleSidebar = () => {
     const sidebar = document.getElementById('sidebar');
     if (sidebar) {
@@ -133,4 +138,4 @@ if (darkModeToggle) {
 }
 
 console.log("Echanj Plus | Sèvo Santral pare.");
-      
+                              
