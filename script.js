@@ -1,8 +1,9 @@
+// Enpòte SDK Firebase yo
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// 1. Firebase Config
+// 1. Konfigirasyon Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyB1VTPakleoggsbLdpm_HS7nSb3A7A99Qw",
   authDomain: "echanj-plus-778cd.firebaseapp.com",
@@ -10,93 +11,87 @@ const firebaseConfig = {
   projectId: "echanj-plus-778cd",
   storageBucket: "echanj-plus-778cd.firebasestorage.app",
   messagingSenderId: "111144762929",
-  appId: "1:111144762929:web:e64ce9a6da65781c289f10"
+  appId: "1:111144762929:web:e64ce9a6da65781c289f10",
+  measurementId: "G-J1BQRF32ZW"
 };
 
+// Inisyalizasyon
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
 export const db = getDatabase(app);
+export const auth = getAuth(app);
 
-// --- A. NAVIGASYON (GWO MODIL) ---
-window.showPage = function(pageId, element) {
-    document.querySelectorAll('section, .page-content').forEach(p => p.classList.add('hidden'));
-    const target = document.getElementById(pageId);
-    if (target) target.classList.remove('hidden');
+// 2. State Global (Done ki disponib pou tout lòt JS yo)
+export let CurrentUser = null;
 
-    document.querySelectorAll('.nav-item, .menu-item').forEach(nav => nav.classList.remove('active'));
+// 3. Fonksyon Navigasyon (Disponib nan HTML)
+window.showPage = (pageId, element) => {
+    // Kache tout paj
+    document.querySelectorAll('.page-content, section, .tab-content').forEach(p => p.classList.add('hidden'));
+    
+    // Montre paj ki klike a
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) targetPage.classList.remove('hidden');
+
+    // Jere klas 'active' nan nav la
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
     if (element) element.classList.add('active');
-
-    document.getElementById('sidebar')?.classList.remove('active');
 };
 
-window.toggleSidebar = function() {
-    document.getElementById('sidebar')?.classList.toggle('active');
-};
-
-// --- B. MIZAJOU UI & DONE GLOBAL ---
-window.updateUI = function(data) {
-    if (!data) return;
-    
-    // Nou estoke done yo isit la pou lòt JS yo (echanj, retre, elatriye) ka jwenn yo
-    window.userData = data;
-
-    const balance = parseFloat(data.balance || 0).toFixed(2);
-
-    // Sekirite: Tcheke si eleman yo egziste anvan nou chanje yo
-    const setTxt = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
-    
-    setTxt('header-quick-balance', `${balance} HTG`);
-    setTxt('user-balance', balance);
-    setTxt('display-balance', `${balance} HTG`);
-    setTxt('side-name', data.name);
-    setTxt('side-id', data.arsId);
-    setTxt('komisyon-balans', parseFloat(data.commissions || 0).toFixed(2));
-
-    // Night Mode (Lojik senp)
-    if (data.nightMode) {
-        document.body.classList.add('dark-theme');
-    } else {
-        document.body.classList.remove('dark-theme');
-    }
-};
-
-// --- C. AUTH OBSERVER (SÈVO A) ---
+// 4. Obsèvatè Koneksyon (Auth Observer)
 onAuthStateChanged(auth, (user) => {
-    const authPage = document.getElementById('auth-page');
-    const homePage = document.getElementById('home-page');
-
     if (user) {
-        authPage?.classList.add('hidden');
-        homePage?.classList.remove('hidden');
-        
-        // Koute done yo an tan reyèl
-        onValue(ref(db, 'users/' + user.uid), (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                window.updateUI(data);
-                // Si lòt JS yo gen fonksyon pou resevwa done yo, rele yo isit la
-                if(typeof window.syncEchanj === 'function') window.syncEchanj(data);
-            }
-        });
+        CurrentUser = user;
+        document.getElementById('auth-page').classList.add('hidden');
+        document.getElementById('home-page').classList.remove('hidden');
+        listenToUserData(user.uid); // Kòmanse koute done yo
     } else {
-        authPage?.classList.remove('hidden');
-        homePage?.classList.add('hidden');
+        document.getElementById('auth-page').classList.remove('hidden');
+        document.getElementById('home-page').classList.add('hidden');
     }
 });
 
-// --- D. FONKSYON AUTH (Senp) ---
-window.handleLogout = function() {
-    if (confirm("Èske w vle dekonekte?")) signOut(auth).then(() => location.reload());
+// 5. Koute Done Itilizatè a (Balans, ID, elatriye) an tan reyèl
+function listenToUserData(uid) {
+    const userRef = ref(db, 'users/' + uid);
+    onValue(userRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            // Mete UI a ajou toupatou
+            updateGlobalUI(data);
+        }
+    });
+}
+
+function updateGlobalUI(data) {
+    // Balans
+    const formattedBalance = parseFloat(data.balance || 0).toFixed(2);
+    document.getElementById('user-balance').innerText = formattedBalance;
+    document.getElementById('header-quick-balance').innerText = formattedBalance + " HTG";
+    document.getElementById('display-balance').innerText = formattedBalance + " HTG";
+    
+    // Enfòmasyon Profil
+    document.getElementById('side-name').innerText = data.full_name || "Itilizatè";
+    document.getElementById('side-id').innerText = data.ars_id || "ARS-PENDING";
+    document.getElementById('display-ars-id').innerText = data.ars_id || "---";
+    document.getElementById('header-user-greeting').innerText = "Bonjou, " + (data.full_name?.split(' ')[0] || "");
+}
+
+// 6. Logout
+window.handleLogout = () => {
+    signOut(auth).then(() => {
+        location.reload();
+    });
 };
 
-window.toggleAuth = function(type) {
-    document.getElementById('login-section')?.classList.toggle('hidden', type === 'signup');
-    document.getElementById('signup-section')?.classList.toggle('hidden', type === 'login');
-};
-
-// Pwofite mete klik dark mode la isit la si se nan script sa a li ye
-document.getElementById('dark-mode-toggle')?.addEventListener('change', (e) => {
-    const user = auth.currentUser;
-    if (user) update(ref(db, 'users/' + user.uid), { nightMode: e.target.checked });
+// 7. Dark Mode Logic
+const darkModeToggle = document.getElementById('dark-mode-toggle');
+darkModeToggle.addEventListener('change', () => {
+    if (darkModeToggle.checked) {
+        document.body.classList.add('dark-mode');
+        document.body.classList.remove('light-mode');
+    } else {
+        document.body.classList.add('light-mode');
+        document.body.classList.remove('dark-mode');
+    }
 });
-      
+                                               
