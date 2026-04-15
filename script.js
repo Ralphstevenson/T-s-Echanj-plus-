@@ -1,9 +1,9 @@
-// Enpòte SDK Firebase yo
+// 1. Enpòte SDK Firebase yo depi nan sous la
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue, get, set, update, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// 1. Konfigirasyon Firebase
+// 2. Konfigirasyon Firebase ou a
 const firebaseConfig = {
   apiKey: "AIzaSyB1VTPakleoggsbLdpm_HS7nSb3A7A99Qw",
   authDomain: "echanj-plus-778cd.firebaseapp.com",
@@ -15,83 +15,122 @@ const firebaseConfig = {
   measurementId: "G-J1BQRF32ZW"
 };
 
-// Inisyalizasyon
+// 3. Inisyalizasyon
 const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 export const auth = getAuth(app);
 
-// 2. State Global (Done ki disponib pou tout lòt JS yo)
+// 4. State Global (Done ki disponib pou tout aplikasyon an)
 export let CurrentUser = null;
 
-// 3. Fonksyon Navigasyon (Disponib nan HTML)
+// 5. Fonksyon Navigasyon (Piblik pou HTML ka wè li)
 window.showPage = (pageId, element) => {
-    // Kache tout paj
-    document.querySelectorAll('.page-content, section, .tab-content').forEach(p => p.classList.add('hidden'));
+    // Kache tout seksyon yo
+    document.querySelectorAll('.page-content, section, .tab-content').forEach(p => {
+        p.classList.add('hidden');
+    });
     
-    // Montre paj ki klike a
+    // Montre paj ki mande a
     const targetPage = document.getElementById(pageId);
-    if (targetPage) targetPage.classList.remove('hidden');
+    if (targetPage) {
+        targetPage.classList.remove('hidden');
+    }
 
-    // Jere klas 'active' nan nav la
-    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-    if (element) element.classList.add('active');
+    // Jere klas 'active' nan menu an
+    document.querySelectorAll('.nav-item, .menu-item').forEach(nav => {
+        nav.classList.remove('active');
+    });
+    if (element) {
+        element.classList.add('active');
+    }
 };
 
-// 4. Obsèvatè Koneksyon (Auth Observer)
+// 6. Obsèvatè Koneksyon (Auth Observer)
 onAuthStateChanged(auth, (user) => {
+    const authPage = document.getElementById('auth-page');
+    const homePage = document.getElementById('home-page');
+
     if (user) {
         CurrentUser = user;
-        document.getElementById('auth-page').classList.add('hidden');
-        document.getElementById('home-page').classList.remove('hidden');
-        listenToUserData(user.uid); // Kòmanse koute done yo
+        authPage.classList.add('hidden');
+        homePage.classList.remove('hidden');
+        
+        // Kòmanse koute done itilizatè a an tan reyèl
+        listenToUserData(user.uid);
     } else {
-        document.getElementById('auth-page').classList.remove('hidden');
-        document.getElementById('home-page').classList.add('hidden');
+        CurrentUser = null;
+        authPage.classList.remove('hidden');
+        homePage.classList.add('hidden');
     }
 });
 
-// 5. Koute Done Itilizatè a (Balans, ID, elatriye) an tan reyèl
+// 7. Koute done itilizatè (Balans, PIN, ID) an tan reyèl
 function listenToUserData(uid) {
     const userRef = ref(db, 'users/' + uid);
     onValue(userRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            // Mete UI a ajou toupatou
             updateGlobalUI(data);
         }
     });
 }
 
+// 8. Mete UI a ajou toupatou sou sit la
 function updateGlobalUI(data) {
-    // Balans
-    const formattedBalance = parseFloat(data.balance || 0).toFixed(2);
-    document.getElementById('user-balance').innerText = formattedBalance;
-    document.getElementById('header-quick-balance').innerText = formattedBalance + " HTG";
-    document.getElementById('display-balance').innerText = formattedBalance + " HTG";
+    const balance = parseFloat(data.balance || 0).toFixed(2);
     
-    // Enfòmasyon Profil
-    document.getElementById('side-name').innerText = data.full_name || "Itilizatè";
-    document.getElementById('side-id').innerText = data.ars_id || "ARS-PENDING";
-    document.getElementById('display-ars-id').innerText = data.ars_id || "---";
-    document.getElementById('header-user-greeting').innerText = "Bonjou, " + (data.full_name?.split(' ')[0] || "");
+    // Balans toupatou
+    const balElements = ['user-balance', 'header-quick-balance', 'display-balance'];
+    balElements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = (id === 'user-balance') ? balance : balance + " HTG";
+    });
+
+    // Profil sidebar
+    const sideName = document.getElementById('side-name');
+    const sideId = document.getElementById('side-id');
+    const displayArsId = document.getElementById('display-ars-id');
+    const greeting = document.getElementById('header-user-greeting');
+
+    if (sideName) sideName.innerText = data.full_name || "Itilizatè";
+    if (sideId) sideId.innerText = data.ars_id || "ARS-PENDING";
+    if (displayArsId) displayArsId.innerText = data.ars_id || "---";
+    if (greeting) {
+        const pwoon = data.full_name ? data.full_name.split(' ')[0] : "Itilizatè";
+        greeting.innerText = "Bonjou, " + pwoon;
+    }
 }
 
-// 6. Logout
+// 9. Fonksyon pou bò kote sidebar a (Toggle Sidebar)
+window.toggleSidebar = () => {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('active');
+    }
+};
+
+// 10. Logout
 window.handleLogout = () => {
     signOut(auth).then(() => {
-        location.reload();
+        window.location.reload();
+    }).catch((error) => {
+        console.error("Erè logout:", error);
     });
 };
 
-// 7. Dark Mode Logic
+// 11. Dark Mode
 const darkModeToggle = document.getElementById('dark-mode-toggle');
-darkModeToggle.addEventListener('change', () => {
-    if (darkModeToggle.checked) {
-        document.body.classList.add('dark-mode');
-        document.body.classList.remove('light-mode');
-    } else {
-        document.body.classList.add('light-mode');
-        document.body.classList.remove('dark-mode');
-    }
-});
-                                               
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('change', () => {
+        if (darkModeToggle.checked) {
+            document.body.classList.add('dark-mode');
+            document.body.classList.remove('light-mode');
+        } else {
+            document.body.classList.add('light-mode');
+            document.body.classList.remove('dark-mode');
+        }
+    });
+}
+
+console.log("Echanj Plus | Sèvo Santral pare.");
+      
