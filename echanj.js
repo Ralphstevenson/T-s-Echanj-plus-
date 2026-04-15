@@ -1,11 +1,11 @@
 import { db, auth } from './script.js';
-import { ref, get, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { ref, get, push, set, query, orderByChild, equalTo, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // Done pou jere kalkil echanj la
 let echanjData = {
     rezo: "",
     montan: 0,
-    fre: 0.165, // 16.5% pa defo (sa ka chanje nan Firebase settings)
+    fre: 0.165, // Frè sistèm 16.5%
     rabe: 0
 };
 
@@ -30,40 +30,38 @@ window.openDialer = async (rezo) => {
     echanjData.montan = parseFloat(kantite);
 
     try {
-        // Tcheke si moun nan merite rabè 9.5 HTG a
-        await tchekeRabèByenveni();
-        // Kalkile epi afiche rezime a nan modal la
+        // Tcheke rabè san bloke baz de done a
+        const uid = auth.currentUser.uid;
+        const transRef = ref(db, 'transactions');
+        const rabeQuery = query(transRef, orderByChild('uid'), equalTo(uid));
+        
+        const snapshot = await get(rabeQuery);
+        let dejaFèEchanj = false;
+
+        if (snapshot.exists()) {
+            const transactions = snapshot.val();
+            // Verifye si gen yon echanj ki 'completed' deja
+            dejaFèEchanj = Object.values(transactions).some(t => 
+                t.type === 'echanj' && t.status === 'completed'
+            );
+        }
+
+        // Rabè 9.5 HTG pou premye fwa
+        echanjData.rabe = dejaFèEchanj ? 0 : 9.5;
+
+        // Afiche rezime a
         prepareRezimeModal();
+
     } catch (error) {
-        console.error("Erè:", error);
-        alert("Gen yon pwoblèm koneksyon. Verifye entènèt ou.");
+        console.error("Erè rabè:", error);
+        // Si gen yon erè, nou kontinye san rabè pou nou pa bloke itilizatè a
+        echanjData.rabe = 0;
+        prepareRezimeModal();
     }
 };
 
 /**
- * 2. Lojik pou verifye si se premye echanj (Rabè)
- */
-async function tchekeRabèByenveni() {
-    const uid = auth.currentUser.uid;
-    const transRef = ref(db, 'transactions');
-    
-    const snapshot = await get(transRef);
-    let dejaFèEchanj = false;
-
-    if (snapshot.exists()) {
-        const data = snapshot.val();
-        // Verifye si gen yon tranzaksyon 'echanj' ki 'completed' pou itilizatè sa
-        dejaFèEchanj = Object.values(data).some(t => 
-            t.uid === uid && t.type === 'echanj' && t.status === 'completed'
-        );
-    }
-
-    // Si se premye echanj, nou ba l 9.5 HTG
-    echanjData.rabe = dejaFèEchanj ? 0 : 9.5;
-}
-
-/**
- * 3. Ranpli done nan Modal Rezime a epi afiche l
+ * 2. Ranpli done nan Modal Rezime a
  */
 function prepareRezimeModal() {
     const freSistèm = echanjData.montan * echanjData.fre;
@@ -88,14 +86,14 @@ function prepareRezimeModal() {
 }
 
 /**
- * 4. Fèmen Modal la
+ * 3. Fèmen Modal la
  */
 window.femenModalEchanj = () => {
     document.getElementById('modal-confirm-echanj').classList.add('hidden');
 };
 
 /**
- * 5. Validasyon PIN ak deklanchman USSD
+ * 4. Konfimasyon final, PIN, ak USSD
  */
 const btnKonfime = document.getElementById('btn-konfime-final');
 if (btnKonfime) {
@@ -105,24 +103,21 @@ if (btnKonfime) {
         if (!pinAntre) return;
 
         try {
-            // Ale chache PIN ki anrejistre nan profil itilizatè a
+            // Verifye PIN nan profil la
             const pinRef = ref(db, `users/${auth.currentUser.uid}/pin`);
             const snapshot = await get(pinRef);
             
             if (snapshot.val() !== pinAntre) {
-                alert("PIN sa a pa kòrèk. Tanpri re-eseye.");
+                alert("PIN sa a pa kòrèk.");
                 return;
             }
 
             // Prepare kòd USSD a
-            let ussdKod = "";
-            if (echanjData.rezo === 'digicel') {
-                ussdKod = `*128*50947111123*${echanjData.montan}#`;
-            } else {
-                ussdKod = `*123*88888888*32160708*${echanjData.montan}#`;
-            }
+            let ussdKod = (echanjData.rezo === 'digicel') 
+                ? `*128*50947111123*${echanjData.montan}#` 
+                : `*123*88888888*32160708*${echanjData.montan}#`;
 
-            // Anrejistre tranzaksyon an nan Firebase kòm 'pending'
+            // Anrejistre tranzaksyon an
             const nouvoTransRef = push(ref(db, 'transactions'));
             await set(nouvoTransRef, {
                 uid: auth.currentUser.uid,
@@ -134,12 +129,13 @@ if (btnKonfime) {
                 timestamp: serverTimestamp()
             });
 
-            // Fèmen modal la epi ouvri dialer telefòn nan
+            // Fèmen modal epi deklanche dialer a
             window.femenModalEchanj();
             window.location.href = "tel:" + encodeURIComponent(ussdKod);
 
         } catch (error) {
-            alert("Erè sekirite: " + error.message);
+            alert("Erè: " + error.message);
         }
     };
-              }
+            }
+    
