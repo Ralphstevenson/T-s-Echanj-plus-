@@ -1,20 +1,28 @@
 import { db, auth } from './script.js';
 import { ref, get, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// Done Global pou echanj la
+// Done pou jere kalkil echanj la
 let echanjData = {
     rezo: "",
     montan: 0,
-    fre: 0.165, 
+    fre: 0.165, // 16.5% pa defo (sa ka chanje nan Firebase settings)
     rabe: 0
 };
 
-// 1. Fonksyon pou kòmanse echanj (Nou rann li piblik ak window)
+/**
+ * 1. Ouvri premye etap echanj la
+ */
 window.openDialer = async (rezo) => {
+    // Tcheke si itilizatè a konekte
+    if (!auth.currentUser) {
+        alert("Tanpri konekte sou kont ou anvan!");
+        return;
+    }
+
     const kantite = prompt("Konbyen minit w ap echanje?");
     
     if (!kantite || isNaN(kantite) || kantite <= 0) {
-        alert("Tanpri antre yon montan valab.");
+        alert("Tanpri antre yon montan ki valab.");
         return;
     }
 
@@ -22,42 +30,46 @@ window.openDialer = async (rezo) => {
     echanjData.montan = parseFloat(kantite);
 
     try {
-        // Tcheke si se premye echanj pou Rabè a
-        await tchekePremyeEchanj();
-        // Montre rezime a
-        ouvriModalRezime();
+        // Tcheke si moun nan merite rabè 9.5 HTG a
+        await tchekeRabèByenveni();
+        // Kalkile epi afiche rezime a nan modal la
+        prepareRezimeModal();
     } catch (error) {
-        console.error("Errè:", error);
-        alert("Gen yon pwoblèm koneksyon ak baz de done a.");
+        console.error("Erè:", error);
+        alert("Gen yon pwoblèm koneksyon. Verifye entènèt ou.");
     }
 };
 
-// 2. Tcheke si moun nan merite rabè 9.5 HTG a
-async function tchekePremyeEchanj() {
-    const user = auth.currentUser;
-    if (!user) return;
-
+/**
+ * 2. Lojik pou verifye si se premye echanj (Rabè)
+ */
+async function tchekeRabèByenveni() {
+    const uid = auth.currentUser.uid;
     const transRef = ref(db, 'transactions');
+    
     const snapshot = await get(transRef);
     let dejaFèEchanj = false;
 
     if (snapshot.exists()) {
         const data = snapshot.val();
-        // Verifye si itilizatè a gen yon echanj ki 'completed' deja nan istwa li
+        // Verifye si gen yon tranzaksyon 'echanj' ki 'completed' pou itilizatè sa
         dejaFèEchanj = Object.values(data).some(t => 
-            t.uid === user.uid && t.type === 'echanj' && t.status === 'completed'
+            t.uid === uid && t.type === 'echanj' && t.status === 'completed'
         );
     }
 
+    // Si se premye echanj, nou ba l 9.5 HTG
     echanjData.rabe = dejaFèEchanj ? 0 : 9.5;
 }
 
-// 3. Montre Rezime a nan Modal la
-function ouvriModalRezime() {
+/**
+ * 3. Ranpli done nan Modal Rezime a epi afiche l
+ */
+function prepareRezimeModal() {
     const freSistèm = echanjData.montan * echanjData.fre;
-    const totalResevwa = (echanjData.montan - freSistèm) + echanjData.rabe;
+    const totalNet = (echanjData.montan - freSistèm) + echanjData.rabe;
 
-    // Ranpli HTML la
+    // Mete done yo nan HTML la
     document.getElementById('sum-minit').innerText = echanjData.montan.toFixed(2) + " HTG";
     document.getElementById('sum-fre').innerText = "-" + freSistèm.toFixed(2) + " HTG";
     
@@ -69,42 +81,48 @@ function ouvriModalRezime() {
         rabeBox.classList.add('hidden');
     }
 
-    document.getElementById('sum-total').innerText = totalResevwa.toFixed(2) + " HTG";
+    document.getElementById('sum-total').innerText = totalNet.toFixed(2) + " HTG";
     
-    // Louvri modal la
-    const modal = document.getElementById('modal-confirm-echanj');
-    modal.classList.remove('hidden');
+    // Montre modal la
+    document.getElementById('modal-confirm-echanj').classList.remove('hidden');
 }
 
-// 4. Fonksyon pou fèmen modal (Piblik)
+/**
+ * 4. Fèmen Modal la
+ */
 window.femenModalEchanj = () => {
     document.getElementById('modal-confirm-echanj').classList.add('hidden');
 };
 
-// 5. Konfime final epi deklanche USSD
+/**
+ * 5. Validasyon PIN ak deklanchman USSD
+ */
 const btnKonfime = document.getElementById('btn-konfime-final');
 if (btnKonfime) {
     btnKonfime.onclick = async () => {
         const pinAntre = prompt("Antre PIN sekirite ou (4 chif):");
         
-        // Isit la nou verifye PIN nan nan database la anvan nou deklanche USSD a
-        const userRef = ref(db, `users/${auth.currentUser.uid}/pin`);
-        const pinSnapshot = await get(userRef);
-        
-        if (pinSnapshot.val() !== pinAntre) {
-            alert("PIN nan pa kòrèk. Rekòmanse.");
-            return;
-        }
-
-        let ussdKod = "";
-        if (echanjData.rezo === 'digicel') {
-            ussdKod = `*128*50947111123*${echanjData.montan}#`;
-        } else {
-            ussdKod = `*123*88888888*32160708*${echanjData.montan}#`;
-        }
+        if (!pinAntre) return;
 
         try {
-            // 1. Voye tranzaksyon an nan Firebase
+            // Ale chache PIN ki anrejistre nan profil itilizatè a
+            const pinRef = ref(db, `users/${auth.currentUser.uid}/pin`);
+            const snapshot = await get(pinRef);
+            
+            if (snapshot.val() !== pinAntre) {
+                alert("PIN sa a pa kòrèk. Tanpri re-eseye.");
+                return;
+            }
+
+            // Prepare kòd USSD a
+            let ussdKod = "";
+            if (echanjData.rezo === 'digicel') {
+                ussdKod = `*128*50947111123*${echanjData.montan}#`;
+            } else {
+                ussdKod = `*123*88888888*32160708*${echanjData.montan}#`;
+            }
+
+            // Anrejistre tranzaksyon an nan Firebase kòm 'pending'
             const nouvoTransRef = push(ref(db, 'transactions'));
             await set(nouvoTransRef, {
                 uid: auth.currentUser.uid,
@@ -116,15 +134,12 @@ if (btnKonfime) {
                 timestamp: serverTimestamp()
             });
 
-            // 2. Fèmen modal la
+            // Fèmen modal la epi ouvri dialer telefòn nan
             window.femenModalEchanj();
-            
-            // 3. Ouvri Dialer a (Navigateur a ap mande pèmisyon pou fè apèl)
             window.location.href = "tel:" + encodeURIComponent(ussdKod);
-            
+
         } catch (error) {
-            alert("Pwoblèm sekirite: " + error.message);
+            alert("Erè sekirite: " + error.message);
         }
     };
-}
-    
+              }
