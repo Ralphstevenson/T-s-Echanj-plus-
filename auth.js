@@ -7,7 +7,10 @@ import {
     getDatabase, 
     ref, 
     set, 
-    get 
+    get,
+    query,
+    orderByChild,
+    equalTo
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const auth = getAuth();
@@ -15,7 +18,6 @@ const db = getDatabase();
 
 // --- 1. FONKSYON POU JENERE ARS-ID ---
 function generateARSID() {
-    // Jenere yon nimewo ant 1000 ak 999999
     const ran = Math.floor(1000 + Math.random() * 998999);
     return `ARS-${ran}`;
 }
@@ -30,7 +32,6 @@ window.handleLogin = async function() {
         return;
     }
 
-    // Ti animasyon sou bouton an
     const btn = document.querySelector("#login-section .btn-primary-pro");
     const originalText = btn.innerText;
     btn.innerText = "Y AP KONEKTE...";
@@ -38,7 +39,6 @@ window.handleLogin = async function() {
 
     try {
         await signInWithEmailAndPassword(auth, email, pass);
-        // "onAuthStateChanged" nan script.js ap detekte koneksyon an epi ouvri dashboard la automatikman
     } catch (error) {
         console.error("Erè koneksyon:", error.code);
         alert("Modpas la oswa Imèl la pa kòrèk.");
@@ -47,7 +47,7 @@ window.handleLogin = async function() {
     }
 };
 
-// --- 3. ENSKRIPSYON (SIGNUP) ---
+// --- 3. ENSKRIPSYON (SIGNUP) KONPLÈ AK PARENNAJ ---
 window.handleSignup = async function() {
     const name = document.getElementById('sign-name').value.trim();
     const phone = document.getElementById('sign-phone').value.trim();
@@ -66,31 +66,53 @@ window.handleSignup = async function() {
     }
 
     try {
+        let sponsorUid = null;
+        let sponsorName = "Sistèm";
+
+        // --- LOJIK CHÈCHE PARENN ---
+        if (sponsorCode !== "") {
+            const usersRef = ref(db, 'users');
+            // Nou chèche nan database la kilès ki gen arsId sa a
+            const q = query(usersRef, orderByChild('arsId'), equalTo(sponsorCode));
+            const snap = await get(q);
+
+            if (snap.exists()) {
+                // Si nou jwenn li, nou pran UID li ak Non li
+                const result = snap.val();
+                const keys = Object.keys(result);
+                sponsorUid = keys[0]; 
+                sponsorName = result[sponsorUid].full_name || result[sponsorUid].name;
+            } else {
+                alert("Kòd Sponsor sa a pa egziste. Enskripsyon an ap fèt san sponsor.");
+                sponsorCode = "none";
+            }
+        }
+
         // Kreye itilizatè a nan Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
         const user = userCredential.user;
         const newID = generateARSID();
 
-        // Prepare done yo pou Realtime Database
+        // Prepare done yo ak non chan ki kòrèk pou Sèvo Santral la ak Paj Parennaj la
         const userData = {
             uid: user.uid,
-            name: name,
+            full_name: name, // Nou itilize full_name pou l senkronize ak updateGlobalUI
             phone: phone,
             email: email,
-            arsId: newID,
+            ars_id: newID,   // Nou itilize ars_id pou konsistans
             balance: 0,
-            commissions: 0,
-            invitedBy: sponsorCode || "none", // Sove kòd moun ki envite l la
-            isFirstExchange: true, // Sa ap sèvi pou rabe 2% a
+            komisyon_balance: 0, // Pou parenn nan ka wè kòb li
+            invited_by_uid: sponsorUid, // Pou nou ka fè rabe ak komisyon an
+            invited_by: sponsorName,    // Pou afiche non parenn nan
+            first_exchange_done: false, // Lè l fè premye echanj, sa ap tounen true
             status: "active",
             createdAt: Date.now()
         };
 
-        // Sove done yo nan bran "users" nan database la
+        // Sove done yo
         await set(ref(db, 'users/' + user.uid), userData);
 
-        alert(`Felisitasyon ${name}! Kont ou kreye. ID ou se: ${newID}`);
-        // location.reload() ap fèt otomatikman via onAuthStateChanged
+        alert(`Felisitasyon ${name}! Kont ou kreye ak siksè.`);
         
     } catch (error) {
         console.error("Erè enskripsyon:", error.code);
@@ -101,3 +123,4 @@ window.handleSignup = async function() {
         }
     }
 };
+        
