@@ -25,32 +25,62 @@
 
 </head>
     <body class="light-mode">
+
+        
     <div id="auth-page" class="auth-container">
         <div class="auth-card">
             <center><img src="https://i.postimg.cc/vTtVtB8P/20260205-163353-removebg-preview.png" class="auth-logo"></center>
+            
             <div id="login-section">
                 <h2 class="auth-title">Konekte</h2>
                 <div class="input-group"><i class="fa fa-envelope"></i><input type="email" id="login-email" placeholder="Email ou"></div>
                 <div class="input-group"><i class="fa fa-lock"></i><input type="password" id="login-pass" placeholder="Modpas"></div>
+                
+                <p style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
+                    <span onclick="toggleAuth('forgot')" style="color: var(--primary-color); font-size: 13px; cursor: pointer; opacity: 0.8;">Bliye modpas?</span>
+                </p>
+
                 <button class="btn-primary-pro" onclick="handleLogin()">KONEKTE</button>
                 <p class="auth-footer">Poko gen kont? <span onclick="toggleAuth('signup')">Enskri la</span></p>
             </div>
+
             <div id="signup-section" class="hidden">
                 <h2 class="auth-title">Kreye Kont</h2>
                 <div class="input-group"><i class="fa fa-user"></i><input type="text" id="sign-name" placeholder="Non Konplè"></div>
                 <div class="input-group"><i class="fa fa-phone"></i><input type="tel" id="sign-phone" placeholder="Telefòn"></div>
                 <div class="input-group"><i class="fa fa-envelope"></i><input type="email" id="sign-email" placeholder="Email"></div>
                 <div class="input-group"><i class="fa fa-lock"></i><input type="password" id="sign-pass" placeholder="Modpas"></div>
-                <input type="text" id="sponsor-input" placeholder="Kòd Sponsor (Opsyonèl)">
+                
+                <div class="input-group">
+                    <i class="fa fa-users"></i>
+                    <input type="text" id="sponsor-input" placeholder="Kòd Sponsor (Opsyonèl)">
+                </div>
+
                 <button class="btn-primary-pro" onclick="handleSignup()">ANREJISTRE</button>
                 <p class="auth-footer">Gen kont deja? <span onclick="toggleAuth('login')">Konekte</span></p>
             </div>
-            <div class="setting-row" onclick="window.openPasswordModal()">
-    <div class="row-left"><i class="fa fa-lock"></i> <span>Chanje Modpas</span></div>
+
+            <div id="forgot-section" class="hidden">
+                <h2 class="auth-title">Bliye Modpas</h2>
+                <p class="auth-subtitle" style="text-align: center; font-size: 13px; margin-bottom: 20px; opacity: 0.7;">
+                    Antre email ou pou resevwa yon lien reyajisman.
+                </p>
+                <div class="input-group">
+                    <i class="fa fa-envelope"></i>
+                    <input type="email" id="forgot-email" placeholder="Email kont ou an">
+                </div>
+                
+                <button class="btn-primary-pro" onclick="handleForgotPasswordExternal()">VOYE LIEN</button>
+                
+                <p class="auth-footer" style="margin-top: 20px;">
+                    <span onclick="toggleAuth('login')"><i class="fa fa-arrow-left"></i> Tounen nan Konekte</span>
+                </p>
             </div>
             
         </div>
-    </div>
+                    </div>
+                    
+        
 
  <div id="home-page" class="hidden">
         
