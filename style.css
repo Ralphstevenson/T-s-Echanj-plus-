@@ -10,6 +10,30 @@
     --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* --- 1. KONTWÒL ETA (STATE MANAGEMENT) --- */
+
+/* Kache tout rès aplikasyon an pa defo */
+#main-app-content, .bottom-nav, .sidebar-pro {
+    display: none !important;
+}
+
+/* Si itilizatè a konekte (body.logged-in), nou montre aplikasyon an epi kache login */
+body.logged-in #main-app-content, 
+body.logged-in .bottom-nav {
+    display: block !important;
+}
+
+/* Navbar anba bezwen flex menm lè li parèt */
+body.logged-in .bottom-nav {
+    display: flex !important;
+}
+
+body.logged-in #auth-page {
+    display: none !important;
+}
+
+/* --- 2. REZÈT AK BAZ --- */
+
 * {
     margin: 0;
     padding: 0;
@@ -22,28 +46,37 @@ body {
     color: var(--text-main);
     line-height: 1.6;
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
 .hidden { display: none !important; }
 
+/* --- 3. PAJ AUTH (LOGIN/SIGNUP) --- */
+#auth-page {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--bg-dark);
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5000; /* Pi wo pase tout bagay */
+}
 
-
-
-
-
-
-/* --- SIDEBAR CONTAINER --- */
+/* --- 4. SIDEBAR PRO --- */
 .sidebar-pro {
     position: fixed;
     top: 0;
-    left: -100%; /* Kache pa defo */
+    left: -100%; 
     width: 290px;
     height: 100%;
-    background: #161616; /* Nwa pwofesyonèl */
-    z-index: 2000;
+    background: #161616;
+    z-index: 6000;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 15px 0 40px rgba(0, 0, 0, 0.6);
-    display: flex;
+    display: flex !important; /* Sidebar dwe toujou gen flex lè l'ap deplase */
     flex-direction: column;
 }
 
@@ -51,7 +84,6 @@ body {
     left: 0;
 }
 
-/* --- SIDEBAR HEADER --- */
 .sidebar-header {
     padding: 40px 25px 30px;
     background: linear-gradient(180deg, #1e1e1e 0%, #161616 100%);
@@ -69,10 +101,9 @@ body {
     padding: 5px;
 }
 
-/* User Info Styling */
 .user-greeting {
     font-size: 0.85rem;
-    color: var(--primary); /* Jòn lò */
+    color: var(--primary);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -81,16 +112,11 @@ body {
 
 .security-status {
     font-size: 0.7rem;
-    color: #00c853; /* Vè sekirite */
+    color: #00c853;
     display: flex;
     align-items: center;
     gap: 5px;
     margin-bottom: 15px;
-}
-
-.security-status::before {
-    content: '●';
-    font-size: 10px;
 }
 
 .user-id-badge {
@@ -118,7 +144,6 @@ body {
     margin-top: 2px;
 }
 
-/* --- SIDEBAR MENU --- */
 .sidebar-menu {
     padding: 20px 10px;
     overflow-y: auto;
@@ -151,7 +176,6 @@ body {
     color: var(--primary);
 }
 
-/* Logout Button espesyal */
 .logout-btn {
     margin-top: 20px;
     color: #ff4d4d !important;
@@ -161,38 +185,31 @@ body {
 
 .logout-btn i {
     color: #ff4d4d !important;
-                     }
+}
 
-
-
-
-
-
-
-/* --- BOTTOM NAVIGATION BAR --- */
+/* --- 5. BOTTOM NAVIGATION BAR --- */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 70px; /* Wotè ideyal pou pous la ka rive fasil */
-    background: rgba(22, 22, 22, 0.9); /* Nwa ak yon ti transparans */
-    backdrop-filter: blur(15px); /* Efè flou dèyè a (Premium) */
+    height: 70px;
+    background: rgba(22, 22, 22, 0.95);
+    backdrop-filter: blur(15px);
     border-top: 1px solid #333;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    z-index: 2500; /* Pi wo pase tout lòt bagay */
-    padding-bottom: env(safe-area-inset-bottom); /* Pou iPhone ki gen baren anba */
+    z-index: 4000;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Chak bouton nan nav la */
 .nav-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #888; /* Koulè gri lè l pa klike */
+    color: #888;
     text-decoration: none;
     font-size: 0.7rem;
     font-weight: 600;
@@ -202,29 +219,21 @@ body {
     height: 100%;
 }
 
-/* Ikon yo */
 .nav-item i {
     font-size: 1.3rem;
     margin-bottom: 4px;
     transition: transform 0.3s ease;
 }
 
-/* Lè yon bouton "Active" (Paj ou ye a) */
 .nav-item.active {
-    color: #FFD700; /* Jòn lò a */
+    color: #FFD700;
 }
 
 .nav-item.active i {
-    transform: translateY(-3px); /* Ti animasyon moute */
+    transform: translateY(-3px);
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
-/* Tèks anba ikon lan */
-.nav-item span {
-    letter-spacing: 0.3px;
-}
-
-/* Ti pwen anba bouton ki active a (Opsyonèl pou style) */
 .nav-item.active::after {
     content: '';
     width: 4px;
@@ -234,8 +243,8 @@ body {
     margin-top: 4px;
 }
 
-/* Feedback lè w klike sou li (Mobile Ripple effect) */
 .nav-item:active {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
     }
+    
