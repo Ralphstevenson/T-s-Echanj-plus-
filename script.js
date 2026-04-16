@@ -1,3 +1,7 @@
+// ==========================================================
+// ECHANJ PLUS - SÈVO SANTRAL (script.js)
+// ==========================================================
+
 // 1. Enpòte SDK Firebase yo
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
@@ -28,44 +32,81 @@ export const auth = getAuth(app);
 export let CurrentUser = null;
 export let userPinGlobal = null;
 
-// 5. Fonksyon Navigasyon
+// ----------------------------------------------------------
+// 5. FONKSYON NAVIGASYON (KOREKSYON POU TOUT SEKSYON)
+// ----------------------------------------------------------
 window.showPage = (pageId, element) => {
-    document.querySelectorAll('.page-content, section, .tab-content').forEach(p => {
+    // Kache tout sa ki gen klas "page-content" oswa ki se yon section
+    const allPages = document.querySelectorAll('.page-content, section, .tab-content, #chat-container');
+    
+    allPages.forEach(p => {
         p.classList.add('hidden');
+        p.style.display = 'none'; // Sekirite siplemantè
     });
     
+    // Montre paj ki gen ID nou mande a
     const targetPage = document.getElementById(pageId);
-    if (targetPage) targetPage.classList.remove('hidden');
-
-    if (pageId === 'paj-trans' && typeof window.aficheTranzaksyon === 'function') {
-        window.aficheTranzaksyon('tout');
+    if (targetPage) {
+        targetPage.classList.remove('hidden');
+        targetPage.style.display = 'block'; 
+        
+        // Si se paj chat la, nou ka bezwen yon style flex
+        if(pageId === 'chat-container') targetPage.style.display = 'flex';
     }
 
+    // Mizajou klas "active" nan meni yo
     document.querySelectorAll('.nav-item, .menu-item').forEach(nav => {
         nav.classList.remove('active');
     });
-    if (element) element.classList.add('active');
+    
+    if (element) {
+        element.classList.add('active');
+    }
+
+    // Si se paj istorik, rele fonksyon an si l egziste
+    if (pageId === 'paj-trans' && typeof window.aficheTranzaksyon === 'function') {
+        window.aficheTranzaksyon('tout');
+    }
+    
+    // Fèmen sidebar otomatikman sou mobil apre klike
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar && sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+    }
 };
 
-// 6. Obsèvatè Koneksyon
+// ----------------------------------------------------------
+// 6. OBSÈVATÈ KONEKSYON (AUTH STATE)
+// ----------------------------------------------------------
 onAuthStateChanged(auth, (user) => {
     const authPage = document.getElementById('auth-page');
-    const homePage = document.getElementById('home-page');
+    const mainApp = document.getElementById('main-app-content');
 
     if (user) {
         CurrentUser = user;
         if(authPage) authPage.classList.add('hidden');
-        if(homePage) homePage.classList.remove('hidden');
+        if(mainApp) {
+            mainApp.classList.remove('hidden');
+            mainApp.style.display = 'block';
+        }
+        
+        // Lè li konekte, nou toujou kòmanse sou paj Akèy
+        window.showPage('paj-akey', document.querySelector('.nav-item'));
         listenToUserData(user.uid);
     } else {
         CurrentUser = null;
         userPinGlobal = null;
         if(authPage) authPage.classList.remove('hidden');
-        if(homePage) homePage.classList.add('hidden');
+        if(mainApp) {
+            mainApp.classList.add('hidden');
+            mainApp.style.display = 'none';
+        }
     }
 });
 
-// 7. Koute done itilizatè an tan reyèl
+// ----------------------------------------------------------
+// 7. KOUTE DONE ITILIZATÈ (REAL-TIME)
+// ----------------------------------------------------------
 function listenToUserData(uid) {
     const userRef = ref(db, 'users/' + uid);
     onValue(userRef, (snapshot) => {
@@ -76,84 +117,61 @@ function listenToUserData(uid) {
     });
 }
 
-// 8. Mete UI a ajou (KOREKSYON DISPLAY ID)
+// ----------------------------------------------------------
+// 8. METE UI A AJOU (BALANS, ID, NOM)
+// ----------------------------------------------------------
 function updateGlobalUI(data) {
     userPinGlobal = data.pin ? String(data.pin) : null;
     const balance = parseFloat(data.balance || 0).toFixed(2);
     
-    // Balans (ni prensipal ni komisyon)
-    const balIds = {
+    // Mete balans yo tout kote yo bezwen parèt
+    const balElements = {
         'user-balance': balance,
         'header-quick-balance': balance + " HTG",
         'display-balance': balance + " HTG",
         'komisyon-balans': parseFloat(data.komisyon_balance || 0).toFixed(2)
     };
 
-    Object.keys(balIds).forEach(id => {
+    for (let id in balElements) {
         const el = document.getElementById(id);
-        if (el) el.innerText = balIds[id];
-    });
+        if (el) el.innerText = balElements[id];
+    }
 
-    // Profil & Header - Nou tcheke ars_id OSWA arsID (pou konpatibilite Firebase)
-    const myARSID = data.ars_id || data.arsID || "Chaje...";
+    // Enfòmasyon Profil
+    const myARSID = data.ars_id || data.arsID || "ARS-000000";
     const fullName = data.full_name || data.name || "Itilizatè";
 
-    const sideName = document.getElementById('side-name');
-    const sideId = document.getElementById('side-id');
-    const displayArsId = document.getElementById('display-ars-id');
-    const greeting = document.getElementById('header-user-greeting');
-    const myRefCodeInput = document.getElementById('my-ref-code'); // Paj parennaj
+    const uiMap = {
+        'side-name': fullName,
+        'side-id': myARSID,
+        'display-ars-id': myARSID,
+        'header-user-greeting': "Bonjou, " + fullName.split(' ')[0]
+    };
 
-    if (sideName) sideName.innerText = fullName;
-    if (sideId) sideId.innerText = myARSID;
-    if (displayArsId) displayArsId.innerText = myARSID;
-    if (myRefCodeInput) myRefCodeInput.value = myARSID;
-
-    if (greeting) {
-        const pwoon = fullName.split(' ')[0];
-        greeting.innerText = "Bonjou, " + pwoon;
+    for (let id in uiMap) {
+        const el = document.getElementById(id);
+        if (el) el.innerText = uiMap[id];
     }
 
-    // Paramèt (Settings)
+    // Si gen Paj Parennaj
+    const myRefInput = document.getElementById('my-ref-code');
+    if (myRefInput) myRefInput.value = myARSID;
+
+    // Paramèt / Settings
     const settName = document.getElementById('sett-name');
     const settEmail = document.getElementById('sett-email');
-    const settAvatar = document.getElementById('user-avatar-settings');
-
     if (settName) settName.innerText = fullName;
     if (settEmail && auth.currentUser) settEmail.innerText = auth.currentUser.email;
-    if (settAvatar) {
-        settAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=109121&color=fff`;
-    }
 }
 
-// --- 9. LOGIK AUTH (DETEKTE REFFERAL NAN LYEN) ---
-
-window.addEventListener('DOMContentLoaded', () => {
-    const params = new URLSearchParams(window.location.search);
-    const refFromUrl = params.get('ref');
-    const inputSponsor = document.getElementById('sponsor-input');
-    if (refFromUrl && inputSponsor) {
-        inputSponsor.value = refFromUrl;
-        inputSponsor.style.borderColor = "#FFD700"; // Ti koulè lò
-    }
-});
-
-window.toggleAuth = (mode) => {
-    const loginSec = document.getElementById('login-section');
-    const signupSec = document.getElementById('signup-section');
-    if (mode === 'signup') {
-        loginSec.classList.add('hidden');
-        signupSec.classList.remove('hidden');
-    } else {
-        signupSec.classList.add('hidden');
-        loginSec.classList.remove('hidden');
-    }
-};
-
+// ----------------------------------------------------------
+// 9. LOJIK LOGIN / SIGNUP
+// ----------------------------------------------------------
 window.handleLogin = async () => {
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('login-pass').value.trim();
-    if (!email || !pass) return alert("Ranpli tout bwat yo.");
+    if (!email || !pass) return alert("Tanpri ranpli tout bwat yo.");
+
     try {
         await signInWithEmailAndPassword(auth, email, pass);
     } catch (error) {
@@ -176,7 +194,6 @@ window.handleSignup = async () => {
 
         if (sponsorCode !== "") {
             const usersRef = ref(db, 'users');
-            // Nou tcheke ars_id
             const q = query(usersRef, orderByChild('ars_id'), equalTo(sponsorCode));
             const snap = await get(q);
 
@@ -184,8 +201,6 @@ window.handleSignup = async () => {
                 const result = snap.val();
                 sponsorUid = Object.keys(result)[0];
                 sponsorName = result[sponsorUid].full_name || result[sponsorUid].name;
-            } else {
-                alert("Kòd Sponsor sa a pa valid. Enskripsyon ap fèt san sponsor.");
             }
         }
 
@@ -202,7 +217,6 @@ window.handleSignup = async () => {
             komisyon_balance: 0,
             invited_by_uid: sponsorUid,
             invited_by: sponsorName,
-            first_exchange_done: false,
             status: "active",
             createdAt: serverTimestamp()
         });
@@ -213,14 +227,46 @@ window.handleSignup = async () => {
     }
 };
 
-// 10. Lòt Fonksyon
+// ----------------------------------------------------------
+// 10. UTILS (SIDEBAR, LOGOUT, ETC.)
+// ----------------------------------------------------------
 window.toggleSidebar = () => {
     const sidebar = document.getElementById('sidebar');
     if (sidebar) sidebar.classList.toggle('active');
 };
 
 window.handleLogout = () => {
-    signOut(auth).then(() => window.location.reload());
+    if(confirm("Èske ou vle dekonekte?")) {
+        signOut(auth).then(() => {
+            window.location.reload();
+        });
+    }
 };
 
-console.log("Echanj Plus | Sèvo Santral Mizajou.");
+window.toggleAuth = (mode) => {
+    const loginSec = document.getElementById('login-section');
+    const signupSec = document.getElementById('signup-section');
+    const forgotSec = document.getElementById('forgot-section');
+
+    loginSec.classList.add('hidden');
+    signupSec.classList.add('hidden');
+    forgotSec.classList.add('hidden');
+
+    if (mode === 'signup') signupSec.classList.remove('hidden');
+    else if (mode === 'forgot') forgotSec.classList.remove('hidden');
+    else loginSec.classList.remove('hidden');
+};
+
+// Detekte Referral nan URL la lè paj la chaje
+window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const refFromUrl = params.get('ref');
+    const inputSponsor = document.getElementById('sponsor-input');
+    if (refFromUrl && inputSponsor) {
+        inputSponsor.value = refFromUrl;
+        inputSponsor.style.borderColor = "#FFD700"; 
+    }
+});
+
+console.log("✅ Echanj Plus | Script Santral Chaje.");
+        
