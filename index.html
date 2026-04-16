@@ -48,7 +48,6 @@
             <div class="setting-row" onclick="window.openPasswordModal()">
     <div class="row-left"><i class="fa fa-lock"></i> <span>Chanje Modpas</span></div>
             </div>
-            <b id="user-email-display">Chaje...</b> ```
             
         </div>
     </div>
@@ -586,11 +585,9 @@
             
 
             
-
-
-            <section id="paj-parametre" class="page-content hidden">
+<section id="paj-parametre" class="page-content hidden">
     
-    <div class="close-settings" onclick="closeSettings()">
+    <div class="close-settings" onclick="showPage('home-page')">
         <i class="fa-solid fa-xmark"></i>
     </div>
 
@@ -610,13 +607,22 @@
             </div>
         </div>
 
-        <div class="setting-row" onclick="window.openPasswordModal()">
-    <div class="row-left"><i class="fa fa-lock"></i> <span>Chanje Modpas</span> <b id="user-email-display">Chaje...</b> </div>
-        </div>
-        
-        
+        <div class="settings-group">
+            <span class="group-label">SEKIRITE</span>
+            
+            <div class="setting-row" onclick="window.openPasswordModal()">
+                <div class="row-left">
+                    <i class="fa fa-lock"></i> 
+                    <span>Chanje Modpas</span>
+                </div>
+                <i class="fa fa-chevron-right"></i>
+            </div>
+            
             <div class="setting-row" onclick="window.openPinManager()">
-                <div class="row-left"><i class="fa fa-shield-halved"></i> <span>PIN Tranzaksyon</span></div>
+                <div class="row-left">
+                    <i class="fa fa-shield-halved"></i> 
+                    <span>PIN Tranzaksyon</span>
+                </div>
                 <i class="fa fa-chevron-right"></i>
             </div>
         </div>
@@ -643,7 +649,7 @@
             <span class="group-label">ENFÒMASYON</span>
             <div class="setting-row">
                 <div class="row-left"><i class="fa fa-circle-info"></i> <span>Vèsyon App</span></div>
-                <span class="version-tag">v3.2</span>
+                <span class="version-tag">v3.2.5</span>
             </div>
             <a href="https://wa.me/50947111123" target="_blank" class="setting-row" style="text-decoration: none;">
                 <div class="row-left"><i class="fab fa-whatsapp"></i> <span>Sipò WhatsApp</span></div>
@@ -653,35 +659,37 @@
     </div>
 
     <div id="modal-password" class="modal-overlay hidden">
-        <div class="modal-content">
+        <div class="modal-content glass-card animated fadeInUp">
             <div class="modal-header">
-                <h4>Reyajiste Modpas</h4>
+                <h4 style="color: #FFD700;">Reyajiste Modpas</h4>
             </div>
-            <div class="modal-body">
-                <p>Yon lien sekirize ap voye sou:</p>
-                <b id="email-display-reset" style="color: var(--primary);">...</b>
+            <div class="modal-body" style="text-align: center; padding: 20px 0;">
+                <p style="opacity: 0.8;">Yon lien sekirize ap voye sou:</p>
+                <b id="user-email-display" style="color: #FFD700; font-size: 1.1rem; display: block; margin-top: 10px;">...</b>
             </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal('modal-password')">ANILE</button>
-                <button id="btn-send-reset-link" class="btn-confirm">VOYE LIEN</button>
+            <div class="modal-footer" style="display: flex; gap: 10px;">
+                <button class="btn-secondary" style="flex: 1;" onclick="closeModal('modal-password')">ANILE</button>
+                <button class="btn-primary-pro" style="flex: 1;" onclick="handleResetPassword()">VOYE LIEN</button>
             </div>
         </div>
     </div>
 
     <div id="modal-pin" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h4 id="pin-title">PIN Sekirite</h4>
-            <p id="pin-msg">Antre 4 chif pou sekirize retrè w yo.</p>
+        <div class="modal-content glass-card animated fadeInUp">
+            <h4 id="pin-title" style="color: #FFD700;">PIN Sekirite</h4>
+            <p id="pin-msg" style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">Antre 4 chif pou sekirize retrè w yo.</p>
             <div class="input-group-modal">
-                <input type="number" id="pin-input" placeholder="****" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4)">
+                <input type="password" id="pin-input" inputmode="numeric" pattern="[0-9]*" placeholder="****" maxlength="4" style="text-align: center; font-size: 24px; letter-spacing: 10px;">
             </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal('modal-pin')">FÈMEN</button>
-                <button id="btn-save-pin" class="btn-confirm">SOVE</button>
+            <div class="modal-footer" style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-secondary" style="flex: 1;" onclick="closeModal('modal-pin')">FÈMEN</button>
+                <button class="btn-primary-pro" style="flex: 1;" id="btn-save-pin" onclick="handleSavePin()">SOVE</button>
             </div>
         </div>
     </div>
-            </section>
+
+                        </section>
+    
             
 
                                                                      
