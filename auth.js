@@ -1,10 +1,11 @@
-// auth.js - Version Konplè ak Mizajou Sekirite, Gmail Display & Forgot Password
+// auth.js - Version Konplè ak Mizajou Sekirite & Kontwòl Vizibilite
 import { 
     getAuth, 
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword,
     sendPasswordResetEmail,
-    onAuthStateChanged
+    onAuthStateChanged,
+    signOut
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { 
     getDatabase, 
@@ -20,13 +21,31 @@ import {
 const auth = getAuth();
 const db = getDatabase();
 
-// --- 1. JENERE ARS-ID ---
+// --- 1. KONTWÒL ETA KONEKSYON (STATE MANAGEMENT) ---
+// Sa a rezoud pwoblèm kote navbar yo parèt an menm tan ak paj auth la
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Si moun nan konekte:
+        // Nou ajoute klas "logged-in" nan body a pou CSS montre aplikasyon an
+        document.body.classList.add('logged-in');
+        console.log("Itilizatè konekte:", user.email);
+        
+        // Isit la ou ka rele lòt fonksyon pou chaje done moun nan si sa nesesè
+    } else {
+        // Si moun nan dekonekte:
+        // Nou retire klas "logged-in" la, sa k ap kache tout aplikasyon an otomatikman
+        document.body.classList.remove('logged-in');
+        console.log("Itilizatè dekonekte");
+    }
+});
+
+// --- 2. JENERE ARS-ID ---
 function generateARSID() {
     const ran = Math.floor(100000 + Math.random() * 899999);
     return `ARS-${ran}`;
 }
 
-// --- 2. KONEKSYON (LOGIN) ---
+// --- 3. KONEKSYON (LOGIN) ---
 window.handleLogin = async function() {
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('login-pass').value.trim();
@@ -51,7 +70,7 @@ window.handleLogin = async function() {
     }
 };
 
-// --- 3. ENSKRIPSYON (SIGNUP) ---
+// --- 4. ENSKRIPSYON (SIGNUP) ---
 window.handleSignup = async function() {
     const name = document.getElementById('sign-name').value.trim();
     const phone = document.getElementById('sign-phone').value.trim();
@@ -107,7 +126,19 @@ window.handleSignup = async function() {
     }
 };
 
-// --- 4. CHANJE MODPAS LÈ KONEKTE (MODAL PARAMÈT) ---
+// --- 5. DEKONEKSYON (LOGOUT) ---
+window.handleLogout = async function() {
+    if(confirm("Èske ou vle dekonekte vre?")) {
+        try {
+            await signOut(auth);
+            // CSS la ap kache aplikasyon an otomatikman gras ak onAuthStateChanged
+        } catch (error) {
+            alert("Erè lè w ap dekonekte: " + error.message);
+        }
+    }
+};
+
+// --- 6. CHANJE MODPAS LÈ KONEKTE (MODAL PARAMÈT) ---
 window.openPasswordModal = () => {
     const user = auth.currentUser;
     const emailDisplay = document.getElementById('user-email-display'); 
@@ -147,7 +178,7 @@ window.handleResetPassword = async () => {
     }
 };
 
-// --- 5. BLIYE MODPAS LÈ DEKONEKTE (PAJ AUTH) ---
+// --- 7. BLIYE MODPAS LÈ DEKONEKTE (PAJ AUTH) ---
 window.handleForgotPasswordExternal = async () => {
     const email = document.getElementById('forgot-email').value.trim();
     if (!email) return alert("Tanpri antre email ou.");
@@ -167,7 +198,7 @@ window.handleForgotPasswordExternal = async () => {
     }
 };
 
-// --- 6. NAVIGASYON PAJ AUTH ---
+// --- 8. NAVIGASYON PAJ AUTH ---
 window.toggleAuth = (mode) => {
     const login = document.getElementById('login-section');
     const signup = document.getElementById('signup-section');
@@ -184,9 +215,8 @@ window.toggleAuth = (mode) => {
     else login.classList.remove('hidden');
 };
 
-// --- 7. INITIALIZASYON ---
+// --- 9. INITIALIZASYON ---
 window.addEventListener('DOMContentLoaded', () => {
-    // Detekte Referral nan URL
     const params = new URLSearchParams(window.location.search);
     const refCode = params.get('ref');
     const input = document.getElementById('sponsor-input');
@@ -195,4 +225,4 @@ window.addEventListener('DOMContentLoaded', () => {
         input.style.border = "2px solid #FFD700";
     }
 });
-                          
+    
