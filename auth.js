@@ -1,4 +1,4 @@
-// auth.js - Version Konplè ak Mizajou Gmail Display
+// auth.js - Version Konplè ak Mizajou Sekirite & Gmail Display
 import { 
     getAuth, 
     signInWithEmailAndPassword, 
@@ -34,13 +34,20 @@ window.handleLogin = async function() {
     if (!email || !pass) return alert("Tanpri ranpli tout bwat yo.");
 
     const btn = document.querySelector("#login-section .btn-primary-pro");
-    if(btn) btn.innerText = "Y AP KONEKTE...";
+    if(btn) {
+        btn.innerText = "Y AP KONEKTE...";
+        btn.disabled = true;
+    }
 
     try {
         await signInWithEmailAndPassword(auth, email, pass);
     } catch (error) {
+        console.error("Erè login:", error.code);
         alert("Modpas oswa Imèl pa kòrèk.");
-        if(btn) btn.innerText = "KONEKTE";
+        if(btn) {
+            btn.innerText = "KONEKTE";
+            btn.disabled = false;
+        }
     }
 };
 
@@ -94,13 +101,13 @@ window.handleSignup = async function() {
             createdAt: serverTimestamp()
         });
 
-        alert("Kont ou kreye! ID ou se: " + newID);
+        alert(`Felisitasyon ${name}! Kont ou kreye. ID ou se: ${newID}`);
     } catch (error) {
-        alert("Erè: " + error.message);
+        alert("Erè enskripsyon: " + error.message);
     }
 };
 
-// --- 4. CHANJE MODPAS (AFICHE GMAIL LA) ---
+// --- 4. CHANJE MODPAS (AFICHE GMAIL LA & VOYE LIEN) ---
 window.openPasswordModal = () => {
     const user = auth.currentUser;
     // Sa a ap ranje pwoblèm "..." nan Screenshot ou a
@@ -115,20 +122,40 @@ window.openPasswordModal = () => {
 
 window.handleResetPassword = async () => {
     const user = auth.currentUser;
-    if (!user) return alert("Ou dwe konekte.");
+    
+    if (!user || !user.email) {
+        alert("Ou dwe konekte pou w ka chanje modpas ou.");
+        return;
+    }
 
     const btn = document.querySelector("#modal-password .btn-primary-pro");
     const originalText = btn.innerText;
-    btn.innerText = "Y AP VOYE...";
+    
+    if(btn) {
+        btn.innerText = "Y AP VOYE...";
+        btn.disabled = true;
+    }
 
     try {
+        // Nou fikse lang nan 'fr' pou imèl la ka pi fasil pou konprann
+        auth.languageCode = 'fr'; 
+        
         await sendPasswordResetEmail(auth, user.email);
-        alert("Yon lien reyajisman voye nan Gmail ou: " + user.email); //
+        
+        alert("Yon lien reyajisman voye nan Gmail ou: " + user.email + "\n\nSi w pa wè l, tcheke katab Spam lan.");
         if (window.closeModal) window.closeModal('modal-password');
     } catch (error) {
-        alert("Erè: " + error.message);
+        console.error("Erè voye imèl:", error.code);
+        if (error.code === 'auth/too-many-requests') {
+            alert("Twòp tantativ. Tann kèk minit anvan ou eseye ankò.");
+        } else {
+            alert("Erè: " + error.message);
+        }
     } finally {
-        if(btn) btn.innerText = originalText;
+        if(btn) {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
     }
 };
 
