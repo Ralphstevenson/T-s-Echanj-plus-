@@ -20,10 +20,11 @@ const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 export const auth = getAuth(app);
 
-// 4. State Global
+// 4. State Global (POU PIN NAN AK ITILIZATÈ A)
 export let CurrentUser = null;
+export let userPinGlobal = null; // Sa ap sere PIN nan pou tout aplikasyon an
 
-// 5. Fonksyon Navigasyon (MIZAJOU POU ISTORIK)
+// 5. Fonksyon Navigasyon
 window.showPage = (pageId, element) => {
     // Kache tout seksyon yo
     document.querySelectorAll('.page-content, section, .tab-content').forEach(p => {
@@ -40,8 +41,6 @@ window.showPage = (pageId, element) => {
     if (pageId === 'paj-trans') {
         if (typeof window.aficheTranzaksyon === 'function') {
             window.aficheTranzaksyon('tout');
-        } else {
-            console.log("Ap tann istorik.js chaje...");
         }
     }
 
@@ -66,6 +65,7 @@ onAuthStateChanged(auth, (user) => {
         listenToUserData(user.uid);
     } else {
         CurrentUser = null;
+        userPinGlobal = null;
         authPage.classList.remove('hidden');
         homePage.classList.add('hidden');
     }
@@ -82,16 +82,21 @@ function listenToUserData(uid) {
     });
 }
 
-// 8. Mete UI a ajou
+// 8. Mete UI a ajou (AK PARAMÈT YO TOU)
 function updateGlobalUI(data) {
+    // Sere PIN nan varyab global la (toujou konvèti l an String pou evite erè)
+    userPinGlobal = data.pin ? String(data.pin) : null;
+
     const balance = parseFloat(data.balance || 0).toFixed(2);
     
+    // Balans
     const balElements = ['user-balance', 'header-quick-balance', 'display-balance'];
     balElements.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerText = (id === 'user-balance') ? balance : balance + " HTG";
     });
 
+    // Profil sidebar ak Header
     const sideName = document.getElementById('side-name');
     const sideId = document.getElementById('side-id');
     const displayArsId = document.getElementById('display-ars-id');
@@ -103,6 +108,20 @@ function updateGlobalUI(data) {
     if (greeting) {
         const pwoon = data.full_name ? data.full_name.split(' ')[0] : "Itilizatè";
         greeting.innerText = "Bonjou, " + pwoon;
+    }
+
+    // --- MIZAJOU PAJ PARAMÈT (SETTINGS) ---
+    const settName = document.getElementById('sett-name');
+    const settEmail = document.getElementById('sett-email');
+    const emailResetDisplay = document.getElementById('email-display-reset');
+    const settAvatar = document.getElementById('user-avatar-settings');
+
+    if (settName) settName.innerText = data.full_name || "Enfòmasyon...";
+    if (settEmail && auth.currentUser) settEmail.innerText = auth.currentUser.email;
+    if (emailResetDisplay && auth.currentUser) emailResetDisplay.innerText = auth.currentUser.email;
+    
+    if (settAvatar && data.full_name) {
+        settAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.full_name)}&background=109121&color=fff`;
     }
 }
 
@@ -137,5 +156,5 @@ if (darkModeToggle) {
     });
 }
 
-console.log("Echanj Plus | Sèvo Santral pare.");
-                              
+console.log("Echanj Plus | Sèvo Santral pare ak PIN ak Paramètres.");
+      
