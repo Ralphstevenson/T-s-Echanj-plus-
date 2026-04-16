@@ -62,7 +62,7 @@
 
             <div id="forgot-section" class="hidden">
                 <h2 class="auth-title">Bliye Modpas</h2>
-                <p class="auth-subtitle" style="text-align: center; font-size: 13px; margin-bottom: 20px; opacity: 0.7;">
+                <p class="auth-subtitle" style="text-align: center; font-size: 13px; margin-bottom: 20px; opaciy: 0.7;">
                     Antre email ou pou resevwa yon lien reyajisman.
                 </p>
                 <div class="input-group">
@@ -79,10 +79,11 @@
             
         </div>
                     </div>
-                    
         
 
- <div id="home-page" class="hidden">
+            
+
+                <div id="main-app-content">
         
         <div id="sidebar" class="sidebar-pro">
             <div class="sidebar-header">
@@ -122,13 +123,9 @@
             </div>
         </div>
 
- </div>
-    
-
-                <header class="main-header">
+        <header class="main-header">
             <i class="fa fa-bars-staggered" onclick="toggleSidebar()"></i>
             <div class="logo-text">ECHANJ PLUS</div>
-            
             <div id="header-quick-balance" class="quick-balance">0.00 HTG</div>
 
             <div class="notif-wrapper" onclick="toggleNotifPanel()">
@@ -141,31 +138,25 @@
                     <h4><i class="fa fa-bell"></i> Notifikasyon</h4>
                     <i class="fa fa-times close-notif" onclick="toggleNotifPanel()"></i>
                 </div>
-
                 <div class="notif-tabs">
                     <button id="tab-koneksyon" class="tab-btn active" onclick="switchNotifTab('koneksyon')">Koneksyon</button>
                     <button id="tab-transak" class="tab-btn" onclick="switchNotifTab('transak')">Tranzaksyon</button>
                 </div>
-
                 <div id="notif-content" class="notif-content">
                     <p class="empty-msg">Chaje mesaj...</p>
                 </div>
-
                 <div class="notif-footer">
                     <div class="logout-btn-elite" onclick="handleLogout()">
                         <i class="fa fa-right-from-bracket"></i> Dekonekte
                     </div>
                 </div>
-            </div> </header>
+            </div> 
+        </header>
+
+                        
         
-        
 
-<i class="fa fa-right-from-bracket"></i> Dekonekte
-    </div>
-
-
-    
-                <main class="content-wrapper">
+         <main class="content-wrapper">
             
             <section id="paj-akey" class="page-content">
                 <div id="header-flash-info" class="flash-info-bar"></div>
@@ -187,95 +178,118 @@
                 </div>
             </section>
         
+            <section id="paj-echanj" class="page-content hidden">
+                <div class="premium-header">
+                    <div class="header-main-box">
+                        <h3 class="page-title"><i class="fas fa-sync-alt"></i> Echanj Minit</h3>
+                        <p class="subtitle-paj">Minit ou yo se kòb kach. Chwazi rezo w la.</p>
+                    </div>
+                    <div class="mini-flash-info">
+                        <marquee behavior="scroll" direction="left">
+                            🚀 Frè sistèm nan se 16.5% sèlman | ✅ Rabè 9.5 HTG pou premye echanj si ou gen parenn.
+                        </marquee>
+                    </div>
+                </div>
+                
+                <div class="provider-container">
+                    <div class="provider-card" onclick="openDialer('digicel')">
+                        <div class="card-img-box">
+                            <img src="https://i.postimg.cc/1V5TGWk0/23403511-3d46-4460-a669-ccf2a18d8ec3.png" alt="Digicel">
+                        </div>
+                        <div class="card-info">
+                            <b>Digicel</b>
+                            <span class="rate-tag">16.5% Frè</span>
+                        </div>
+                        <div class="go-icon"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="provider-card" onclick="openDialer('natcom')">
+                        <div class="card-img-box">
+                            <img src="https://i.postimg.cc/Jt19CnsV/recharge-com-natcom-product-card.png" alt="Natcom">
+                        </div>
+                        <div class="card-info">
+                            <b>Natcom</b>
+                            <span class="rate-tag">16.5% Frè</span>
+                        </div>
+                        <div class="go-icon"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                </div>
+
+                <div id="modal-confirm-echanj" class="modal-overlay hidden">
+                    <div class="modal-content-premium animated bounceIn">
+                        <div class="modal-header-pwo">
+                            <div class="icon-circle-gold"><i class="fas fa-file-invoice-dollar"></i></div>
+                            <h4>Rezime Echanj Ou</h4>
+                            <p>Verifye done yo anvan ou konfime.</p>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="summary-row">
+                                <span class="label">Minit w ap voye:</span>
+                                <b id="sum-minit" class="val-minit">0.00 HTG</b>
+                            </div>
+                            <div class="summary-row">
+                                <span class="label">Frè Sistèm (16.5%):</span>
+                                <b id="sum-fre" class="val-fre">-0.00 HTG</b>
+                            </div>
+                            <div id="box-rabe-premium" class="summary-row rabe-box hidden">
+                                <span class="label">Rabè Byenveni:</span>
+                                <b id="sum-rabe" class="val-rabe">+9.50 HTG</b>
+                            </div>
+                            <div class="divider-dashed"></div>
+                            <div class="total-row">
+                                <span class="total-label">W AP RESEVWA:</span>
+                                <h2 id="sum-total" class="val-total">0.00 HTG</h2>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer-pwo">
+                            <button class="btn-cancel-modal" onclick="femenModalEchanj()">Anile</button>
+                            <button id="btn-konfime-final" class="btn-confirm-modal-premium">
+                                <i class="fas fa-check-circle"></i> Konfime ak PIN
+                            </button>
+                        </div>
+                        <p class="security-note">
+                            <i class="fas fa-shield-check"></i> Sekirite ARS aktive. Validasyon nan mwens pase 5 minit.
+                        </p>
+                    </div>
+                </div>
+            </section>
+                
+
+
+    
+                <main class="content-wrapper">            
+            <section id="paj-akey" class="page-content">
+                <div id="header-flash-info" class="flash-info-bar"></div>
+               
+                <div class="carousel-container">
+                <div class="slides" id="carousel-slider">
+                        <div class="slide"><img src="https://i.postimg.cc/DSHc5ZJV/1771501449871.png" alt="Promo 1"></div>
+                        <div class="slide"><img src="https://i.postimg.cc/s14wys8J/1771501465178.png" alt="Promo 2"></div>
+                        <div class="slide"><img src="https://i.postimg.cc/qNzL8n7K/1771501473121.png" alt="Promo 3"></div>
+                    </div>
+                </div>
+
+                <div class="card-balance-rect">
+                    <p>Balans ou disponib</p>
+                    <div class="balance-row">
+                        <h1 id="user-balance">0.00</h1> 
+                        <span>HTG</span>
+                    </div>
+                </div>
+            </section>
+        
 
 
                     <section id="paj-echanj" class="page-content hidden">
             <div class="premium-header">
-                <div class="header-main-box">
-                    <h3 class="page-title"><i class="fas fa-sync-alt"></i> Echanj Minit</h3>
-                    <p class="subtitle-paj">Minit ou yo se kòb kach. Chwazi rezo w la.</p>
-                </div>
-                <div class="mini-flash-info">
-                    <marquee behavior="scroll" direction="left">
-                        🚀 Frè sistèm nan se 16.5% sèlman | ✅ Rabè 9.5 HTG pou premye echanj si ou gen parenn.
-                    </marquee>
-                </div>
-            </div>
-            
-            <div class="provider-container">
-                <div class="provider-card" onclick="openDialer('digicel')">
-                    <div class="card-img-box">
-                        <img src="https://i.postimg.cc/1V5TGWk0/23403511-3d46-4460-a669-ccf2a18d8ec3.png" alt="Digicel">
-                    </div>
-                    <div class="card-info">
-                        <b>Digicel</b>
-                        <span class="rate-tag">16.5% Frè</span>
-                    </div>
-                    <div class="go-icon"><i class="fas fa-chevron-right"></i></div>
-                </div>
 
-                <div class="provider-card" onclick="openDialer('natcom')">
-                    <div class="card-img-box">
-                        <img src="https://i.postimg.cc/Jt19CnsV/recharge-com-natcom-product-card.png" alt="Natcom">
-                    </div>
-                    <div class="card-info">
-                        <b>Natcom</b>
-                        <span class="rate-tag">16.5% Frè</span>
-                    </div>
-                    <div class="go-icon"><i class="fas fa-chevron-right"></i></div>
-                </div>
-            </div>
-
-            <div id="modal-confirm-echanj" class="modal-overlay hidden">
-                <div class="modal-content-premium animated bounceIn">
-                    <div class="modal-header-pwo">
-                        <div class="icon-circle-gold"><i class="fas fa-file-invoice-dollar"></i></div>
-                        <h4>Rezime Echanj Ou</h4>
-                        <p>Verifye done yo anvan ou konfime.</p>
-                    </div>
-                    
-                    <div class="modal-body">
-                        <div class="summary-row">
-                            <span class="label">Minit w ap voye:</span>
-                            <b id="sum-minit" class="val-minit">0.00 HTG</b>
-                        </div>
-                        
-                        <div class="summary-row">
-                            <span class="label">Frè Sistèm (16.5%):</span>
-                            <b id="sum-fre" class="val-fre">-0.00 HTG</b>
-                        </div>
-
-                        <div id="box-rabe-premium" class="summary-row rabe-box hidden">
-                            <span class="label">Rabè Byenveni:</span>
-                            <b id="sum-rabe" class="val-rabe">+9.50 HTG</b>
-                        </div>
-
-                        <div class="divider-dashed"></div>
-
-                        <div class="total-row">
-                            <span class="total-label">W AP RESEVWA:</span>
-                            <h2 id="sum-total" class="val-total">0.00 HTG</h2>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer-pwo">
-                        <button class="btn-cancel-modal" onclick="femenModalEchanj()">Anile</button>
-                        <button id="btn-konfime-final" class="btn-confirm-modal-premium">
-                            <i class="fas fa-check-circle"></i> Konfime ak PIN
-                        </button>
-                    </div>
-                    
-                    <p class="security-note">
-                        <i class="fas fa-shield-check"></i> Sekirite ARS aktive. Validasyon nan mwens pase 5 minit.
-                    </p>
-                </div>
-            </div>
-                </section>
                             
 
 
             
-        <section id="paj-retre" class="page-content hidden">
+                <section id="paj-retre" class="page-content hidden">
             <div class="paj-retre-kontni">
                 
                 <div class="user-status-bar-simple">
@@ -340,14 +354,9 @@
                         </div>
                         <h3 style="color: var(--text-main);">Sekirite PIN</h3>
                         <p style="font-size: 14px; color: var(--text-sub);">Antre PIN 4 chif ou an.</p>
-                        
                         <div class="input-group-modal" style="margin: 25px 0;">
-                            <input type="number" id="pin-retre-input" 
-                                   placeholder="****" 
-                                   class="pin-field-style"
-                                   oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4)">
+                            <input type="number" id="pin-retre-input" placeholder="****" class="pin-field-style" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4)">
                         </div>
-
                         <div class="modal-btns">
                             <button class="btn-cancel" onclick="closeAllModals()">ANILE</button>
                             <button class="btn-confirm" id="btn-verify-pin-retre">VERIFYE PIN</button>
@@ -377,7 +386,9 @@
                     </div>
                 </div>
 
-            </div> </section>
+            </div> 
+                            </section>
+    
     
 
             
