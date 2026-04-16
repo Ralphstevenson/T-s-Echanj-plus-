@@ -76,28 +76,41 @@ function listenToUserData(uid) {
     });
 }
 
-// 8. Mete UI a ajou
+// 8. Mete UI a ajou (KOREKSYON DISPLAY ID)
 function updateGlobalUI(data) {
     userPinGlobal = data.pin ? String(data.pin) : null;
     const balance = parseFloat(data.balance || 0).toFixed(2);
     
-    // Balans
-    ['user-balance', 'header-quick-balance', 'display-balance'].forEach(id => {
+    // Balans (ni prensipal ni komisyon)
+    const balIds = {
+        'user-balance': balance,
+        'header-quick-balance': balance + " HTG",
+        'display-balance': balance + " HTG",
+        'komisyon-balans': parseFloat(data.komisyon_balance || 0).toFixed(2)
+    };
+
+    Object.keys(balIds).forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.innerText = (id === 'user-balance') ? balance : balance + " HTG";
+        if (el) el.innerText = balIds[id];
     });
 
-    // Profil & Header
+    // Profil & Header - Nou tcheke ars_id OSWA arsID (pou konpatibilite Firebase)
+    const myARSID = data.ars_id || data.arsID || "Chaje...";
+    const fullName = data.full_name || data.name || "Itilizatè";
+
     const sideName = document.getElementById('side-name');
     const sideId = document.getElementById('side-id');
     const displayArsId = document.getElementById('display-ars-id');
     const greeting = document.getElementById('header-user-greeting');
+    const myRefCodeInput = document.getElementById('my-ref-code'); // Paj parennaj
 
-    if (sideName) sideName.innerText = data.full_name || "Itilizatè";
-    if (sideId) sideId.innerText = data.ars_id || "ARS-ID";
-    if (displayArsId) displayArsId.innerText = data.ars_id || "---";
+    if (sideName) sideName.innerText = fullName;
+    if (sideId) sideId.innerText = myARSID;
+    if (displayArsId) displayArsId.innerText = myARSID;
+    if (myRefCodeInput) myRefCodeInput.value = myARSID;
+
     if (greeting) {
-        const pwoon = data.full_name ? data.full_name.split(' ')[0] : "Itilizatè";
+        const pwoon = fullName.split(' ')[0];
         greeting.innerText = "Bonjou, " + pwoon;
     }
 
@@ -106,14 +119,24 @@ function updateGlobalUI(data) {
     const settEmail = document.getElementById('sett-email');
     const settAvatar = document.getElementById('user-avatar-settings');
 
-    if (settName) settName.innerText = data.full_name || "Enfòmasyon...";
+    if (settName) settName.innerText = fullName;
     if (settEmail && auth.currentUser) settEmail.innerText = auth.currentUser.email;
-    if (settAvatar && data.full_name) {
-        settAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.full_name)}&background=109121&color=fff`;
+    if (settAvatar) {
+        settAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=109121&color=fff`;
     }
 }
 
-// --- 9. LOGIK AUTH (LOGIN & SIGNUP) ---
+// --- 9. LOGIK AUTH (DETEKTE REFFERAL NAN LYEN) ---
+
+window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const refFromUrl = params.get('ref');
+    const inputSponsor = document.getElementById('sponsor-input');
+    if (refFromUrl && inputSponsor) {
+        inputSponsor.value = refFromUrl;
+        inputSponsor.style.borderColor = "#FFD700"; // Ti koulè lò
+    }
+});
 
 window.toggleAuth = (mode) => {
     const loginSec = document.getElementById('login-section');
@@ -131,7 +154,6 @@ window.handleLogin = async () => {
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('login-pass').value.trim();
     if (!email || !pass) return alert("Ranpli tout bwat yo.");
-
     try {
         await signInWithEmailAndPassword(auth, email, pass);
     } catch (error) {
@@ -152,16 +174,16 @@ window.handleSignup = async () => {
         let sponsorUid = null;
         let sponsorName = "Sistèm";
 
-        // Rechèch Sponsor
         if (sponsorCode !== "") {
             const usersRef = ref(db, 'users');
+            // Nou tcheke ars_id
             const q = query(usersRef, orderByChild('ars_id'), equalTo(sponsorCode));
             const snap = await get(q);
 
             if (snap.exists()) {
                 const result = snap.val();
                 sponsorUid = Object.keys(result)[0];
-                sponsorName = result[sponsorUid].full_name;
+                sponsorName = result[sponsorUid].full_name || result[sponsorUid].name;
             } else {
                 alert("Kòd Sponsor sa a pa valid. Enskripsyon ap fèt san sponsor.");
             }
@@ -191,7 +213,7 @@ window.handleSignup = async () => {
     }
 };
 
-// 10. Lòt Fonksyon (Sidebar, Logout)
+// 10. Lòt Fonksyon
 window.toggleSidebar = () => {
     const sidebar = document.getElementById('sidebar');
     if (sidebar) sidebar.classList.toggle('active');
@@ -201,5 +223,4 @@ window.handleLogout = () => {
     signOut(auth).then(() => window.location.reload());
 };
 
-console.log("Echanj Plus | Sèvo Santral ak Parennaj aktive.");
-                     
+console.log("Echanj Plus | Sèvo Santral Mizajou.");
