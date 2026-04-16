@@ -1,4 +1,4 @@
-// auth.js - Version Konplè ak Mizajou Sekirite & Gmail Display
+// auth.js - Version Konplè ak Mizajou Sekirite, Gmail Display & Forgot Password
 import { 
     getAuth, 
     signInWithEmailAndPassword, 
@@ -107,14 +107,13 @@ window.handleSignup = async function() {
     }
 };
 
-// --- 4. CHANJE MODPAS (AFICHE GMAIL LA & VOYE LIEN) ---
+// --- 4. CHANJE MODPAS LÈ KONEKTE (MODAL PARAMÈT) ---
 window.openPasswordModal = () => {
     const user = auth.currentUser;
-    // Sa a ap ranje pwoblèm "..." nan Screenshot ou a
     const emailDisplay = document.getElementById('user-email-display'); 
     
     if (user && emailDisplay) {
-        emailDisplay.innerText = user.email; // Mete Gmail moun nan la
+        emailDisplay.innerText = user.email; 
     }
     
     if (window.openModal) window.openModal('modal-password');
@@ -122,45 +121,72 @@ window.openPasswordModal = () => {
 
 window.handleResetPassword = async () => {
     const user = auth.currentUser;
-    
     if (!user || !user.email) {
         alert("Ou dwe konekte pou w ka chanje modpas ou.");
         return;
     }
 
     const btn = document.querySelector("#modal-password .btn-primary-pro");
-    const originalText = btn.innerText;
-    
     if(btn) {
         btn.innerText = "Y AP VOYE...";
         btn.disabled = true;
     }
 
     try {
-        // Nou fikse lang nan 'fr' pou imèl la ka pi fasil pou konprann
         auth.languageCode = 'fr'; 
-        
         await sendPasswordResetEmail(auth, user.email);
-        
-        alert("Yon lien reyajisman voye nan Gmail ou: " + user.email + "\n\nSi w pa wè l, tcheke katab Spam lan.");
+        alert("Yon lien reyajisman voye nan Gmail ou: " + user.email);
         if (window.closeModal) window.closeModal('modal-password');
     } catch (error) {
-        console.error("Erè voye imèl:", error.code);
-        if (error.code === 'auth/too-many-requests') {
-            alert("Twòp tantativ. Tann kèk minit anvan ou eseye ankò.");
-        } else {
-            alert("Erè: " + error.message);
-        }
+        alert("Erè: " + error.message);
     } finally {
         if(btn) {
-            btn.innerText = originalText;
+            btn.innerText = "VOYE LIEN";
             btn.disabled = false;
         }
     }
 };
 
-// Detekte Referral nan URL
+// --- 5. BLIYE MODPAS LÈ DEKONEKTE (PAJ AUTH) ---
+window.handleForgotPasswordExternal = async () => {
+    const email = document.getElementById('forgot-email').value.trim();
+    if (!email) return alert("Tanpri antre email ou.");
+
+    const btn = document.querySelector("#forgot-section .btn-primary-pro");
+    if(btn) btn.disabled = true;
+
+    try {
+        auth.languageCode = 'fr';
+        await sendPasswordResetEmail(auth, email);
+        alert("Yon lien reyajisman voye nan: " + email);
+        window.toggleAuth('login');
+    } catch (error) {
+        alert("Erè: " + error.message);
+    } finally {
+        if(btn) btn.disabled = false;
+    }
+};
+
+// --- 6. NAVIGASYON PAJ AUTH ---
+window.toggleAuth = (mode) => {
+    const login = document.getElementById('login-section');
+    const signup = document.getElementById('signup-section');
+    const forgot = document.getElementById('forgot-section');
+
+    if(!login || !signup || !forgot) return;
+
+    login.classList.add('hidden');
+    signup.classList.add('hidden');
+    forgot.classList.add('hidden');
+
+    if (mode === 'signup') signup.classList.remove('hidden');
+    else if (mode === 'forgot') forgot.classList.remove('hidden');
+    else login.classList.remove('hidden');
+};
+
+// --- 7. INITIALIZASYON ---
 window.addEventListener('DOMContentLoaded', () => {
+    // Detekte Referral nan URL
     const params = new URLSearchParams(window.location.search);
     const refCode = params.get('ref');
     const input = document.getElementById('sponsor-input');
@@ -169,4 +195,4 @@ window.addEventListener('DOMContentLoaded', () => {
         input.style.border = "2px solid #FFD700";
     }
 });
-            
+                          
