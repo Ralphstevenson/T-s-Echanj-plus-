@@ -10,7 +10,8 @@ import {
     get,
     query,
     orderByChild,
-    equalTo
+    equalTo,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const auth = getAuth();
@@ -18,7 +19,7 @@ const db = getDatabase();
 
 // --- 1. FONKSYON POU JENERE ARS-ID ---
 function generateARSID() {
-    const ran = Math.floor(1000 + Math.random() * 998999);
+    const ran = Math.floor(100000 + Math.random() * 899999);
     return `ARS-${ran}`;
 }
 
@@ -47,7 +48,7 @@ window.handleLogin = async function() {
     }
 };
 
-// --- 3. ENSKRIPSYON (SIGNUP) KONPLÈ AK PARENNAJ ---
+// --- 3. ENSKRIPSYON (SIGNUP) KONPLÈ ---
 window.handleSignup = async function() {
     const name = document.getElementById('sign-name').value.trim();
     const phone = document.getElementById('sign-phone').value.trim();
@@ -69,50 +70,57 @@ window.handleSignup = async function() {
         let sponsorUid = null;
         let sponsorName = "Sistèm";
 
-        // --- LOJIK CHÈCHE PARENN ---
+        // --- LOJIK CHÈCHE PARENN (Double Verifikasyon) ---
         if (sponsorCode !== "") {
             const usersRef = ref(db, 'users');
-            // Nou chèche nan database la kilès ki gen arsId sa a
-            const q = query(usersRef, orderByChild('arsId'), equalTo(sponsorCode));
-            const snap = await get(q);
+            
+            // Tcheke sou nouvo fòma a (ars_id)
+            let q = query(usersRef, orderByChild('ars_id'), equalTo(sponsorCode));
+            let snap = await get(q);
+
+            // Si nou pa jwenn li, tcheke sou ansyen fòma a (arsID)
+            if (!snap.exists()) {
+                q = query(usersRef, orderByChild('arsID'), equalTo(sponsorCode));
+                snap = await get(q);
+            }
 
             if (snap.exists()) {
-                // Si nou jwenn li, nou pran UID li ak Non li
                 const result = snap.val();
-                const keys = Object.keys(result);
-                sponsorUid = keys[0]; 
+                sponsorUid = Object.keys(result)[0]; 
                 sponsorName = result[sponsorUid].full_name || result[sponsorUid].name;
             } else {
-                alert("Kòd Sponsor sa a pa egziste. Enskripsyon an ap fèt san sponsor.");
-                sponsorCode = "none";
+                alert("Kòd Sponsor sa a pa valid. Enskripsyon an ap kontinye san sponsor.");
+                sponsorUid = null;
             }
         }
 
-        // Kreye itilizatè a nan Firebase Auth
+        // Kreye kont nan Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
         const user = userCredential.user;
         const newID = generateARSID();
 
-        // Prepare done yo ak non chan ki kòrèk pou Sèvo Santral la ak Paj Parennaj la
+        // Prepare done yo pou tout pati nan sit la ka rale yo
         const userData = {
             uid: user.uid,
-            full_name: name, // Nou itilize full_name pou l senkronize ak updateGlobalUI
+            full_name: name,
+            name: name, // Pou ansyen konpatibilite
             phone: phone,
             email: email,
-            ars_id: newID,   // Nou itilize ars_id pou konsistans
+            ars_id: newID,   // Nouvo fòma
+            arsID: newID,    // Ansyen fòma (pou sekirite)
             balance: 0,
-            komisyon_balance: 0, // Pou parenn nan ka wè kòb li
-            invited_by_uid: sponsorUid, // Pou nou ka fè rabe ak komisyon an
-            invited_by: sponsorName,    // Pou afiche non parenn nan
-            first_exchange_done: false, // Lè l fè premye echanj, sa ap tounen true
+            komisyon_balance: 0,
+            invited_by_uid: sponsorUid,
+            invited_by: sponsorName,
+            first_exchange_done: false,
             status: "active",
-            createdAt: Date.now()
+            createdAt: serverTimestamp()
         };
 
-        // Sove done yo
+        // Sove nan Database la
         await set(ref(db, 'users/' + user.uid), userData);
 
-        alert(`Felisitasyon ${name}! Kont ou kreye ak siksè.`);
+        alert(`Felisitasyon ${name}! Kont ou kreye. ID ou se: ${newID}`);
         
     } catch (error) {
         console.error("Erè enskripsyon:", error.code);
@@ -123,4 +131,15 @@ window.handleSignup = async function() {
         }
     }
 };
-        
+
+// Detekte kòd Refferal nan lyen an (egz: ?ref=ARS-123)
+window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get('ref');
+    const input = document.getElementById('sponsor-input');
+    if (refCode && input) {
+        input.value = refCode;
+        input.style.border = "2px solid #109121";
+    }
+});
+            
