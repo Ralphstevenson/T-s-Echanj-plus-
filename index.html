@@ -45,6 +45,11 @@
                 <button class="btn-primary-pro" onclick="handleSignup()">ANREJISTRE</button>
                 <p class="auth-footer">Gen kont deja? <span onclick="toggleAuth('login')">Konekte</span></p>
             </div>
+            <div class="setting-row" onclick="window.openPasswordModal()">
+    <div class="row-left"><i class="fa fa-lock"></i> <span>Chanje Modpas</span></div>
+            </div>
+            <b id="user-email-display">Chaje...</b> ```
+            
         </div>
     </div>
 
@@ -605,12 +610,11 @@
             </div>
         </div>
 
-        <div class="settings-group">
-            <span class="group-label">SEKIRITE</span>
-            <div class="setting-row" onclick="window.openModal('modal-password')">
-                <div class="row-left"><i class="fa fa-lock"></i> <span>Chanje Modpas</span></div>
-                <i class="fa fa-chevron-right"></i>
-            </div>
+        <div class="setting-row" onclick="window.openPasswordModal()">
+    <div class="row-left"><i class="fa fa-lock"></i> <span>Chanje Modpas</span> <b id="user-email-display">Chaje...</b> </div>
+        </div>
+        
+        
             <div class="setting-row" onclick="window.openPinManager()">
                 <div class="row-left"><i class="fa fa-shield-halved"></i> <span>PIN Tranzaksyon</span></div>
                 <i class="fa fa-chevron-right"></i>
