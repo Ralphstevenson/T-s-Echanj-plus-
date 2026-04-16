@@ -1,7 +1,11 @@
+// auth.js - Version Konplè ak tout Mizajou
 import { 
     getAuth, 
     signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword 
+    createUserWithEmailAndPassword,
+    updatePassword,
+    reauthenticateWithCredential,
+    EmailAuthProvider 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { 
     getDatabase, 
@@ -48,7 +52,7 @@ window.handleLogin = async function() {
     }
 };
 
-// --- 3. ENSKRIPSYON (SIGNUP) KONPLÈ ---
+// --- 3. ENSKRIPSYON (SIGNUP) AK PARENNAJ ---
 window.handleSignup = async function() {
     const name = document.getElementById('sign-name').value.trim();
     const phone = document.getElementById('sign-phone').value.trim();
@@ -70,15 +74,12 @@ window.handleSignup = async function() {
         let sponsorUid = null;
         let sponsorName = "Sistèm";
 
-        // --- LOJIK CHÈCHE PARENN (Double Verifikasyon) ---
+        // Chèche si kòd sponsor a egziste (Check ars_id ak arsID)
         if (sponsorCode !== "") {
             const usersRef = ref(db, 'users');
-            
-            // Tcheke sou nouvo fòma a (ars_id)
             let q = query(usersRef, orderByChild('ars_id'), equalTo(sponsorCode));
             let snap = await get(q);
 
-            // Si nou pa jwenn li, tcheke sou ansyen fòma a (arsID)
             if (!snap.exists()) {
                 q = query(usersRef, orderByChild('arsID'), equalTo(sponsorCode));
                 snap = await get(q);
@@ -90,24 +91,21 @@ window.handleSignup = async function() {
                 sponsorName = result[sponsorUid].full_name || result[sponsorUid].name;
             } else {
                 alert("Kòd Sponsor sa a pa valid. Enskripsyon an ap kontinye san sponsor.");
-                sponsorUid = null;
             }
         }
 
-        // Kreye kont nan Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
         const user = userCredential.user;
         const newID = generateARSID();
 
-        // Prepare done yo pou tout pati nan sit la ka rale yo
         const userData = {
             uid: user.uid,
             full_name: name,
-            name: name, // Pou ansyen konpatibilite
+            name: name, 
             phone: phone,
             email: email,
-            ars_id: newID,   // Nouvo fòma
-            arsID: newID,    // Ansyen fòma (pou sekirite)
+            ars_id: newID,   
+            arsID: newID,    
             balance: 0,
             komisyon_balance: 0,
             invited_by_uid: sponsorUid,
@@ -117,22 +115,60 @@ window.handleSignup = async function() {
             createdAt: serverTimestamp()
         };
 
-        // Sove nan Database la
         await set(ref(db, 'users/' + user.uid), userData);
-
         alert(`Felisitasyon ${name}! Kont ou kreye. ID ou se: ${newID}`);
         
     } catch (error) {
-        console.error("Erè enskripsyon:", error.code);
-        if (error.code === 'auth/email-already-in-use') {
-            alert("Imèl sa a gen yon kont deja.");
-        } else {
-            alert("Erè: " + error.message);
-        }
+        alert("Erè enskripsyon: " + error.message);
     }
 };
 
-// Detekte kòd Refferal nan lyen an (egz: ?ref=ARS-123)
+// --- 4. CHANJE MODPAS (SEKIRITE) ---
+window.handleUpdatePassword = async function() {
+    const user = auth.currentUser;
+    const oldPass = document.getElementById('old-pass').value.trim();
+    const newPass = document.getElementById('new-pass').value.trim();
+
+    if (!oldPass || !newPass) return alert("Ranpli tout bwat yo.");
+    if (newPass.length < 6) return alert("Modpas la dwe gen omwen 6 karaktè.");
+
+    const btn = document.querySelector("#modal-password .btn-primary-pro");
+    const originalText = btn.innerText;
+    btn.innerText = "Y AP VERIFYE...";
+    btn.disabled = true;
+
+    try {
+        // Rekonekte pou verifye si se mèt kont lan
+        const credential = EmailAuthProvider.credential(user.email, oldPass);
+        await reauthenticateWithCredential(user, credential);
+
+        // Chanje modpas la
+        await updatePassword(user, newPass);
+
+        alert("Modpas ou chanje ak siksè!");
+        window.closeModal('modal-password');
+        document.getElementById('old-pass').value = "";
+        document.getElementById('new-pass').value = "";
+    } catch (error) {
+        if (error.code === 'auth/wrong-password') alert("Ansyen modpas la pa kòrèk.");
+        else alert("Erè: " + error.message);
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+};
+
+// --- 5. JESTYON MODAL ---
+window.openModal = (id) => {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.remove('hidden');
+};
+window.closeModal = (id) => {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.add('hidden');
+};
+
+// --- 6. DETEKTE REFFERAL NAN URL ---
 window.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const refCode = params.get('ref');
@@ -142,4 +178,4 @@ window.addEventListener('DOMContentLoaded', () => {
         input.style.border = "2px solid #109121";
     }
 });
-            
+        
