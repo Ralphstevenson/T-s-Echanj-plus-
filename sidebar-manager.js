@@ -1,49 +1,58 @@
 /**
- * Gid: Fichye sa a jere tout entèraksyon nan Sidebar la
+ * sidebar-manager.js
+ * Fonksyon sa a "pouse" tout seksyon sidebar la nan plas li
  */
 
-// Fonksyon pou ouvri/fèmen Sidebar la
-window.toggleSidebar = function() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay'); // Si ou gen yon div pou nwa dèyè a
-    
-    if (sidebar) {
-        sidebar.classList.toggle('active');
-    }
-    
-    if (overlay) {
-        overlay.classList.toggle('active');
+export const initializeSidebar = () => {
+    // Nou vize kote sidebar la dwe chita (paj-sidebar nan HTML ou a)
+    const container = document.getElementById('paj-sidebar');
+
+    if (container) {
+        container.innerHTML = `
+        <section class="sidebar-wrapper-dinamik">
+            <div class="sidebar-header">
+                <div class="user-meta">
+                    <div id="header-user-greeting" class="user-greeting"></div>
+                    <div id="header-security-status" class="security-status"></div>
+                    <p id="side-id" class="user-id-badge">ARS-ID</p>
+                    <h4 id="side-name">...</h4>
+                    <p id="side-email">...</p>
+                </div>
+                <i class="fa fa-times close-sidebar" onclick="toggleSidebar()"></i>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-item active" onclick="showPage('paj-akey', this)">
+                    <i class="fa fa-house"></i> <span>Akèy</span>
+                </div>
+
+                <div class="menu-item" onclick="showPage('paj-echanj', this)">
+                    <i class="fa fa-rotate"></i> <span>Echanj</span>
+                </div>
+
+                <div class="menu-item" onclick="showPage('paj-retre', this)">
+                    <i class="fa fa-money-bill-transfer"></i> <span>Retrè</span>
+                </div>
+
+                <div class="menu-item" onclick="showPage('paj-trans', this)">
+                    <i class="fa fa-clock-rotate-left"></i> <span>Istorik</span>
+                </div>
+
+                <div class="menu-item" onclick="showPage('paj-parene', this)">
+                    <i class="fas fa-users-viewfinder"></i>
+                    <span>Parennaj & Komisyon</span>
+                </div>
+
+                <div class="menu-item" onclick="showPage('paj-settings', this)">
+                    <i class="fa fa-gear"></i> <span>Paramètres</span>
+                </div>
+
+                <div class="menu-item logout-btn" onclick="handleLogout()">
+                    <i class="fa fa-right-from-bracket"></i> <span>Dekonekte</span>
+                </div>
+            </div>
+        </section>
+        `;
+        console.log("✅ Sidebar konekte nan seksyon 'paj-sidebar'");
     }
 };
-
-// Fonksyon pou mete ajou enfòmasyon pèsonèl nan Sidebar la
-export function updateSidebarUI(userData) {
-    const sideName = document.getElementById('side-name');
-    const sideEmail = document.getElementById('side-email');
-    const sideId = document.getElementById('side-id');
-    const greeting = document.getElementById('header-user-greeting');
-    const security = document.getElementById('header-security-status');
-
-    if (sideName) sideName.innerText = userData.name || "Kliyan Echanj";
-    if (sideEmail) sideEmail.innerText = userData.email || "";
-    if (sideId) sideId.innerText = userData.arsId || "ARS-0000";
-    
-    // Tèks Byenveni an jan ou te mande l la
-    if (greeting) greeting.innerText = "Welcome 🤗 !";
-    
-    // Estati sekirite a
-    if (security) {
-        security.innerHTML = '<i class="fa fa-shield-check"></i> Kont Sekirize';
-    }
-}
-
-// Fèmen sidebar si itilizatè a klike sou yon lyen
-document.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', () => {
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar && sidebar.classList.contains('active')) {
-            window.toggleSidebar();
-        }
-    });
-});
-
