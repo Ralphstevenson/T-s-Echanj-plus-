@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Echanj Plus | Ofisyèl 2026</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="akey.css">
+    <link rel="stylesheet" href="echanj.css">
+    <link rel="stylesheet" href="retre.css">
+    <link rel="stylesheet" href="istorik.css">
+    <link rel="stylesheet" href="chat.css">
+    <link rel="stylesheet" href="parene.css">
+    <link rel="stylesheet" href="paramet.css">
+
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+</head>
+<body>
+
+    <div id="auth-page">
+        <section id="login-section" class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <img src="https://i.postimg.cc/zBs03Y9d/file-00000000171471f5a0ff5138fae23eb4.png" alt="Logo" class="auth-logo">
+                    <h2>Byenveni ankò!</h2>
+                    <p>Konekte pou w kontinye echanj ou yo.</p>
+                </div>
+                <div class="auth-form">
+                    <div class="input-group">
+                        <i class="fa fa-envelope"></i>
+                        <input type="email" id="login-email" placeholder="Email">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa fa-lock"></i>
+                        <input type="password" id="login-pass" placeholder="Modpas">
+                    </div>
+                    <button class="btn-primary-pro" onclick="handleLogin()">KONEKTE</button>
+                    <div class="auth-links">
+                        <span onclick="toggleAuth('forgot')">Modpas bliye?</span>
+                        <p>Ou pa gen kont? <b onclick="toggleAuth('signup')">Kreyel isit la</b></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="signup-section" class="auth-container hidden">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h2>Kreye yon Kont</h2>
+                    <p>Antre nan fanmi Echanj Plus la jodi a.</p>
+                </div>
+                <div class="auth-form">
+                    <input type="text" id="sign-name" placeholder="Non konplè">
+                    <input type="tel" id="sign-phone" placeholder="Nimewo telefòn">
+                    <input type="email" id="sign-email" placeholder="Email">
+                    <input type="password" id="sign-pass" placeholder="Modpas">
+                    <input type="text" id="sponsor-input" placeholder="Kòd Sponsor (Opsyonèl)">
+                    <button class="btn-primary-pro" onclick="handleSignup()">KREYE KONT</button>
+                    <p class="auth-links">Gen kont deja? <b onclick="toggleAuth('login')">Konekte</b></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="forgot-section" class="auth-container hidden">
+            <div class="auth-card">
+                <h3>Reyajiste Modpas</h3>
+                <input type="email" id="forgot-email" placeholder="Email ou">
+                <button class="btn-primary-pro" onclick="handleForgotPassword()">VOYE LIEN</button>
+                <p class="auth-links" onclick="toggleAuth('login')">Retounen</p>
+            </div>
+        </section>
+    </div>
+
+    <div id="main-app-content" class="hidden">
+        
+        <aside id="sidebar" class="sidebar-pro"></aside>
+
+        <header id="main-header" class="main-header"></header>
+
+        <main class="content-wrapper">
+            <section id="paj-akey" class="page-content"></section>
+            <section id="paj-echanj" class="page-content hidden"></section>
+            <section id="paj-retre" class="page-content hidden"></section>
+            <section id="paj-trans" class="page-content hidden"></section>
+            <section id="chat-container" class="page-content hidden"></section>
+            <section id="paj-parene" class="page-content hidden"></section>
+            <section id="paj-settings" class="page-content hidden"></section>
+        </main>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="showPage('paj-akey', this)"><i class="fa fa-house"></i><span>Akèy</span></div>
+            <div class="nav-item" onclick="showPage('paj-echanj', this)"><i class="fa fa-rotate"></i><span>Echanj</span></div>
+            <div class="nav-item" onclick="showPage('paj-retre', this)"><i class="fa fa-money-bill-transfer"></i><span>Retrè</span></div>
+            <div class="nav-item" onclick="showPage('paj-trans', this)"><i class="fa fa-clock-rotate-left"></i><span>Istorik</span></div>
+            <div class="nav-item" onclick="showPage('chat-container', this)"><i class="fa fa-comments"></i><span>Sipò</span></div>
+        </nav>
+    </div>
+
+    <script type="module" src="script.js"></script>
+    <script type="module" src="auth.js"></script>
+</body>
+                      </html>
+          
