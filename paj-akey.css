@@ -1,11 +1,18 @@
+/* --- CONTAINER --- */
+.akey-container {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 /* --- CAROUSEL GLASS DESIGN --- */
 .carousel-section {
     position: relative;
     height: 160px;
     border-radius: 24px;
     overflow: hidden;
-    margin-bottom: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .carousel-slide {
@@ -15,14 +22,14 @@
     background-size: cover;
     background-position: center;
     display: none;
-    transition: 0.8s ease;
 }
 
 .carousel-slide.active { display: block; }
 
 .glass-overlay {
-    background: rgba(0, 0, 0, 0.4); /* Flou nwa sou imaj la */
-    backdrop-filter: blur(8px); /* Efè flou pwofesyonèl la */
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(10px); /* Sa a bay efè flou a */
+    -webkit-backdrop-filter: blur(10px);
     width: 100%;
     height: 100%;
     padding: 25px;
@@ -32,28 +39,27 @@
     color: white;
 }
 
-.slide-info h3 { font-weight: 800; letter-spacing: 1px; margin-bottom: 5px; font-size: 1.2rem; }
-.slide-info p { font-size: 0.85rem; opacity: 0.9; max-width: 200px; }
-.slide-icon { font-size: 3rem; opacity: 0.6; }
+.slide-info h3 { font-weight: 800; font-size: 1.2rem; margin-bottom: 5px; letter-spacing: 1px; }
+.slide-info p { font-size: 0.85rem; opacity: 0.9; }
+.slide-icon { font-size: 3rem; opacity: 0.5; }
 
 /* --- GRID BOUTON YO --- */
 .quick-actions-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 12px;
 }
 
 .icon-box-pwo {
-    width: 55px;
-    height: 55px;
+    width: 58px;
+    height: 58px;
     border-radius: 18px;
     margin: 0 auto 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.3rem;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
 .bg-blue { background: #0066ff; color: white; }
@@ -61,37 +67,44 @@
 .bg-gold { background: #ffab00; color: white; }
 .bg-dark { background: #1a1a1a; color: white; }
 
-.action-card span { font-size: 11px; font-weight: 700; color: #444; }
+.action-card span { font-size: 11px; font-weight: 700; color: #444; display: block; text-align: center; }
 
 /* --- KAT BALANS PREMIUM --- */
 .card-balance-premium {
-    background: linear-gradient(135deg, #001f3f 0%, #0074D9 100%);
-    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'); /* Ti teksti pwofesyonèl */
+    background: linear-gradient(135deg, #001a33 0%, #0066ff 100%);
+    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
     border-radius: 28px;
     padding: 25px;
     color: white;
+    box-shadow: 0 15px 35px rgba(0, 102, 255, 0.25);
     position: relative;
-    box-shadow: 0 15px 35px rgba(0, 102, 255, 0.2);
 }
 
-.balance-top { display: flex; justify-content: space-between; opacity: 0.8; font-size: 0.85rem; }
-.balance-main { display: flex; align-items: baseline; gap: 10px; margin: 15px 0; }
-.balance-main h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
-.curr { font-weight: 600; font-size: 1.1rem; color: #7fdbff; }
+.balance-top { display: flex; justify-content: space-between; opacity: 0.8; font-size: 0.8rem; font-weight: 600; }
+.balance-main { display: flex; align-items: baseline; gap: 8px; margin: 15px 0; }
+.balance-main h1 { font-size: 2.6rem; font-weight: 800; letter-spacing: -1px; }
+.curr { font-weight: 600; font-size: 1rem; color: #7fdbff; }
 
 .balance-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255,255,255,0.15);
     padding-top: 15px;
+    font-size: 0.85rem;
 }
 
 .chip-card {
     background: rgba(255,255,255,0.1);
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 9px;
     font-weight: 800;
-    letter-spacing: 2px;
-                  }
+    letter-spacing: 1px;
+}
+
+/* --- DOTS --- */
+.carousel-indicators { position: absolute; bottom: 15px; left: 25px; display: flex; gap: 5px; }
+.dot { width: 6px; height: 6px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.3s; }
+.dot.active { background: white; width: 18px; border-radius: 10px; }
+               
