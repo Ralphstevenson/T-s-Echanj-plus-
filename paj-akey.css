@@ -1,60 +1,97 @@
-/* Ranje Grid Bouton yo */
-.quick-actions-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Fòse 4 kolòn kòt a kòt */
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-.action-card {
-    text-align: center;
-    cursor: pointer;
-}
-
-.icon-box {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 8px auto;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-}
-
-.action-card span {
-    font-size: 12px;
-    font-weight: 600;
-    color: #333;
-}
-
-/* Ranje Kat Balans lan pou nwa pa kouvri ekriti */
-.card-balance-main {
-    background: #ffffff !important; /* Fòse background blan */
-    color: #1a1a1a !important; /* Fòse tèks nwa */
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-}
-
-.balance-display h1 {
-    color: #0066ff !important; /* Koulè ble pou montan an */
-    font-size: 2.2rem;
-    margin: 10px 0;
-}
-
-/* Ranje Carousel la */
+/* --- CAROUSEL GLASS DESIGN --- */
 .carousel-section {
-    height: 140px;
-    border-radius: 18px;
+    position: relative;
+    height: 160px;
+    border-radius: 24px;
+    overflow: hidden;
     margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
 .carousel-slide {
-    display: none; /* Kache tout slide yo */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    display: none;
+    transition: 0.8s ease;
 }
 
-.carousel-slide.active {
-    display: block; /* Montre sèlman sa ki aktiv la */
+.carousel-slide.active { display: block; }
+
+.glass-overlay {
+    background: rgba(0, 0, 0, 0.4); /* Flou nwa sou imaj la */
+    backdrop-filter: blur(8px); /* Efè flou pwofesyonèl la */
+    width: 100%;
+    height: 100%;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
 }
+
+.slide-info h3 { font-weight: 800; letter-spacing: 1px; margin-bottom: 5px; font-size: 1.2rem; }
+.slide-info p { font-size: 0.85rem; opacity: 0.9; max-width: 200px; }
+.slide-icon { font-size: 3rem; opacity: 0.6; }
+
+/* --- GRID BOUTON YO --- */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.icon-box-pwo {
+    width: 55px;
+    height: 55px;
+    border-radius: 18px;
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.bg-blue { background: #0066ff; color: white; }
+.bg-green { background: #00c853; color: white; }
+.bg-gold { background: #ffab00; color: white; }
+.bg-dark { background: #1a1a1a; color: white; }
+
+.action-card span { font-size: 11px; font-weight: 700; color: #444; }
+
+/* --- KAT BALANS PREMIUM --- */
+.card-balance-premium {
+    background: linear-gradient(135deg, #001f3f 0%, #0074D9 100%);
+    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'); /* Ti teksti pwofesyonèl */
+    border-radius: 28px;
+    padding: 25px;
+    color: white;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(0, 102, 255, 0.2);
+}
+
+.balance-top { display: flex; justify-content: space-between; opacity: 0.8; font-size: 0.85rem; }
+.balance-main { display: flex; align-items: baseline; gap: 10px; margin: 15px 0; }
+.balance-main h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
+.curr { font-weight: 600; font-size: 1.1rem; color: #7fdbff; }
+
+.balance-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 15px;
+}
+
+.chip-card {
+    background: rgba(255,255,255,0.1);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+                  }
