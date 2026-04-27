@@ -78,27 +78,113 @@
 
             
             <section id="paj-akey" class="page-content">
-                <div class="card-balance-rect">
-                    <p>Balans ou disponib</p>
-                    <div class="balance-row">
-                        <h1 id="user-balance">0.00</h1> <span>HTG</span>
+          
+                <div class="akey-container">
+    
+    <div class="carousel-section">
+        <div class="carousel-track">
+            <div class="carousel-slide active">
+                <div class="slide-content grad-blue">
+                    <div class="slide-info">
+                        <h3>Echanj rapid</h3>
+                        <p>MonCash pou NatCash nan mwens pase 5 minit.</p>
                     </div>
-                    <div class="komisyon-box">
-                        Komisyon: <span id="komisyon-balans">0.00</span> HTG
-                    </div>
+                    <i class="fa fa-bolt-lightning slide-icon"></i>
                 </div>
+            </div>
+            <div class="carousel-slide">
+                <div class="slide-content grad-purple">
+                    <div class="slide-info">
+                        <h3>Parennaj ak Komisyon</h3>
+                        <p>Touche 2% sou chak tranzaksyon moun ou parennen yo.</p>
+                    </div>
+                    <i class="fa fa-gift slide-icon"></i>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <div class="slide-content grad-green">
+                    <div class="slide-info">
+                        <h3>Sekirite Garanti</h3>
+                        <p>Platfòm ou a pwoteje ak chifraj dènye kri.</p>
+                    </div>
+                    <i class="fa fa-shield-check slide-icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-indicators">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+    </div>
 
-                <div class="quick-actions">
-                    <div class="action-item" onclick="showPage('paj-echanj', this)">
-                        <i class="fa fa-rotate"></i><span>Echanj</span>
-                    </div>
-                    <div class="action-item" onclick="showPage('paj-retre', this)">
-                        <i class="fa fa-money-bill-transfer"></i><span>Retrè</span>
-                    </div>
-                    <div class="action-item" onclick="showPage('paj-parene', this)">
-                        <i class="fa fa-users-viewfinder"></i><span>Parenn</span>
-                    </div>
-                </div>
+    <div class="card-balance-main">
+        <div class="balance-header">
+            <span>Balans Total Disponib</span>
+            <i class="fa fa-eye-slash toggle-balance"></i>
+        </div>
+        <div class="balance-display">
+            <h1 id="user-balance">0.00</h1>
+            <span class="currency">HTG</span>
+        </div>
+        <div class="balance-footer">
+            <div class="mini-stat">
+                <i class="fa fa-arrow-trend-up"></i>
+                <span>Komisyon: <b id="komisyon-balans">0.00</b> HTG</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title-row">
+        <h3>Aksyon Rapid</h3>
+    </div>
+    <div class="quick-actions-grid">
+        <div class="action-card" onclick="showPage('paj-echanj', this)">
+            <div class="icon-box bg-light-blue">
+                <i class="fa fa-rotate"></i>
+            </div>
+            <span>Echanj</span>
+        </div>
+
+        <div class="action-card" onclick="showPage('paj-retre', this)">
+            <div class="icon-box bg-light-green">
+                <i class="fa fa-money-bill-transfer"></i>
+            </div>
+            <span>Retrè</span>
+        </div>
+
+        <div class="action-card" onclick="showPage('paj-parene', this)">
+            <div class="icon-box bg-light-gold">
+                <i class="fa fa-users-viewfinder"></i>
+            </div>
+            <span>Parenn</span>
+        </div>
+
+        <div class="action-card" onclick="showPage('paj-settings', this)">
+            <div class="icon-box bg-light-gray">
+                <i class="fa fa-gear"></i>
+            </div>
+            <span>Anviwònman</span>
+        </div>
+    </div>
+
+    <div class="section-title-row">
+        <h3>Dènye Aktivite</h3>
+        <button class="btn-see-all" onclick="showPage('paj-trans', this)">Wè tout</button>
+    </div>
+    
+    <div id="recent-activity-list" class="activity-container">
+        <div class="activity-item-skeleton">
+            <div class="activity-icon-placeholder"></div>
+            <div class="activity-details-placeholder">
+                <div class="line-short"></div>
+                <div class="line-long"></div>
+            </div>
+        </div>
+    </div>
+
+            </div>
+                
             </section>
 
             
