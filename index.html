@@ -19,80 +19,124 @@
     <link rel="stylesheet" href="parene.css">
     <link rel="stylesheet" href="paramet.css">
 
-    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
-<body>
+<body class="light-mode">
 
-    <div id="auth-page">
-        <section id="login-section" class="auth-container">
-            <div class="auth-card">
-                <div class="auth-header">
-                    <img src="https://i.postimg.cc/zBs03Y9d/file-00000000171471f5a0ff5138fae23eb4.png" alt="Logo" class="auth-logo">
-                    <h2>Byenveni ankò!</h2>
-                    <p>Konekte pou w kontinye echanj ou yo.</p>
+    <div id="auth-page" class="auth-container">
+        <div class="auth-card">
+            <center>
+                <img src="https://i.postimg.cc/zBs03Y9d/file-00000000171471f5a0ff5138fae23eb4.png" alt="Logo" class="auth-logo">
+            </center>
+            
+            <div id="login-section">
+                <h2 class="auth-title">Konekte</h2>
+                <div class="input-group">
+                    <i class="fa fa-envelope"></i>
+                    <input type="email" id="login-email" placeholder="Email ou">
                 </div>
-                <div class="auth-form">
-                    <div class="input-group">
-                        <i class="fa fa-envelope"></i>
-                        <input type="email" id="login-email" placeholder="Email">
-                    </div>
-                    <div class="input-group">
-                        <i class="fa fa-lock"></i>
-                        <input type="password" id="login-pass" placeholder="Modpas">
-                    </div>
-                    <button class="btn-primary-pro" onclick="handleLogin()">KONEKTE</button>
-                    <div class="auth-links">
-                        <span onclick="toggleAuth('forgot')">Modpas bliye?</span>
-                        <p>Ou pa gen kont? <b onclick="toggleAuth('signup')">Kreyel isit la</b></p>
-                    </div>
+                <div class="input-group">
+                    <i class="fa fa-lock"></i>
+                    <input type="password" id="login-pass" placeholder="Modpas">
                 </div>
+                <button class="btn-primary-pro" onclick="handleLogin()">KONEKTE</button>
+                <p class="auth-footer">Ou pa gen kont? <span onclick="toggleAuth('signup')">Kreyel isit la</span></p>
+                <p class="auth-footer"><span onclick="toggleAuth('forgot')">Modpas bliye?</span></p>
             </div>
-        </section>
 
-        <section id="signup-section" class="auth-container hidden">
-            <div class="auth-card">
-                <div class="auth-header">
-                    <h2>Kreye yon Kont</h2>
-                    <p>Antre nan fanmi Echanj Plus la jodi a.</p>
-                </div>
-                <div class="auth-form">
-                    <input type="text" id="sign-name" placeholder="Non konplè">
-                    <input type="tel" id="sign-phone" placeholder="Nimewo telefòn">
-                    <input type="email" id="sign-email" placeholder="Email">
-                    <input type="password" id="sign-pass" placeholder="Modpas">
-                    <input type="text" id="sponsor-input" placeholder="Kòd Sponsor (Opsyonèl)">
-                    <button class="btn-primary-pro" onclick="handleSignup()">KREYE KONT</button>
-                    <p class="auth-links">Gen kont deja? <b onclick="toggleAuth('login')">Konekte</b></p>
-                </div>
-            </div>
-        </section>
 
-        <section id="forgot-section" class="auth-container hidden">
-            <div class="auth-card">
-                <h3>Reyajiste Modpas</h3>
-                <input type="email" id="forgot-email" placeholder="Email ou">
-                <button class="btn-primary-pro" onclick="handleForgotPassword()">VOYE LIEN</button>
-                <p class="auth-links" onclick="toggleAuth('login')">Retounen</p>
+            
+            <div id="signup-section" class="hidden">
+                <h2 class="auth-title">Kreye Kont</h2>
+                <input type="text" id="sign-name" class="input-pro" placeholder="Non Konple">
+                <input type="tel" id="sign-phone" class="input-pro" placeholder="Nimewo Telefon">
+                <input type="email" id="sign-email" class="input-pro" placeholder="Email">
+                <input type="password" id="sign-pass" class="input-pro" placeholder="Modpas">
+                <input type="text" id="sponsor-input" class="input-pro" placeholder="Kod Sponsor (Opsyonel)">
+                <button class="btn-primary-pro" onclick="handleSignup()">ENREGISTRE</button>
+                <p class="auth-footer">Ou gen kont deja? <span onclick="toggleAuth('login')">Konekte</span></p>
             </div>
-        </section>
+        </div>
     </div>
 
     <div id="main-app-content" class="hidden">
         
-        <aside id="sidebar" class="sidebar-pro"></aside>
+        <aside id="sidebar" class="sidebar-pro">
+            </aside>
 
-        <header id="main-header" class="main-header"></header>
+        <header id="main-header" class="main-header">
+            </header>
+
+    
 
         <main class="content-wrapper">
+
+            
+            
             <section id="paj-sidebar" class="sidebar-wrapper-dinamik"></section>
-            <section id="paj-akey" class="page-content"></section>
-            <section id="paj-echanj" class="page-content hidden"></section>
-            <section id="paj-retre" class="page-content hidden"></section>
-            <section id="paj-trans" class="page-content hidden"></section>
-            <section id="chat-container" class="page-content hidden"></section>
-            <section id="paj-parene" class="page-content hidden"></section>
-            <section id="paj-settings" class="page-content hidden"></section>
+
+
+            
+            <section id="paj-akey" class="page-content">
+                <div class="card-balance-rect">
+                    <p>Balans ou disponib</p>
+                    <div class="balance-row">
+                        <h1 id="user-balance">0.00</h1> <span>HTG</span>
+                    </div>
+                    <div class="komisyon-box">
+                        Komisyon: <span id="komisyon-balans">0.00</span> HTG
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="action-item" onclick="showPage('paj-echanj', this)">
+                        <i class="fa fa-rotate"></i><span>Echanj</span>
+                    </div>
+                    <div class="action-item" onclick="showPage('paj-retre', this)">
+                        <i class="fa fa-money-bill-transfer"></i><span>Retrè</span>
+                    </div>
+                    <div class="action-item" onclick="showPage('paj-parene', this)">
+                        <i class="fa fa-users-viewfinder"></i><span>Parenn</span>
+                    </div>
+                </div>
+            </section>
+
+            
+
+            <section id="paj-echanj" class="page-content hidden">
+                </section>
+
+            
+
+            <section id="paj-retre" class="page-content hidden">
+                </section>
+
+            
+
+            <section id="paj-trans" class="page-content hidden">
+                </section>
+
+            
+
+            <section id="chat-container" class="page-content hidden">
+                </section>
+
+            
+
+            <section id="paj-parene" class="page-content hidden">
+                </section>
+
+            
+
+            <section id="paj-settings" class="page-content hidden">
+                </section>
+
+
+            
         </main>
+
+
+        
 
         <nav class="bottom-nav">
             <div class="nav-item active" onclick="showPage('paj-akey', this)"><i class="fa fa-house"></i><span>Akèy</span></div>
@@ -103,9 +147,13 @@
         </nav>
     </div>
 
+    <div id="modal-rabe" class="modal-overlay hidden">
+        </div>
+
     <script type="module" src="script.js"></script>
     <script type="module" src="auth.js"></script>
-    <script type="module" src="sidebar-manager.js"></script>
-</body>
-                      </html>
-          
+    </body>
+
+    
+        </html>
+        
