@@ -73,7 +73,73 @@
 
             
             
-            <section id="paj-sidebar" class="sidebar-wrapper-dinamik"></section>
+            <section id="paj-sidebar" class="sidebar-wrapper-dinamik">
+
+                <div class="echanj-wrapper">
+    <div class="page-header-title">
+        <h2>Nouvo Echanj</h2>
+        <p>Ranpli fòm nan pou w kòmanse</p>
+    </div>
+
+    <div class="echanj-card">
+        <div class="echanj-step">
+            <label class="input-label"><i class="fa fa-paper-plane"></i> W ap voye soti nan:</label>
+            <div class="custom-select-wrapper">
+                <select id="send-method" class="select-pro" onchange="updateExchangeRate()">
+                    <option value="" disabled selected>Chwazi metòd...</option>
+                    <option value="moncash" data-icon="fa-mobile-screen">MonCash</option>
+                    <option value="natcash" data-icon="fa-mobile-retro">NatCash</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="exchange-divider">
+            <i class="fa fa-repeat bounce-icon"></i>
+        </div>
+
+        <div class="echanj-step">
+            <label class="input-label"><i class="fa fa-wallet"></i> W ap resevwa nan:</label>
+            <div class="custom-select-wrapper">
+                <select id="receive-method" class="select-pro" onchange="updateExchangeRate()">
+                    <option value="" disabled selected>Chwazi metòd...</option>
+                    <option value="natcash">NatCash</option>
+                    <option value="moncash">MonCash</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="amount-section">
+            <label class="input-label">Montan w ap voye a:</label>
+            <div class="amount-input-container">
+                <input type="number" id="exchange-amount" placeholder="0.00" oninput="calculateExchange()">
+                <span class="currency-tag">HTG</span>
+            </div>
+            
+            <div class="exchange-summary-box">
+                <div class="summary-line">
+                    <span>Frè sèvis (16.5%):</span>
+                    <span id="service-fee">0.00 HTG</span>
+                </div>
+                <div class="summary-line total">
+                    <span>W ap resevwa:</span>
+                    <span id="receive-total">0.00 HTG</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-primary-pro btn-full" onclick="handleExchangeSubmission()">
+            <i class="fa fa-check-circle"></i> KONTINYE ECHANJ LA
+        </button>
+    </div>
+
+    <div class="info-alert">
+        <i class="fa fa-circle-info"></i>
+        <p>Asire w nimewo w ap voye kòb la kòrèk. Tranzaksyon yo pa ka anile.</p>
+    </div>
+                </div>
+                
+                
+            </section>
 
 
             
