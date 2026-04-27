@@ -1,9 +1,9 @@
 /* --- CONTAINER --- */
 .akey-container {
-    padding: 10px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 22px;
 }
 
 /* --- CAROUSEL GLASS DESIGN --- */
@@ -12,7 +12,7 @@
     height: 160px;
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
 }
 
 .carousel-slide {
@@ -22,13 +22,14 @@
     background-size: cover;
     background-position: center;
     display: none;
+    transition: 0.8s ease;
 }
 
 .carousel-slide.active { display: block; }
 
 .glass-overlay {
     background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(10px); /* Sa a bay efè flou a */
+    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     width: 100%;
     height: 100%;
@@ -39,9 +40,9 @@
     color: white;
 }
 
-.slide-info h3 { font-weight: 800; font-size: 1.2rem; margin-bottom: 5px; letter-spacing: 1px; }
-.slide-info p { font-size: 0.85rem; opacity: 0.9; }
-.slide-icon { font-size: 3rem; opacity: 0.5; }
+.slide-info h3 { font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; margin-bottom: 5px; }
+.slide-info p { font-size: 0.85rem; opacity: 0.9; max-width: 200px; }
+.slide-icon { font-size: 3.2rem; opacity: 0.5; }
 
 /* --- GRID BOUTON YO --- */
 .quick-actions-grid {
@@ -51,15 +52,15 @@
 }
 
 .icon-box-pwo {
-    width: 58px;
-    height: 58px;
-    border-radius: 18px;
-    margin: 0 auto 8px;
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    margin: 0 auto 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    font-size: 1.4rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
 }
 
 .bg-blue { background: #0066ff; color: white; }
@@ -71,19 +72,20 @@
 
 /* --- KAT BALANS PREMIUM --- */
 .card-balance-premium {
-    background: linear-gradient(135deg, #001a33 0%, #0066ff 100%);
+    background: linear-gradient(135deg, #001f3f 0%, #0074D9 100%);
     background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
     border-radius: 28px;
     padding: 25px;
     color: white;
-    box-shadow: 0 15px 35px rgba(0, 102, 255, 0.25);
+    box-shadow: 0 15px 40px rgba(0, 102, 255, 0.25);
     position: relative;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-.balance-top { display: flex; justify-content: space-between; opacity: 0.8; font-size: 0.8rem; font-weight: 600; }
-.balance-main { display: flex; align-items: baseline; gap: 8px; margin: 15px 0; }
-.balance-main h1 { font-size: 2.6rem; font-weight: 800; letter-spacing: -1px; }
-.curr { font-weight: 600; font-size: 1rem; color: #7fdbff; }
+.balance-top { display: flex; justify-content: space-between; opacity: 0.8; font-size: 0.85rem; font-weight: 600; }
+.balance-main { display: flex; align-items: baseline; gap: 8px; margin: 18px 0; }
+.balance-main h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
+.curr { font-weight: 600; font-size: 1.1rem; color: #7fdbff; }
 
 .balance-bottom {
     display: flex;
@@ -91,20 +93,19 @@
     align-items: center;
     border-top: 1px solid rgba(255,255,255,0.15);
     padding-top: 15px;
-    font-size: 0.85rem;
 }
 
 .chip-card {
     background: rgba(255,255,255,0.1);
-    padding: 3px 10px;
-    border-radius: 6px;
-    font-size: 9px;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 10px;
     font-weight: 800;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
 }
 
-/* --- DOTS --- */
-.carousel-indicators { position: absolute; bottom: 15px; left: 25px; display: flex; gap: 5px; }
+/* --- INDICATORS --- */
+.carousel-indicators { position: absolute; bottom: 15px; left: 25px; display: flex; gap: 6px; }
 .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.3s; }
-.dot.active { background: white; width: 18px; border-radius: 10px; }
-               
+.dot.active { background: white; width: 20px; border-radius: 10px; }
+    
