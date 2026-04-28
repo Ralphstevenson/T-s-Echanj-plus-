@@ -3,10 +3,7 @@ import { ref, get, push, set, serverTimestamp } from "https://www.gstatic.com/fi
 
 let retreData = { non: "", telefon: "", metod: "", montan: 0 };
 
-/**
- * ETAP 1: Klike sou bouton "KONTINYE" nan fòm nan
- * Sa a ap louvri Rezime a anvan
- */
+// 1. Bouton Kontinye nan fòm nan
 document.getElementById('btn-konfime-retre').onclick = async () => {
     retreData.non = document.getElementById('retre-name').value;
     retreData.telefon = document.getElementById('retre-phone').value;
@@ -18,38 +15,38 @@ document.getElementById('btn-konfime-retre').onclick = async () => {
         return;
     }
 
-    // Tcheke balans
-    const userSnap = await get(ref(db, `users/${auth.currentUser.uid}`));
-    if (retreData.montan > userSnap.val().balance) {
-        alert("Balans ou pa ase!");
-        return;
-    }
+    try {
+        // Tcheke balans nan Firebase
+        const userSnap = await get(ref(db, `users/${auth.currentUser.uid}`));
+        const balansAktyel = userSnap.val().balance || 0;
 
-    // Mete enfòmasyon nan Modal Rezime a
-    document.getElementById('sum-retre-non').innerText = retreData.non;
-    document.getElementById('sum-retre-tel').innerText = retreData.telefon;
-    document.getElementById('sum-retre-metod').innerText = retreData.metod.toUpperCase();
-    document.getElementById('sum-retre-montan').innerText = retreData.montan.toFixed(2) + " HTG";
+        if (retreData.montan > balansAktyel) {
+            alert("Balans ou pa ase pou montan sa a!");
+            return;
+        }
 
-    // Louvri Modal Rezime
-    document.getElementById('modal-rezime-retre').classList.remove('hidden');
+        // Ranpli Rezime a
+        document.getElementById('sum-retre-non').innerText = retreData.non;
+        document.getElementById('sum-retre-tel').innerText = retreData.telefon;
+        document.getElementById('sum-retre-metod').innerText = retreData.metod.toUpperCase();
+        document.getElementById('sum-retre-montan').innerText = retreData.montan.toFixed(2) + " HTG";
+
+        // Louvri Rezime
+        document.getElementById('modal-rezime-retre').classList.remove('hidden');
+    } catch (e) { alert("Erè: " + e.message); }
 };
 
-/**
- * ETAP 2: Itilizatè a klike sou "Kontinye" nan Rezime a
- * Sa a ap louvri Modal PIN lan
- */
+// 2. Louvri modal PIN apre rezime
 window.openPinModal = () => {
     document.getElementById('modal-rezime-retre').classList.add('hidden');
     document.getElementById('modal-pin-retre').classList.remove('hidden');
 };
 
-/**
- * ETAP 3: Valide PIN epi Anrejistre nan Firebase
- */
+// 3. Valide PIN epi Save
 window.validateAndSaveRetre = async () => {
     const pinAntre = document.getElementById('pin-retre-input').value;
-    
+    if (!pinAntre) return;
+
     try {
         const pinSnap = await get(ref(db, `users/${auth.currentUser.uid}/pin`));
         if (pinSnap.val() !== pinAntre) {
@@ -70,17 +67,16 @@ window.validateAndSaveRetre = async () => {
             timestamp: serverTimestamp()
         });
 
-        // Louvri Modal Siksè a ak Ikon an
+        // Montre Siksè (LordIcon)
         document.getElementById('modal-pin-retre').classList.add('hidden');
         document.getElementById('modal-final').classList.remove('hidden');
 
-        // Vide fòm nan
+        // Netwaye fòm nan
+        document.getElementById('retre-name').value = "";
         document.getElementById('retre-amount').value = "";
         document.getElementById('pin-retre-input').value = "";
 
-    } catch (error) {
-        alert("Erè: " + error.message);
-    }
+    } catch (error) { alert("Erè nan save: " + error.message); }
 };
 
 window.closeAllModals = () => {
