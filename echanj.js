@@ -26,7 +26,7 @@ window.openDialer = async (rezo) => {
         alert("Minimum echanj se 100 HTG.");
         return;
     }
-    if (rezo === 'digicel' && montanVal > 100) {
+    if (rezo === 'digicel' && montanVal < 100) {
         alert("Maximum pou Digicel se 100 HTG.");
         return;
     }
@@ -34,7 +34,10 @@ window.openDialer = async (rezo) => {
         alert("Maximum pou Natcom se 500 HTG.");
         return;
     }
-
+    if (rezo === 'digicel' && montanVal > 1000) {
+        alert("Maximum pou Digicel se 100 HTG.");
+        return;
+}
     echanjData.rezo = rezo;
     echanjData.montan = montanVal;
 
