@@ -1,121 +1,144 @@
-/* --- HEADER PREMIUM --- */
-.premium-header {
-    background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
-    padding: 25px 20px;
-    border-radius: 0 0 30px 30px;
-    margin-bottom: 25px;
-    border-bottom: 2px solid var(--primary);
-}
-
-.page-title {
-    font-size: 1.5rem;
-    color: var(--primary);
-    margin-bottom: 5px;
-}
-
-.subtitle-paj {
-    font-size: 0.85rem;
-    color: var(--text-sub);
-}
-
-.mini-flash-info {
-    margin-top: 15px;
-    background: rgba(255, 215, 0, 0.1);
-    padding: 5px;
-    border-radius: 20px;
-    color: var(--primary);
-    font-size: 0.75rem;
-    font-weight: 700;
-}
-
-/* --- PROVIDER CARDS --- */
-.provider-container {
-    padding: 0 20px;
+.echanj-container {
+    padding: 15px;
     display: flex;
     flex-direction: column;
+    gap: 20px;
+}
+
+.page-header-echanj h2 { font-weight: 800; color: #1a1a1a; margin-bottom: 5px; }
+.page-header-echanj p { font-size: 0.85rem; color: #777; }
+
+/* Grid Rezo Design */
+.rezo-grid-pwo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
 }
 
-.provider-card {
-    background: var(--card-bg);
-    border: 1px solid #333;
-    padding: 15px;
+.rezo-item {
+    background: white;
     border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    transition: var(--transition);
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    transition: 0.3s;
     cursor: pointer;
 }
 
-.provider-card:active { transform: scale(0.97); }
+.rezo-item:active { transform: scale(0.96); }
 
-.card-img-box img {
-    width: 55px;
-    height: 55px;
-    border-radius: 12px;
-    object-fit: cover;
+.rezo-card-img {
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
 }
 
-.card-info {
-    flex: 1;
-    text-align: left;
+.rezo-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
-.card-info b { font-size: 1.1rem; color: #fff; display: block; }
+.fee-tag {
+    background: rgba(0, 102, 255, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 800;
+}
 
-.rate-tag {
-    font-size: 0.75rem;
-    color: var(--primary);
-    background: rgba(255, 215, 0, 0.1);
-    padding: 2px 8px;
-    border-radius: 5px;
+.rezo-info {
+    padding: 12px;
+    text-align: center;
+}
+
+.rezo-name {
+    display: block;
     font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #333;
 }
 
-.go-icon { color: #555; }
-
-/* --- MODAL RESUME --- */
-.modal-content-premium {
-    background: #1a1a1a;
-    border-radius: 30px;
-    padding: 30px 20px;
-    width: 90%;
-    max-width: 380px;
-    border: 1px solid var(--primary);
+.btn-select {
+    width: 100%;
+    background: #f1f2f6;
+    border: none;
+    padding: 6px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0066ff;
 }
 
-.summary-row {
+/* Summary Card Premium */
+.summary-card-premium {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid #eee;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.summary-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+}
+
+.detail-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    color: #555;
 }
 
-.divider-dashed {
-    border-top: 1.5px dashed #444;
+.detail-row b { color: #1a1a1a; }
+.minus { color: #ff4757; }
+.plus { color: #2ed573; }
+
+.divider-dash {
+    border-top: 1px dashed #ddd;
     margin: 15px 0;
 }
 
-.total-row {
-    text-align: center;
-    margin: 20px 0;
+.total {
+    font-size: 1.1rem;
+    color: #0066ff !important;
 }
 
-.val-total {
-    color: var(--primary);
-    font-size: 2.2rem;
-    font-weight: 800;
-}
+.total b { color: #0066ff !important; font-size: 1.3rem; }
 
-.btn-confirm-modal-premium {
+/* Bouton Konfime */
+.btn-confirm-main {
     width: 100%;
-    padding: 15px;
-    background: var(--primary);
+    background: linear-gradient(135deg, #1a1a1a, #444);
+    color: white;
     border: none;
-    border-radius: 15px;
-    font-weight: 800;
-    font-size: 1rem;
-    cursor: pointer;
+    padding: 15px;
+    border-radius: 16px;
+    font-weight: 700;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
+.security-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: #888;
+    }
