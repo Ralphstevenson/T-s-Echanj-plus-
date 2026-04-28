@@ -1,129 +1,101 @@
-/* --- RETRE CONTAINER --- */
-.paj-retre-kontni {
-    padding: 20px;
-    padding-bottom: 100px;
-}
-
-/* Status Bar anwo a */
-.user-status-bar-simple {
-    display: flex;
-    justify-content: space-between;
-    background: var(--card-bg);
+.retre-container {
     padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    border: 1px solid #333;
-}
-
-.status-info {
     display: flex;
     flex-direction: column;
+    gap: 20px;
 }
 
-.status-info .label {
-    font-size: 0.75rem;
-    color: var(--text-sub);
+/* Fòm nan */
+.card-retre-form {
+    background: white;
+    padding: 25px;
+    border-radius: 28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-.status-info .value {
-    font-weight: 800;
-    color: var(--primary);
+.input-group-pwo {
+    margin-bottom: 18px;
 }
 
-/* --- FORM GROUP --- */
-.form-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.form-group label {
+.input-group-pwo label {
     display: block;
     font-size: 0.85rem;
-    color: var(--text-sub);
+    font-weight: 700;
+    color: #444;
     margin-bottom: 8px;
 }
 
-.form-group label i {
-    color: var(--primary);
-    margin-right: 5px;
-}
-
-.form-group input, .form-group select {
+.input-group-pwo input, .input-group-pwo select {
     width: 100%;
     padding: 14px;
-    background: #252525;
-    border: 1.5px solid #333;
     border-radius: 12px;
-    color: #fff;
+    border: 1.5px solid #eee;
+    background: #f9f9f9;
+    font-family: inherit;
     font-size: 1rem;
     outline: none;
+    transition: 0.3s;
 }
 
-/* --- MODAL OVERLAY --- */
+.input-group-pwo input:focus { border-color: #0066ff; background: white; }
+
+/* Modal Styles */
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
     backdrop-filter: blur(5px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 3000;
+    z-index: 1000;
     padding: 20px;
 }
 
-.modal-content {
-    background: var(--card-bg);
-    padding: 30px 20px;
-    border-radius: 25px;
+.modal-card {
+    background: white;
     width: 100%;
     max-width: 350px;
+    border-radius: 30px;
+    padding: 30px;
     text-align: center;
-    border: 1px solid #444;
-    animation: modalPop 0.3s ease-out;
+    animation: slideUp 0.3s ease;
 }
 
-@keyframes modalPop {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+.modal-icon-top { font-size: 3rem; color: #0066ff; margin-bottom: 15px; }
+
+.pin-field {
+    letter-spacing: 15px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 20px 0;
 }
 
-.recap-box {
-    background: #252525;
+.summary-list {
+    background: #f8f9fa;
     padding: 15px;
     border-radius: 15px;
-    text-align: left;
     margin: 20px 0;
-    font-size: 0.9rem;
-    color: #ddd;
 }
 
-.modal-btns {
+.s-row {
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
 }
 
-.btn-cancel {
-    flex: 1;
-    padding: 12px;
-    background: #333;
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-weight: 700;
-}
-
-.btn-confirm {
-    flex: 2;
-    padding: 12px;
-    background: var(--primary);
-    color: #000;
-    border: none;
-    border-radius: 12px;
+.s-row.total {
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    color: #0066ff;
     font-weight: 800;
-  }
+}
 
+.hidden { display: none !important; }
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+    }
