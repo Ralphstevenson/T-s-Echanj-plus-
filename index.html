@@ -310,7 +310,84 @@
             
 
             <section id="paj-retre" class="page-content hidden">
-                </section>
+
+
+
+                <div class="retre-container">
+    <div class="page-header">
+        <h2>Retire Kòb</h2>
+        <p>Voye kòb ou sou MonCash oswa NatCash rapidman.</p>
+    </div>
+
+    <div class="card-retre-form">
+        <div class="input-group-pwo">
+            <label><i class="fa fa-user"></i> Non konplè Resevè a</label>
+            <input type="text" id="retre-name" placeholder="Ex: Jean Mary">
+        </div>
+
+        <div class="input-group-pwo">
+            <label><i class="fa fa-phone"></i> Nimewo Telefòn (MonCash/NatCash)</label>
+            <input type="number" id="retre-phone" placeholder="Ex: 47111123">
+        </div>
+
+        <div class="input-group-pwo">
+            <label><i class="fa fa-building-columns"></i> Metòd Resepsyon</label>
+            <select id="retre-method">
+                <option value="moncash">MonCash</option>
+                <option value="natcash">NatCash</option>
+            </select>
+        </div>
+
+        <div class="input-group-pwo">
+            <label><i class="fa fa-money-bill-1"></i> Montan w ap retire (HTG)</label>
+            <input type="number" id="retre-amount" placeholder="Min: 100 HTG">
+        </div>
+
+        <button id="btn-konfime-retre" class="btn-primary-pro full-width">
+            KONTINYE <i class="fa fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <div id="modal-pin-retre" class="modal-overlay hidden">
+        <div class="modal-card">
+            <i class="fa fa-shield-halved modal-icon-top"></i>
+            <h3>Sekirite</h3>
+            <p>Antre PIN 4 chif ou a pou valide aksyon sa a.</p>
+            <input type="password" id="pin-retre-input" maxlength="4" placeholder="****" class="pin-field">
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeAllModals()">Anile</button>
+                <button class="btn-confirm" onclick="validateRetrePin()">Valide PIN</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-step2" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h3>Konfime Tranzaksyon</h3>
+            <div class="summary-list">
+                <div class="s-row"><span>Resevè:</span> <b id="sum-retre-non">---</b></div>
+                <div class="s-row"><span>Telefòn:</span> <b id="sum-retre-tel">---</b></div>
+                <div class="s-row"><span>Metòd:</span> <b id="sum-retre-metod">---</b></div>
+                <div class="s-row total"><span>Montan:</span> <b id="sum-retre-montan">0.00 HTG</b></div>
+            </div>
+            <button class="btn-confirm full-width" onclick="finaliseRetre()">KONFIME RETRÈ</button>
+            <button class="btn-link" onclick="closeAllModals()">Anile</button>
+        </div>
+    </div>
+
+    <div id="modal-final" class="modal-overlay hidden">
+        <div class="modal-card success-card">
+            <div class="success-icon"><i class="fa fa-check"></i></div>
+            <h3>Demann Voye!</h3>
+            <p>Administratè yo ap verifye epi vese kòb la nan mwens pase 30 minit.</p>
+            <button class="btn-primary-pro full-width" onclick="closeAllModals()">OK, KONPRANN</button>
+        </div>
+    </div>
+                </div>
+                
+            
+            
+            </section>
 
             
 
