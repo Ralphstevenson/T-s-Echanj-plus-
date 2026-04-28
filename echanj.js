@@ -5,137 +5,132 @@ import { ref, get, push, set, query, orderByChild, equalTo, serverTimestamp } fr
 let echanjData = {
     rezo: "",
     montan: 0,
-    fre: 0.165, // Frè sistèm 16.5%
-    rabe: 0
+    freSistèm: 0.165, // 16.5%
+    rabeAplikab: 0
 };
 
 /**
- * 1. Ouvri premye etap echanj la
+ * STEP 1: Lè moun nan klike sou yon rezo (Digicel oswa Natcom)
  */
 window.openDialer = async (rezo) => {
-    // Tcheke si itilizatè a konekte
     if (!auth.currentUser) {
         alert("Tanpri konekte sou kont ou anvan!");
         return;
     }
 
     const kantite = prompt("Konbyen minit w ap echanje?");
-    
-    if (!kantite || isNaN(kantite) || kantite <= 0) {
-        alert("Tanpri antre yon montan ki valab.");
+    const montanVal = parseFloat(kantite);
+
+    // Verifikasyon Limit
+    if (isNaN(montanVal) || montanVal < 100) {
+        alert("Minimum echanj se 100 HTG.");
+        return;
+    }
+    if (rezo === 'digicel' && montanVal > 100) {
+        alert("Maximum pou Digicel se 100 HTG.");
+        return;
+    }
+    if (rezo === 'natcom' && montanVal > 500) {
+        alert("Maximum pou Natcom se 500 HTG.");
         return;
     }
 
     echanjData.rezo = rezo;
-    echanjData.montan = parseFloat(kantite);
+    echanjData.montan = montanVal;
 
     try {
-        // Tcheke rabè san bloke baz de done a
+        // Tcheke si se premye echanj pou bay rabè 2.5% sou frè a
         const uid = auth.currentUser.uid;
         const transRef = ref(db, 'transactions');
-        const rabeQuery = query(transRef, orderByChild('uid'), equalTo(uid));
+        const q = query(transRef, orderByChild('uid'), equalTo(uid));
+        const snapshot = await get(q);
         
-        const snapshot = await get(rabeQuery);
-        let dejaFèEchanj = false;
-
+        let dejaFeEchanj = false;
         if (snapshot.exists()) {
-            const transactions = snapshot.val();
-            // Verifye si gen yon echanj ki 'completed' deja
-            dejaFèEchanj = Object.values(transactions).some(t => 
-                t.type === 'echanj' && t.status === 'completed'
-            );
+            dejaFeEchanj = Object.values(snapshot.val()).some(t => t.type === 'echanj');
         }
 
-        // Rabè 9.5 HTG pou premye fwa
-        echanjData.rabe = dejaFèEchanj ? 0 : 9.5;
-
-        // Afiche rezime a
-        prepareRezimeModal();
-
+        // Si se premye fwa: Frè a vin (16.5% - 2.5% = 14%)
+        echanjData.rabeAplikab = dejaFeEchanj ? 0 : 0.025;
+        
+        showTransactionSummary();
     } catch (error) {
         console.error("Erè rabè:", error);
-        // Si gen yon erè, nou kontinye san rabè pou nou pa bloke itilizatè a
-        echanjData.rabe = 0;
-        prepareRezimeModal();
+        showTransactionSummary();
     }
 };
 
 /**
- * 2. Ranpli done nan Modal Rezime a
+ * STEP 2: Afiche Modal Rezime a ak tout kalkil yo
  */
-function prepareRezimeModal() {
-    const freSistèm = echanjData.montan * echanjData.fre;
-    const totalNet = (echanjData.montan - freSistèm) + echanjData.rabe;
+function showTransactionSummary() {
+    const pousantajFinal = echanjData.freSistèm - echanjData.rabeAplikab;
+    const kobFre = echanjData.montan * pousantajFinal;
+    const totalNet = echanjData.montan - kobFre;
 
-    // Mete done yo nan HTML la
-    document.getElementById('sum-minit').innerText = echanjData.montan.toFixed(2) + " HTG";
-    document.getElementById('sum-fre').innerText = "-" + freSistèm.toFixed(2) + " HTG";
-    
-    const rabeBox = document.getElementById('box-rabe-premium');
-    if (echanjData.rabe > 0) {
-        rabeBox.classList.remove('hidden');
-        document.getElementById('sum-rabe').innerText = "+" + echanjData.rabe.toFixed(2) + " HTG";
-    } else {
-        rabeBox.classList.add('hidden');
-    }
+    // Mete valè yo nan HTML la
+    document.getElementById('display-montan').innerText = echanjData.montan.toFixed(2) + " HTG";
+    document.getElementById('display-rabe').innerText = (echanjData.rabeAplikab * 100).toFixed(1) + "% Rabè aplike";
+    document.getElementById('display-total').innerText = totalNet.toFixed(2) + " HTG";
 
-    document.getElementById('sum-total').innerText = totalNet.toFixed(2) + " HTG";
-    
-    // Montre modal la
-    document.getElementById('modal-confirm-echanj').classList.remove('hidden');
+    // Louvri div ki gen rezime a (asire w id la kòrèk nan HTML ou)
+    const summaryCard = document.getElementById('summary-container');
+    if (summaryCard) summaryCard.style.display = 'block';
 }
 
 /**
- * 3. Fèmen Modal la
+ * STEP 3: Lè moun nan klike sou KONFIME nan Rezime a
  */
-window.femenModalEchanj = () => {
-    document.getElementById('modal-confirm-echanj').classList.add('hidden');
-};
-
-/**
- * 4. Konfimasyon final, PIN, ak USSD
- */
-const btnKonfime = document.getElementById('btn-konfime-final');
-if (btnKonfime) {
-    btnKonfime.onclick = async () => {
+const btnKonfimeFinal = document.getElementById('btn-konfime-final');
+if (btnKonfimeFinal) {
+    btnKonfimeFinal.onclick = async () => {
         const pinAntre = prompt("Antre PIN sekirite ou (4 chif):");
-        
         if (!pinAntre) return;
 
         try {
-            // Verifye PIN nan profil la
+            // 1. Verifye PIN
             const pinRef = ref(db, `users/${auth.currentUser.uid}/pin`);
-            const snapshot = await get(pinRef);
+            const pinSnap = await get(pinRef);
             
-            if (snapshot.val() !== pinAntre) {
+            if (pinSnap.val() !== pinAntre) {
                 alert("PIN sa a pa kòrèk.");
                 return;
             }
 
-            // Prepare kòd USSD a
-            let ussdKod = (echanjData.rezo === 'digicel') 
-                ? `*128*50947111123*${echanjData.montan}#` 
-                : `*123*88888888*32160708*${echanjData.montan}#`;
+            // 2. Dezyèm Konfimasyon (Anile oswa OK)
+            if (confirm("Èske ou vle valide tranzaksyon sa a kounye a?")) {
+                
+                // 3. Prepare kòd USSD egzak ou yo
+                let ussdKod = "";
+                if (echanjData.rezo === 'digicel') {
+                    ussdKod = `*128*50947111123*${echanjData.montan}#`;
+                } else {
+                    ussdKod = `*123*88888888*35749198*${echanjData.montan}#`;
+                }
 
-            // Anrejistre tranzaksyon an
-            const nouvoTransRef = push(ref(db, 'transactions'));
-            await set(nouvoTransRef, {
-                uid: auth.currentUser.uid,
-                type: "echanj",
-                rezo: echanjData.rezo,
-                amount: echanjData.montan,
-                to_receive: (echanjData.montan * (1 - echanjData.fre)) + echanjData.rabe,
-                status: "pending",
-                timestamp: serverTimestamp()
-            });
+                const pousantajFinal = echanjData.freSistèm - echanjData.rabeAplikab;
+                const totalPouResevwa = echanjData.montan * (1 - pousantajFinal);
 
-            // Fèmen modal epi deklanche dialer a
-            window.femenModalEchanj();
-            window.location.href = "tel:" + encodeURIComponent(ussdKod);
+                // 4. Anrejistre nan Firebase
+                const nouvoTransRef = push(ref(db, 'transactions'));
+                await set(nouvoTransRef, {
+                    uid: auth.currentUser.uid,
+                    type: "echanj",
+                    rezo: echanjData.rezo,
+                    amount: echanjData.montan,
+                    to_receive: totalPouResevwa,
+                    status: "pending",
+                    timestamp: serverTimestamp()
+                });
 
+                alert("Tranzaksyon anrejistre! Dial a pral ouvri...");
+                
+                // 5. Ouvri Dialer a
+                window.location.href = "tel:" + encodeURIComponent(ussdKod);
+            }
         } catch (error) {
-            alert("Erè: " + error.message);
+            alert("Erè sistèm: " + error.message);
         }
     };
-            }
-    
+        }
+                    
