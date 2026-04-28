@@ -1,60 +1,95 @@
 import { db, auth } from './script.js';
 import { ref, get, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-let retreData = { non: "", telefon: "", metod: "", montan: 0 };
+// Objè pou sere done retrè a pandan etap yo
+let retreData = {
+    non: "",
+    telefon: "",
+    metod: "",
+    montan: 0
+};
 
-// 1. Bouton Kontinye nan fòm nan
+/**
+ * ETAP 1: Klike sou bouton "KONTINYE" nan fòm prensipal la
+ */
 document.getElementById('btn-konfime-retre').onclick = async () => {
-    retreData.non = document.getElementById('retre-name').value;
-    retreData.telefon = document.getElementById('retre-phone').value;
+    // Rekipere valè yo
+    retreData.non = document.getElementById('retre-name').value.trim();
+    retreData.telefon = document.getElementById('retre-phone').value.trim();
     retreData.metod = document.getElementById('retre-method').value;
     retreData.montan = parseFloat(document.getElementById('retre-amount').value);
 
+    // 1. Validasyon fòm nan
     if (!retreData.non || !retreData.telefon || isNaN(retreData.montan) || retreData.montan < 100) {
-        alert("Tanpri ranpli fòm nan kòrèkteman (Min 100 HTG).");
+        alert("Tanpri ranpli tout chan yo kòrèkteman. Minimòm nan se 100 HTG.");
+        return;
+    }
+
+    // 2. Tcheke si itilizatè a konekte
+    if (!auth.currentUser) {
+        alert("Ou dwe konekte pou w fè yon retrè.");
         return;
     }
 
     try {
-        // Tcheke balans nan Firebase
-        const userSnap = await get(ref(db, `users/${auth.currentUser.uid}`));
-        const balansAktyel = userSnap.val().balance || 0;
+        // 3. Tcheke balans nan Firebase anvan nou montre rezime
+        const userRef = ref(db, `users/${auth.currentUser.uid}`);
+        const snapshot = await get(userRef);
+        const userData = snapshot.val();
 
-        if (retreData.montan > balansAktyel) {
-            alert("Balans ou pa ase pou montan sa a!");
+        if (!userData || retreData.montan > (userData.balance || 0)) {
+            alert("Balans ou pa ase pou w retire montan sa a.");
             return;
         }
 
-        // Ranpli Rezime a
+        // 4. Mete done yo nan Modal Rezime a
         document.getElementById('sum-retre-non').innerText = retreData.non;
         document.getElementById('sum-retre-tel').innerText = retreData.telefon;
         document.getElementById('sum-retre-metod').innerText = retreData.metod.toUpperCase();
         document.getElementById('sum-retre-montan').innerText = retreData.montan.toFixed(2) + " HTG";
 
-        // Louvri Rezime
+        // 5. Louvri Modal Rezime a
         document.getElementById('modal-rezime-retre').classList.remove('hidden');
-    } catch (e) { alert("Erè: " + e.message); }
+
+    } catch (error) {
+        console.error("Erè balans:", error);
+        alert("Yon erè rive pandan n ap tcheke balans ou.");
+    }
 };
 
-// 2. Louvri modal PIN apre rezime
+/**
+ * ETAP 2: Itilizatè a klike sou "Kontinye" nan Rezime a
+ */
 window.openPinModal = () => {
+    // Fèmen rezime, louvri modal PIN
     document.getElementById('modal-rezime-retre').classList.add('hidden');
     document.getElementById('modal-pin-retre').classList.remove('hidden');
 };
 
-// 3. Valide PIN epi Save
+/**
+ * ETAP 3: Valide PIN epi anrejistre nan Firebase
+ */
 window.validateAndSaveRetre = async () => {
-    const pinAntre = document.getElementById('pin-retre-input').value;
-    if (!pinAntre) return;
+    const pinInput = document.getElementById('pin-retre-input');
+    const pinAntre = pinInput.value;
+
+    if (!pinAntre || pinAntre.length < 4) {
+        alert("Tanpri antre yon PIN valab.");
+        return;
+    }
 
     try {
-        const pinSnap = await get(ref(db, `users/${auth.currentUser.uid}/pin`));
-        if (pinSnap.val() !== pinAntre) {
+        // 1. Verifye PIN nan profil itilizatè a
+        const pinRef = ref(db, `users/${auth.currentUser.uid}/pin`);
+        const snapshot = await get(pinRef);
+
+        if (snapshot.val() !== pinAntre) {
             alert("PIN sa a pa kòrèk.");
+            pinInput.value = ""; // Efase PIN ki mal la
             return;
         }
 
-        // Anrejistre nan Firebase
+        // 2. Anrejistre tranzaksyon an nan branch "transactions"
         const nouvoTransRef = push(ref(db, 'transactions'));
         await set(nouvoTransRef, {
             uid: auth.currentUser.uid,
@@ -67,19 +102,28 @@ window.validateAndSaveRetre = async () => {
             timestamp: serverTimestamp()
         });
 
-        // Montre Siksè (LordIcon)
+        // 3. Montre Modal Final la (Siksè)
         document.getElementById('modal-pin-retre').classList.add('hidden');
         document.getElementById('modal-final').classList.remove('hidden');
 
-        // Netwaye fòm nan
+        // 4. Netwaye tout chan yo
         document.getElementById('retre-name').value = "";
+        document.getElementById('retre-phone').value = "";
         document.getElementById('retre-amount').value = "";
-        document.getElementById('pin-retre-input').value = "";
+        pinInput.value = "";
 
-    } catch (error) { alert("Erè nan save: " + error.message); }
+    } catch (error) {
+        console.error("Erè finalizasyon:", error);
+        alert("Tranzaksyon an echwe. Eseye ankò pita.");
+    }
 };
 
+/**
+ * Fonksyon pou fèmen tout Modals yo
+ */
 window.closeAllModals = () => {
-    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+    document.getElementById('modal-rezime-retre').classList.add('hidden');
+    document.getElementById('modal-pin-retre').classList.add('hidden');
+    document.getElementById('modal-final').classList.add('hidden');
 };
-        
+                                        
