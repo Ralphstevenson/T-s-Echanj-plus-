@@ -313,45 +313,76 @@
 
 
 
-            <div id="modal-rezime-retre" class="modal-overlay hidden">
-    <div class="modal-card">
-        <h3>Rezime Retrè</h3>
-        <div class="summary-list">
-            <div class="s-row"><span>Resevè:</span> <b id="sum-retre-non"></b></div>
-            <div class="s-row"><span>Telefòn:</span> <b id="sum-retre-tel"></b></div>
-            <div class="s-row"><span>Metòd:</span> <b id="sum-retre-metod"></b></div>
-            <div class="s-row total"><span>W ap resevwa:</span> <b id="sum-retre-montan"></b></div>
-        </div>
-        <div class="modal-buttons">
-            <button class="btn-cancel" onclick="closeAllModals()">Anile</button>
-            <button class="btn-confirm" onclick="openPinModal()">Kontinye</button>
-        </div>
+            <div class="retre-container">
+    <div class="page-header">
+        <h2>Retire Kòb</h2>
+        <p>Voye lajan sou MonCash oswa NatCash ou kounye a.</p>
     </div>
-</div>
 
-<div id="modal-pin-retre" class="modal-overlay hidden">
-    <div class="modal-card">
-        <i class="fa fa-lock modal-icon-top"></i>
-        <h3>PIN Sekirite</h3>
-        <p>Antre PIN 4 chif ou a</p>
-        <input type="password" id="pin-retre-input" maxlength="4" class="pin-field">
-        <button class="btn-confirm full-width" onclick="validateAndSaveRetre()">Valide & Voye</button>
+    <div class="card-retre-form">
+        <div class="input-group-pwo">
+            <label>Non konplè Resevè a</label>
+            <input type="text" id="retre-name" placeholder="Egz: Jean Mary">
+        </div>
+        <div class="input-group-pwo">
+            <label>Nimewo Telefòn</label>
+            <input type="number" id="retre-phone" placeholder="Egz: 47111123">
+        </div>
+        <div class="input-group-pwo">
+            <label>Metòd Resepsyon</label>
+            <select id="retre-method">
+                <option value="moncash">MonCash</option>
+                <option value="natcash">NatCash</option>
+            </select>
+        </div>
+        <div class="input-group-pwo">
+            <label>Montan (HTG)</label>
+            <input type="number" id="retre-amount" placeholder="Min: 100 HTG">
+        </div>
+        <button id="btn-konfime-retre" class="btn-primary-pro full-width">KONTINYE</button>
     </div>
-</div>
 
-<div id="modal-final" class="modal-overlay hidden">
-    <div class="modal-card success-card">
-        <script src="https://cdn.lordicon.com/lordicon.js"></script>
-        <lord-icon
-            src="https://cdn.lordicon.com/lvrxlmju.json"
-            trigger="loop" stroke="bold" colors="primary:#109121"
-            style="width:120px;height:120px">
-        </lord-icon>
-        <h3 style="color: #109121;">Demann Voye!</h3>
-        <p>Administratè a ap verifye epi voye kòb la kounye a.</p>
-        <button class="btn-confirm full-width" onclick="closeAllModals()">OK, MERSI</button>
+    <div id="modal-rezime-retre" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h3>Rezime Retrè</h3>
+            <div class="summary-list">
+                <div class="s-row"><span>Resevè:</span> <b id="sum-retre-non"></b></div>
+                <div class="s-row"><span>Telefòn:</span> <b id="sum-retre-tel"></b></div>
+                <div class="s-row"><span>Metòd:</span> <b id="sum-retre-metod"></b></div>
+                <div class="s-row total"><span>W ap resevwa:</span> <b id="sum-retre-montan"></b></div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeAllModals()">Anile</button>
+                <button class="btn-confirm" onclick="openPinModal()">Kontinye</button>
+            </div>
+        </div>
     </div>
-</div>
+
+    <div id="modal-pin-retre" class="modal-overlay hidden">
+        <div class="modal-card">
+            <i class="fa fa-shield-halved modal-icon-top"></i>
+            <h3>PIN Sekirite</h3>
+            <p>Antre kòd sekirite ou a pou valide.</p>
+            <input type="password" id="pin-retre-input" maxlength="4" class="pin-field" placeholder="****">
+            <button class="btn-confirm full-width" onclick="validateAndSaveRetre()">VALIDE & VOYE</button>
+        </div>
+    </div>
+
+    <div id="modal-final" class="modal-overlay hidden">
+        <div class="modal-card success-card">
+            <script src="https://cdn.lordicon.com/lordicon.js"></script>
+            <lord-icon
+                src="https://cdn.lordicon.com/lvrxlmju.json"
+                trigger="loop" stroke="bold" colors="primary:#109121"
+                style="width:120px;height:120px">
+            </lord-icon>
+            <h3 style="color: #109121;">Demann Voye!</h3>
+            <p>Administratè a ap verifye epi voye kòb la kounye a.</p>
+            <button class="btn-confirm full-width" onclick="closeAllModals()">OK, MERSI</button>
+        </div>
+    </div>
+                </div>
+                
                 
             
             
