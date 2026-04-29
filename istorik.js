@@ -3,108 +3,98 @@ import { ref, onValue, query, orderByChild, equalTo } from "https://www.gstatic.
 
 let toutTranzaksyon = [];
 
-const kòmanseKouteIstorik = () => {
+/**
+ * Chaje Istorik depi Firebase
+ */
+export function loadIstorik() {
     if (!auth.currentUser) return;
 
-    const uid = auth.currentUser.uid;
-    // Asire w li rele 'transactions' ak yon S pou l matche ak Firebase ou
-    const transRef = ref(db, 'transactions'); 
-    const myTransQuery = query(transRef, orderByChild('uid'), equalTo(uid));
+    const transRef = ref(db, 'transactions');
+    const q = query(transRef, orderByChild('uid'), equalTo(auth.currentUser.uid));
 
-    onValue(myTransQuery, (snapshot) => {
-        toutTranzaksyon = [];
-        if (snapshot.exists()) {
-            const data = snapshot.val();
-            toutTranzaksyon = Object.keys(data).map(key => ({
-                id: key,
-                ...data[key]
-            })).sort((a, b) => b.timestamp - a.timestamp);
-        }
-        window.aficheTranzaksyon('tout');
-    }, (error) => {
-        console.error("Erè Firebase:", error);
+    onValue(q, (snapshot) => {
+        const data = snapshot.val();
+        toutTranzaksyon = data ? Object.values(data).sort((a, b) => b.timestamp - a.timestamp) : [];
+        renderIstorik(toutTranzaksyon);
     });
-};
-
-window.aficheTranzaksyon = (filte) => {
-    const veso = {
-        tout: document.getElementById('list-tout'),
-        echanj: document.getElementById('list-echanj'),
-        retre: document.getElementById('list-retre'),
-        echwe: document.getElementById('list-echwe')
-    };
-
-    Object.values(veso).forEach(v => { if(v) v.innerHTML = ""; });
-
-    if (toutTranzaksyon.length === 0) {
-        veso.tout.innerHTML = '<p class="empty-msg">Ou poko gen okenn tranzaksyon.</p>';
-        return;
-    }
-
-    toutTranzaksyon.forEach(t => {
-        const kat = kreyeKatTranzaksyon(t);
-        
-        // Nou konvèti type la an miniskil pou konparezon an toujou mache
-        const tipMinit = t.type ? t.type.toLowerCase() : '';
-        const statusMinit = t.status ? t.status.toLowerCase() : '';
-
-        veso.tout.appendChild(kat.cloneNode(true));
-
-        if (tipMinit === 'echanj') veso.echanj.appendChild(kat.cloneNode(true));
-        if (tipMinit === 'retre') veso.retre.appendChild(kat.cloneNode(true));
-        if (statusMinit === 'failed' || statusMinit === 'cancelled' || statusMinit === 'echwe') {
-            veso.echwe.appendChild(kat.cloneNode(true));
-        }
-    });
-};
-
-function kreyeKatTranzaksyon(t) {
-    const div = document.createElement('div');
-    // Nou netwaye status la pou CSS ka li l (Validé -> valide)
-    const klasStatus = t.status ? t.status.toLowerCase().replace('é', 'e') : 'pending';
-    div.className = `transaction-item ${klasStatus}`;
-    div.onclick = () => window.ouvriResi(t);
-
-    const icon = (t.type && t.type.toLowerCase() === 'echanj') ? 'fa-rotate' : 'fa-money-bill-transfer';
-    const dat = t.timestamp ? new Date(t.timestamp).toLocaleDateString('ht-HT') : '---';
-
-    div.innerHTML = `
-        <div class="trans-icon-box">
-            <i class="fa-solid ${icon}"></i>
-        </div>
-        <div class="trans-details">
-            <b>${t.type ? t.type.toUpperCase() : 'TRANZAKSYON'} - ${t.rezo || t.method || ''}</b>
-            <small>${dat}</small>
-        </div>
-        <div class="trans-amount">
-            <span class="amount-val">${t.amount} HTG</span>
-            <span class="status-dot ${klasStatus}"></span>
-        </div>
-    `;
-    return div;
 }
 
-window.switchIstorik = (tab, btn) => {
-    document.querySelectorAll('.tab-btn-ist').forEach(b => b.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    document.querySelectorAll('.ist-content').forEach(c => c.classList.add('hidden'));
-    document.getElementById(`list-${tab}`).classList.remove('hidden');
+/**
+ * Afiche lis la nan HTML
+ */
+function renderIstorik(lis) {
+    const container = document.getElementById('istorik-list');
+    container.innerHTML = "";
+
+    lis.forEach(t => {
+        const dateStr = new Date(t.timestamp).toLocaleDateString('fr-FR');
+        const statusClass = `stat-${t.status}`;
+        
+        const card = document.createElement('div');
+        card.className = 'trans-card';
+        card.onclick = () => montreDetay(t);
+        
+        card.innerHTML = `
+            <div class="trans-icon"><i class="fa ${t.type === 'echanj' ? 'fa-sync' : 'fa-arrow-up'}"></i></div>
+            <div style="flex:1">
+                <div style="display:flex; justify-content:space-between">
+                    <b>${t.type === 'echanj' ? 'Echanj Minit' : 'Retrè Lajan'}</b>
+                    <b class="${statusClass}">${t.amount} HTG</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color:#888">
+                    <span>${dateStr}</span>
+                    <span class="${statusClass}" style="text-transform:uppercase">${t.status}</span>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+/**
+ * Filtre Tranzaksyon yo (Tout, Echanj, Retre, Refize)
+ */
+window.filterIstorik = (type, btn) => {
+    // Chanje bouton active
+    document.querySelectorAll('.filter-tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    if (type === 'all') {
+        renderIstorik(toutTranzaksyon);
+    } else if (type === 'refize') {
+        renderIstorik(toutTranzaksyon.filter(t => t.status === 'refize'));
+    } else {
+        renderIstorik(toutTranzaksyon.filter(t => t.type === type));
+    }
 };
 
-window.ouvriResi = (t) => {
-    document.getElementById('rec-status').innerText = (t.status || '---').toUpperCase();
-    document.getElementById('rec-status').className = `status-badge-rec ${(t.status || 'pending').toLowerCase()}`;
-    document.getElementById('rec-amount').innerText = t.amount + " HTG";
-    document.getElementById('rec-method').innerText = t.rezo || t.method || '---';
-    document.getElementById('rec-phone').innerText = t.receiver_phone || "Sistèm";
-    document.getElementById('rec-date').innerText = t.timestamp ? new Date(t.timestamp).toLocaleString() : '---';
-    document.getElementById('rec-id').innerText = t.id;
-    document.getElementById('modal-receipt').classList.remove('hidden');
+/**
+ * Montre Modal Detay pou Pataje
+ */
+function montreDetay(t) {
+    document.getElementById('detay-tip').innerText = t.type.toUpperCase();
+    document.getElementById('detay-dat').innerText = new Date(t.timestamp).toLocaleString();
+    document.getElementById('detay-montan').innerText = t.amount + " HTG";
+    document.getElementById('detay-status').innerText = t.status.toUpperCase();
+    
+    document.getElementById('modal-detay-trans').classList.remove('hidden');
+}
+
+window.closeDetay = () => document.getElementById('modal-detay-trans').classList.add('hidden');
+
+/**
+ * Fonksyon Pataje (Screenshot/Text)
+ */
+window.shareReceipt = async () => {
+    const tip = document.getElementById('detay-tip').innerText;
+    const montan = document.getElementById('detay-montan').innerText;
+    const status = document.getElementById('detay-status').innerText;
+
+    const textToShare = `ECHANJ PLUS - RESI\n----------------\nTip: ${tip}\nMontan: ${montan}\nStatus: ${status}\n\nMèsi pou konfyans ou!`;
+
+    if (navigator.share) {
+        navigator.share({ title: 'Resi Echanj Plus', text: textToShare });
+    } else {
+        alert("Opsyon pataje a pa disponib sou navigatè sa a, men men resi w la: \n\n" + textToShare);
+    }
 };
-
-window.closeReceipt = () => document.getElementById('modal-receipt').classList.add('hidden');
-
-auth.onAuthStateChanged((user) => {
-    if (user) kòmanseKouteIstorik();
-});
-                            
