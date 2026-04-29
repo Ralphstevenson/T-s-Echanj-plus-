@@ -391,6 +391,52 @@
             
 
             <section id="paj-trans" class="page-content hidden">
+
+
+<div class="istorik-container">
+    <div class="istorik-header">
+        <img src="https://i.postimg.cc/kG6Ym6vM/echanj-plus-logo.png" alt="Logo" class="logo-istorik">
+        <h2>Istorik</h2>
+    </div>
+
+    <div class="filter-tabs">
+        <button class="active" onclick="filterIstorik('all', this)">Tout</button>
+        <button onclick="filterIstorik('echanj', this)">Echanj</button>
+        <button onclick="filterIstorik('retre', this)">Retrè</button>
+        <button onclick="filterIstorik('refize', this)">Refize</button>
+    </div>
+
+    <div id="istorik-list" class="istorik-list">
+        </div>
+</div>
+
+<div id="modal-detay-trans" class="modal-overlay hidden">
+    <div class="modal-card receipt-card" id="receipt-to-share">
+        <div class="receipt-header">
+            <img src="https://i.postimg.cc/kG6Ym6vM/echanj-plus-logo.png" width="50">
+            <h3>ECHANJ PLUS</h3>
+            <p>Resi Tranzaksyon</p>
+        </div>
+        
+        <div class="receipt-body">
+            <div class="r-row"><span>Tip:</span> <b id="detay-tip">---</b></div>
+            <div class="r-row"><span>Dat:</span> <b id="detay-dat">---</b></div>
+            <div class="r-row"><span>Montan:</span> <b id="detay-montan">---</b></div>
+            <div class="r-row"><span>Status:</span> <b id="detay-status">---</b></div>
+            <div class="receipt-divider"></div>
+            <p class="thanks-msg">Mèsi dèske ou itilize Echanj Plus!</p>
+        </div>
+
+        <div class="modal-buttons no-print">
+            <button class="btn-cancel" onclick="closeDetay()">Fèmen</button>
+            <button class="btn-confirm" onclick="shareReceipt()">
+                <i class="fa fa-share-nodes"></i> Pataje
+            </button>
+        </div>
+    </div>
+</div>
+                
+                
                 </section>
 
             
