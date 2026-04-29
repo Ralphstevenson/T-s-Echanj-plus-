@@ -62,17 +62,66 @@
 
     <div id="main-app-content" class="hidden">
         
-        <aside id="sidebar" class="sidebar-pro">
-            </aside>
+    
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-        <header id="main-header" class="main-header">
-            </header>
+    <aside id="sidebar" class="sidebar-pro">
+        <div class="sidebar-user-profile">
+            <div class="side-avatar" id="side-avatar">US</div>
+            <div class="side-user-details">
+                <h3 id="side-full-name">Itilizatè Echanj</h3>
+                <p id="side-email">pwofil@gmail.com</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="menu-item active" onclick="switchPage('paj-akey', this)">
+                <div class="icon-box"><i class="fa fa-home"></i></div>
+                <span>Akèy</span>
+            </div>
+            <div class="menu-item" onclick="switchPage('paj-echanj', this)">
+                <div class="icon-box"><i class="fa fa-sync"></i></div>
+                <span>Echanj Minit</span>
+            </div>
+            <div class="menu-item" onclick="switchPage('paj-retre', this)">
+                <div class="icon-box"><i class="fa fa-wallet"></i></div>
+                <span>Retrè Lajan</span>
+            </div>
+            <div class="menu-item" onclick="switchPage('paj-istorik', this)">
+                <div class="icon-box"><i class="fa fa-history"></i></div>
+                <span>Istorik</span>
+            </div>
+            <div class="menu-item" onclick="switchPage('paj-paramet', this)">
+                <div class="icon-box"><i class="fa fa-cog"></i></div>
+                <span>Paramèt</span>
+            </div>
+            <div class="menu-divider"></div>
+            <div class="menu-item logout" onclick="logoutUser()">
+                <div class="icon-box"><i class="fa fa-sign-out-alt"></i></div>
+                <span>Dekonekte</span>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Echanj Plus | v3.2</p>
+        </div>
+    </aside>
+
+    <header id="main-header" class="main-header">
+        <div class="header-left">
+            <i class="fa fa-bars" id="bar-icon" onclick="toggleSidebar()"></i>
+            <span class="app-brand">ECHANJ PLUS</span>
+        </div>
+        <div class="header-right">
+            <div class="balance-badge">
+                <span id="top-balance">0.00</span> <small>HTG</small>
+            </div>
+        </div>
+    </header>
 
     
 
-        <main class="content-wrapper">
-
-            
+        <main class="content-wrapper">     
             
             <section id="paj-sidebar" class="sidebar-wrapper-dinamik">
 
