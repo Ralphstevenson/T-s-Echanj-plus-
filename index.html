@@ -452,6 +452,76 @@
             
 
             <section id="paj-settings" class="page-content hidden">
+
+
+<div class="settings-screen">
+    
+    <div class="settings-group">
+        <p class="group-label">PROFIL</p>
+        <div class="profile-card">
+            <div class="avatar-container">
+                <div class="avatar-circle" id="user-avatar">US</div>
+                <button class="btn-edit-avatar"><i class="fa fa-camera"></i></button>
+            </div>
+            <div class="profile-info">
+                <h3 id="set-name">Itilizatè Echanj</h3>
+                <p id="set-email">itilizate@gmail.com</p>
+                <p id="set-phone">+509 ---- ----</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-group">
+        <p class="group-label">SEKIRITE</p>
+        <div class="settings-item" onclick="openModpasModal()">
+            <div class="item-icon green-bg"><i class="fa fa-lock"></i></div>
+            <span>Chanje Modpas</span>
+            <i class="fa fa-chevron-right"></i>
+        </div>
+        <div class="settings-item" onclick="openPinModal()">
+            <div class="item-icon green-bg"><i class="fa fa-shield-alt"></i></div>
+            <span>PIN Tranzaksyon</span>
+            <i class="fa fa-chevron-right"></i>
+        </div>
+    </div>
+
+    <div class="settings-group">
+        <p class="group-label">SISTÈM</p>
+        <div class="settings-item">
+            <div class="item-icon moon-bg"><i class="fa fa-moon"></i></div>
+            <span>Dash Night</span>
+            <label class="switch">
+                <input type="checkbox" id="dark-mode-toggle">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="settings-item">
+            <div class="item-icon mail-bg"><i class="fa fa-envelope"></i></div>
+            <span>Notifikasyon Gmail</span>
+            <label class="switch">
+                <input type="checkbox" id="mail-notif-toggle" checked>
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="settings-group">
+        <p class="group-label">ENFÒMASYON</p>
+        <div class="settings-item">
+            <div class="item-icon info-bg"><i class="fa fa-info-circle"></i></div>
+            <span>Vèsyon App</span>
+            <b class="version-text" id="app-version">v3.2</b>
+        </div>
+        <div class="settings-item" onclick="contactSupport()">
+            <div class="item-icon info-bg"><i class="fa fa-whatsapp"></i></div>
+            <span>Sipò WhatsApp</span>
+            <i class="fa fa-external-link-alt"></i>
+        </div>
+    </div>
+</div>
+                
+
+                
                 </section>
 
 
