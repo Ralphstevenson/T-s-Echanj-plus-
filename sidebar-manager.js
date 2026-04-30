@@ -1,58 +1,54 @@
-/**
- * sidebar-manager.js
- * Fonksyon sa a "pouse" tout seksyon sidebar la nan plas li
- */
+import { db, auth } from './script.js';
+import { ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-export const initializeSidebar = () => {
-    // Nou vize kote sidebar la dwe chita (paj-sidebar nan HTML ou a)
-    const container = document.getElementById('paj-sidebar');
+// 1. VERSION MANAGEMENT
+const APP_VERSION = "v3.2.5";
+document.querySelectorAll('.version-tag').forEach(el => el.innerText = APP_VERSION);
 
-    if (container) {
-        container.innerHTML = `
-        <section class="sidebar-wrapper-dinamik">
-            <div class="sidebar-header">
-                <div class="user-meta">
-                    <div id="header-user-greeting" class="user-greeting"></div>
-                    <div id="header-security-status" class="security-status"></div>
-                    <p id="side-id" class="user-id-badge">ARS-ID</p>
-                    <h4 id="side-name">...</h4>
-                    <p id="side-email">...</p>
-                </div>
-                <i class="fa fa-times close-sidebar" onclick="toggleSidebar()"></i>
-            </div>
+// 2. LOAD USER DATA
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        const userRef = ref(db, `users/${user.uid}`);
+        onValue(userRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                document.getElementById('set-name').innerText = data.full_name || "Itilizatè";
+                document.getElementById('set-email').innerText = user.email;
+                document.getElementById('set-phone').innerText = data.phone || "4711-1123";
+                
+                // PIN Status
+                const pinStatus = document.getElementById('pin-status');
+                pinStatus.innerText = data.pin ? "Chanje" : "Kreye";
+                pinStatus.className = data.pin ? "status-badge active" : "status-badge alert";
 
-            <div class="sidebar-menu">
-                <div class="menu-item active" onclick="showPage('paj-akey', this)">
-                    <i class="fa fa-house"></i> <span>Akèy</span>
-                </div>
-
-                <div class="menu-item" onclick="showPage('paj-echanj', this)">
-                    <i class="fa fa-rotate"></i> <span>Echanj</span>
-                </div>
-
-                <div class="menu-item" onclick="showPage('paj-retre', this)">
-                    <i class="fa fa-money-bill-transfer"></i> <span>Retrè</span>
-                </div>
-
-                <div class="menu-item" onclick="showPage('paj-trans', this)">
-                    <i class="fa fa-clock-rotate-left"></i> <span>Istorik</span>
-                </div>
-
-                <div class="menu-item" onclick="showPage('paj-parene', this)">
-                    <i class="fas fa-users-viewfinder"></i>
-                    <span>Parennaj & Komisyon</span>
-                </div>
-
-                <div class="menu-item" onclick="showPage('paj-settings', this)">
-                    <i class="fa fa-gear"></i> <span>Paramètres</span>
-                </div>
-
-                <div class="menu-item logout-btn" onclick="handleLogout()">
-                    <i class="fa fa-right-from-bracket"></i> <span>Dekonekte</span>
-                </div>
-            </div>
-        </section>
-        `;
-        console.log("✅ Sidebar konekte nan seksyon 'paj-sidebar'");
+                // Sync Switches
+                if(data.settings) {
+                    document.getElementById('dark-mode-toggle').checked = data.settings.dash_night || false;
+                    document.getElementById('mail-notif-toggle').checked = data.settings.gmail_notif || false;
+                }
+            }
+        });
     }
+});
+
+// 3. DARK MODE LOGIC
+document.getElementById('dark-mode-toggle').addEventListener('change', async (e) => {
+    const isDark = e.target.checked;
+    document.body.classList.toggle('dark-mode', isDark);
+    await update(ref(db, `users/${auth.currentUser.uid}/settings`), { dash_night: isDark });
+});
+
+// 4. GMAIL NOTIF LOGIC
+document.getElementById('mail-notif-toggle').addEventListener('change', async (e) => {
+    await update(ref(db, `users/${auth.currentUser.uid}/settings`), { gmail_notif: e.target.checked });
+});
+
+// 5. PASSWORD RESET
+window.resetPassword = async () => {
+    try {
+        await sendPasswordResetEmail(auth, auth.currentUser.email);
+        alert("Yon lyen reyajisman voye nan Gmail ou.");
+    } catch (e) { alert("Erè: " + e.message); }
 };
+    
