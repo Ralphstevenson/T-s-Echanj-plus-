@@ -1,10 +1,10 @@
-// 1. Konfigirasyon Firebase ou an
+// 1. Konfigirasyon Firebase ki Egzak pou pwojè Echanj plus ou an
 const firebaseConfig = {
   apiKey: "AIzaSyB1VOHe4jsJ6_9KMyoGkF3fNgxRVM4M45Q",
-  authDomain: "echanjplus-app.firebaseapp.com",
-  databaseURL: "https://echanjplus-app-default-rtdb.firebaseio.com",
-  projectId: "echanjplus-app",
-  storageBucket: "echanjplus-app.firebasestorage.app",
+  authDomain: "echanj-plus-fa9b0.firebaseapp.com",
+  databaseURL: "https://echanj-plus-fa9b0-default-rtdb.firebaseio.com",
+  projectId: "echanj-plus-fa9b0",
+  storageBucket: "echanj-plus-fa9b0.firebasestorage.app",
   messagingSenderId: "888002521405",
   appId: "1:888002521405:web:8d819501cadea9c57b7d54"
 };
@@ -14,14 +14,12 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-// Variyab pou kenbe konfimasyon reCAPTCHA yo
 let confirmationResultRegister = null;
 let confirmationResultLogin = null;
 
-// Lè tout paj la fin chaje nan navigatè a
 document.addEventListener("DOMContentLoaded", () => {
     
-    // Inisyalize reCAPTCHA enfizib yo pou Firebase Auth
+    // Inisyalize reCAPTCHA
     window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
         'size': 'invisible'
     });
@@ -30,25 +28,18 @@ document.addEventListener("DOMContentLoaded", () => {
         'size': 'invisible'
     });
 
-    // TCHEKE SOU KI PAJ POUM METE ITILIZATÈ A (Moun ki pa konekte PAKA wè Home)
     verifieAksesPaj();
 
-    // ================= EVENT LISTENERS POU BOUTON YO =================
-    
-    // Enskripsyon
+    // Event Listeners
     document.getElementById('btn-voye-otp').addEventListener('click', voyeOTPRegister);
     document.getElementById('btn-valide-otp').addEventListener('click', valideOTPRegister);
     
-    // Koneksyon (Login)
     document.getElementById('btn-voye-otp-login').addEventListener('click', voyeOTPLogin);
     document.getElementById('btn-valide-otp-login').addEventListener('click', valideOTPLogin);
     
-    // Dekonekte
     document.getElementById('btn-dekonekte').addEventListener('click', dekonekteUser);
 
-    // ================= NAVIGATION AK LYEN YO =================
-    
-    // Soti nan Screen 1 oswa 2 ale nan Login
+    // Navigasyon
     document.getElementById('link-to-login').addEventListener('click', (e) => {
         e.preventDefault();
         ameneSouScreen('login');
@@ -59,35 +50,28 @@ document.addEventListener("DOMContentLoaded", () => {
         ameneSouScreen('login');
     });
 
-    // Soti nan Login ale nan Enskripsyon
     document.getElementById('link-to-register').addEventListener('click', (e) => {
         e.preventDefault();
         ameneSouScreen('register');
     });
 });
 
-// Fonksyon ki kontwole ki ekran ki dwe parèt
 function verifieAksesPaj() {
     const isConnected = localStorage.getItem('user_connected');
     const savedPhone = localStorage.getItem('user_phone');
 
     if (isConnected === 'true' && savedPhone) {
-        // ITILIZATÈ A KONEKTE: Montre Paj Home (Dashboard), Kache tout Auth
         document.getElementById('interface-auth').classList.add('hidden');
         document.getElementById('interface-dashboard').classList.remove('hidden');
         document.getElementById('user-phone-display').innerText = savedPhone;
-        
-        // Kòmanse koute SMS nan Firebase
         kouteSMSNanFirebase();
     } else {
-        // ITILIZATÈ A PA KONEKTE: Bloke Home, Montre Screen 1 Enskripsyon
         document.getElementById('interface-dashboard').classList.add('hidden');
         document.getElementById('interface-auth').classList.remove('hidden');
         ameneSouScreen('register');
     }
 }
 
-// Fonksyon pou pase sot nan yon ekran ale nan yon lòt nan Auth
 function ameneSouScreen(screenName) {
     document.getElementById('step-phone').classList.add('hidden');
     document.getElementById('step-otp').classList.add('hidden');
@@ -106,29 +90,39 @@ function ameneSouScreen(screenName) {
     }
 }
 
-// ================= LOJIK ENSKRIPSYON (REGISTER) =================
-
 function voyeOTPRegister() {
-    const rawPhone = document.getElementById('phoneNumber').value.trim();
+    const rawInput = document.getElementById('phoneNumber').value;
     const statusMsg = document.getElementById('status-msg');
 
-    if (!rawPhone) {
+    let cleanPhone = rawInput.replace(/\s+/g, '').replace(/-/g, '');
+
+    if (!cleanPhone) {
+        statusMsg.style.color = "#dc3545";
         statusMsg.innerText = "Tanpri antre yon nimewo telefòn!";
         return;
     }
 
-    let formattedPhone = rawPhone.startsWith('+') ? rawPhone : '+509' + rawPhone;
+    if (!cleanPhone.startsWith('+')) {
+        if (cleanPhone.startsWith('509')) {
+            cleanPhone = '+' + cleanPhone;
+        } else {
+            cleanPhone = '+509' + cleanPhone;
+        }
+    }
+
+    statusMsg.style.color = "#0d6efd";
     statusMsg.innerText = "N ap voye SMS la...";
 
-    auth.signInWithPhoneNumber(formattedPhone, window.recaptchaVerifier)
+    auth.signInWithPhoneNumber(cleanPhone, window.recaptchaVerifier)
         .then((confirmationResult) => {
             confirmationResultRegister = confirmationResult;
             statusMsg.innerText = "";
-            ameneSouScreen('otp'); // Bascule sou Screen 2 Auth
+            ameneSouScreen('otp');
         })
         .catch((error) => {
             console.error(error);
-            statusMsg.innerText = "Erè nan voye SMS la. Tcheke nimewo a!";
+            statusMsg.style.color = "#dc3545";
+            statusMsg.innerText = "Erè: " + error.message;
         });
 }
 
@@ -152,30 +146,38 @@ function valideOTPRegister() {
         });
 }
 
-// ================= LOJIK KONEKSYON (LOGIN) =================
-
 function voyeOTPLogin() {
-    const rawPhone = document.getElementById('loginPhone').value.trim();
+    const rawInput = document.getElementById('loginPhone').value;
     const statusMsg = document.getElementById('status-msg');
 
-    if (!rawPhone) {
+    let cleanPhone = rawInput.replace(/\s+/g, '').replace(/-/g, '');
+
+    if (!cleanPhone) {
         statusMsg.innerText = "Tanpri antre nimewo kont ou an!";
         return;
     }
 
-    let formattedPhone = rawPhone.startsWith('+') ? rawPhone : '+509' + rawPhone;
+    if (!cleanPhone.startsWith('+')) {
+        if (cleanPhone.startsWith('509')) {
+            cleanPhone = '+' + cleanPhone;
+        } else {
+            cleanPhone = '+509' + cleanPhone;
+        }
+    }
+
+    statusMsg.style.color = "#0d6efd";
     statusMsg.innerText = "N ap voye SMS koneksyon an...";
 
-    auth.signInWithPhoneNumber(formattedPhone, window.recaptchaVerifierLogin)
+    auth.signInWithPhoneNumber(cleanPhone, window.recaptchaVerifierLogin)
         .then((confirmationResult) => {
             confirmationResultLogin = confirmationResult;
             statusMsg.innerText = "";
-            // Montre bwat pou rantre OTP koneksyon an
             document.getElementById('login-otp-box').classList.remove('hidden');
         })
         .catch((error) => {
             console.error(error);
-            statusMsg.innerText = "Erè nan voye SMS la. Tcheke nimewo a!";
+            statusMsg.style.color = "#dc3545";
+            statusMsg.innerText = "Erè: " + error.message;
         });
 }
 
@@ -199,14 +201,11 @@ function valideOTPLogin() {
         });
 }
 
-// Fonksyon pou sove sesyon an epi ouvri Paj Home
 function soveEpiKonekte(phone) {
     localStorage.setItem('user_connected', 'true');
     localStorage.setItem('user_phone', phone);
     verifieAksesPaj();
 }
-
-// ================= PAJ HOME: RALE SMS YO NAN FIREBASE =================
 
 function kouteSMSNanFirebase() {
     const smsContainer = document.getElementById('sms-container');
@@ -238,10 +237,10 @@ function kouteSMSNanFirebase() {
     });
 }
 
-// Dekonekte epi re-mande koneksyon
 function dekonekteUser() {
     localStorage.clear();
     auth.signOut().then(() => {
         verifieAksesPaj();
     });
-}
+          }
+               
