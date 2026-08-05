@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echanj Plus - SMSARS</title>
+    
+    <!-- SDK Firebase v9 (Compat) pou Auth ak Realtime Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <!-- Fichye CSS la -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="card">
+        
+        <!-- ================= ENTÈFAS AUTH (BLOKE SOU ITILIZATÈ KI PA KONEKTE YO) ================= -->
+        <div id="interface-auth">
+            <h2 id="auth-title">Enskripsyon / Koneksyon</h2>
+            
+            <!-- SCREEN 1 AUTH: Enskripsyon (Antre Nimewo) -->
+            <div id="step-phone">
+                <label for="phoneNumber">Nimewo Telefòn:</label>
+                <input type="tel" id="phoneNumber" placeholder="+509 XXXX XXXX">
+                
+                <div id="recaptcha-container"></div>
+                
+                <button id="btn-voye-otp">Voye OTP Enskripsyon</button>
+
+                <p style="margin-top: 15px; font-size: 14px;">
+                    Ou gen yon kont deja? <a href="#" id="link-to-login" style="color: #0d6efd; text-decoration: none; font-weight: bold;">Konekte isit la</a>
+                </p>
+            </div>
+
+            <!-- SCREEN 2 AUTH: Valide OTP Enskripsyon (Kache pa default) -->
+            <div id="step-otp" class="hidden">
+                <label for="otpCode">Kòd OTP:</label>
+                <input type="text" id="otpCode" placeholder="Antre kòd OTP 6 chif la">
+                
+                <button id="btn-valide-otp">Valide OTP Enskripsyon</button>
+
+                <p style="margin-top: 15px; font-size: 14px;">
+                    Ou vle konekte sou yon kont ki egziste? <a href="#" id="link-to-login-2" style="color: #0d6efd; text-decoration: none; font-weight: bold;">Konekte isit la</a>
+                </p>
+            </div>
+
+            <!-- SCREEN 3 AUTH: LOGIN / KONEKSYON (Kache pa default) -->
+            <div id="step-login" class="hidden">
+                <label for="loginPhone">Nimewo Telefòn Kont Ou an:</label>
+                <input type="tel" id="loginPhone" placeholder="+509 XXXX XXXX">
+
+                <div id="recaptcha-container-login"></div>
+
+                <button id="btn-voye-otp-login">Voye OTP Koneksyon</button>
+
+                <!-- Bwat OTP Koneksyon (ap parèt depi yo klike voye OTP) -->
+                <div id="login-otp-box" class="hidden" style="margin-top: 15px;">
+                    <label for="loginOtpCode">Kòd OTP Koneksyon:</label>
+                    <input type="text" id="loginOtpCode" placeholder="Antre kòd OTP 6 chif la">
+                    <button id="btn-valide-otp-login" style="background-color: #198754;">Valide & Konekte</button>
+                </div>
+
+                <p style="margin-top: 15px; font-size: 14px;">
+                    Ou pa gen kont? <a href="#" id="link-to-register" style="color: #0d6efd; text-decoration: none; font-weight: bold;">Enskri isit la</a>
+                </p>
+            </div>
+
+            <!-- Mesaj Erè / Estati -->
+            <p id="status-msg"></p>
+        </div>
+
+        <!-- ================= ENTÈFAS HOME / DASHBOARD (SÈLMAN POU ITILIZATÈ KI KONEKTE) ================= -->
+        <div id="interface-dashboard" class="hidden">
+            <h2>Bwat Resepsyon SMS</h2>
+            <p>Nimewo konekte: <b id="user-phone-display">+509 XXXXXXXX</b></p>
+            
+            <hr>
+
+            <h3>Mesaj ki antre yo:</h3>
+            <div id="sms-container">
+                <!-- SMS yo ap monte otomatikman isit la ak JavaScript -->
+            </div>
+
+            <br>
+            <button id="btn-dekonekte">Dekonekte</button>
+        </div>
+
+    </div>
+
+    <!-- Fichye JavaScript la -->
+    <script src="script.js"></script>
+</body>
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
