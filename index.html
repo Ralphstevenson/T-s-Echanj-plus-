@@ -132,8 +132,88 @@
 
       <!-- 1. SEKSYON AKEY -->
       <section class="app-section home-section" id="home-section">
-        <!-- Mete div ak kontni Akey la la -->
-      </section>
+  
+  <!-- Div 1: Kat Sol Disponib ak Rechaje -->
+  <div class="balance-card" id="home-balance-card">
+    <div class="balance-header">
+      <span class="title">Sol Kont Ou</span>
+      <span class="status-badge">Aktif</span>
+    </div>
+    <div class="amount"><span id="user-balance">0.00</span> HTG</div>
+    <div class="balance-actions">
+      <button class="btn-deposit" onclick="switchSection('exchange')">
+        <span>➕</span> Rechaje Kont
+      </button>
+      <button class="btn-withdraw" onclick="switchSection('exchange')">
+        <span>💸</span> Retire Kach
+      </button>
+    </div>
+  </div>
+
+  <!-- Div 2: Bouton Aksyon Rapid (Navigasyon ant sèvis yo) -->
+  <div class="quick-actions-grid" id="home-quick-actions">
+    <div class="action-card" onclick="switchSection('exchange')">
+      <div class="action-icon">🔄</div>
+      <div class="action-label">Echanj Minit</div>
+    </div>
+
+    <div class="action-card" onclick="switchSection('transaction')">
+      <div class="action-icon">📜</div>
+      <div class="action-label">Tranzaksyon</div>
+    </div>
+
+    <div class="action-card" onclick="switchSection('referral')">
+      <div class="action-icon">👥</div>
+      <div class="action-label">Parainaj</div>
+    </div>
+
+    <div class="action-card" onclick="switchSection('profile')">
+      <div class="action-icon">⚙️</div>
+      <div class="action-label">Paramèt</div>
+    </div>
+  </div>
+
+  <!-- Div 3: Statut ak Enfòmasyon Rezo (Digicel / Natcom) -->
+  <div class="network-status-container" id="home-network-status">
+    <div class="status-title">Disponibilite Sèvis yo</div>
+    <div class="network-badges">
+      <div class="net-item digicel">
+        <span class="dot online"></span>
+        <span class="net-name">Digicel (MonCash / Minit)</span>
+      </div>
+      <div class="net-item natcom">
+        <span class="dot online"></span>
+        <span class="net-name">Natcom (Natcash / Minit)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Div 4: Dènye Tranzaksyon Rapid yo (Preview) -->
+  <div class="recent-activity-card" id="home-recent-activity">
+    <div class="card-header">
+      <h4>Dènye Aktivite</h4>
+      <a href="#" onclick="switchSection('transaction')" class="see-all">Wè tout</a>
+    </div>
+    <div class="activity-list" id="home-activity-list">
+      <!-- JS la ka voye dènye tranzaksyon yo isit la -->
+      <div class="empty-activity">
+        <p>Ou pa gen okenn tranzaksyon pou kounye a.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Div 5: Banniyè Enfòmasyon ak Sipò -->
+  <div class="info-banner-card" id="home-info-banner">
+    <div class="info-icon">💡</div>
+    <div class="info-content">
+      <h4>Asistans & Sekirite</h4>
+      <p>Pote atansyon ak nimewo w ap voye lajan an. Si w bezwen èd, kontakte sipò nou an dirèkteman.</p>
+    </div>
+  </div>
+
+</section>
+
+     
 
       <!-- 2. SEKSYON ECHANJ -->
       <section class="app-section exchange-section" id="exchange-section" style="display: none;">
