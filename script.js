@@ -8,7 +8,7 @@ import {
   child 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// Konfigirasyon Firebase ou
+// Konfigirasyon Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAjK6EPlokkARHnakMaDRjqRzN-yQqlayU",
   authDomain: "echanj-plus.firebaseapp.com",
@@ -44,7 +44,7 @@ window.addEventListener('load', () => {
   hideLoader();
 });
 
-// 3. Jesyon Tabs & UI
+// 3. Jesyon Tabs & UI Otantifikasyon
 window.switchTab = function(tab) {
   const isSignup = tab === 'signup';
   document.getElementById('signup-section').classList.toggle('active', isSignup);
@@ -105,7 +105,7 @@ function checkPasswordRules() {
   // Pa gen karaktè k ap repete (ex: aaa, 111)
   const validNoRepeat = !/(.)\1\1/.test(pwd);
 
-  // Mete koule nan lis HTML la
+  // Mete koulè ak ikòn nan lis HTML la
   updateRuleUI('rule-lowercase', validLower);
   updateRuleUI('rule-uppercase', validUpper);
   updateRuleUI('rule-number', validNumber);
@@ -132,7 +132,7 @@ function updateRuleUI(elementId, isValid) {
   }
 }
 
-// Koute sa k ap tape nan chann yo
+// Koute sa k ap tape nan chan yo
 pwdInput.addEventListener('input', checkPasswordRules);
 confirmPwdInput.addEventListener('input', checkPasswordRules);
 phoneInput.addEventListener('input', checkPasswordRules);
@@ -155,7 +155,6 @@ signupForm.addEventListener('submit', async (e) => {
 
   try {
     const dbRef = ref(db);
-    // Tcheke si nimewo a egziste deja
     const snapshot = await get(child(dbRef, `users/${phone}`));
     
     if (snapshot.exists()) {
@@ -168,7 +167,8 @@ signupForm.addEventListener('submit', async (e) => {
     await set(ref(db, 'users/' + phone), {
       phone: "+509" + phone,
       email: email,
-      password: password, // Chifre sa an pwodiksyon si posib
+      password: password,
+      balance: 0.00,
       referralCode: referral || null,
       createdAt: new Date().toISOString()
     });
@@ -176,7 +176,7 @@ signupForm.addEventListener('submit', async (e) => {
     hideLoader();
     showAlert('Kont ou kreye ak siksè!', false);
     
-    // Antre sou Dashboard la
+    // Antre dirèkteman sou Akey
     openDashboard("+509 " + phone);
 
   } catch (error) {
@@ -202,6 +202,7 @@ loginForm.addEventListener('submit', async (e) => {
       const userData = snapshot.val();
       if (userData.password === password) {
         hideLoader();
+        // Antre dirèkteman sou Akey
         openDashboard("+509 " + phone);
       } else {
         hideLoader();
@@ -217,13 +218,34 @@ loginForm.addEventListener('submit', async (e) => {
   }
 });
 
-// 7. Jesyon Dashboard & Dekoneksyon
+// 7. Jesyon Navigasyon & Afichaj Seksyon yo
+window.switchSection = function(targetSectionId) {
+  // Kachè tout seksyon yo nan Dashboard la
+  const sections = document.querySelectorAll('.app-section');
+  sections.forEach(section => {
+    section.style.display = 'none';
+  });
+
+  // Afiche sèlman seksyon ki gen mande a
+  const activeSection = document.getElementById(`${targetSectionId}-section`);
+  if (activeSection) {
+    activeSection.style.display = 'block';
+  }
+};
+
+// Fonksyon ki ouvri Dashboard la epi ki asire moun nan antre dwat sou Akey
 function openDashboard(phone) {
   authContainer.style.display = 'none';
   dashboardSection.style.display = 'block';
-  userDisplayPhone.textContent = phone;
+  if (userDisplayPhone) {
+    userDisplayPhone.textContent = phone;
+  }
+
+  // FORCE ITILIZATÈ A ANTRE DIRÈKTEMAN SOU SEKSYON AKEY
+  switchSection('home');
 }
 
+// 8. Dekoneksyon
 logoutBtn.addEventListener('click', () => {
   dashboardSection.style.display = 'none';
   authContainer.style.display = 'block';
