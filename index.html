@@ -407,3 +407,104 @@
         <div class="head-user">
           <span class="welcome-label">Byenveni,</span>
           <h4 id="user-display-phone" class="user-phone">+509 --</h4>
+ </div>
+      </div>
+      
+      <!-- Solde nan Head la -->
+      <div class="head-balance-box">
+        <span class="balance-title">Solde:</span>
+        <strong id="user-balance" class="balance-text">0.00 HTG</strong>
+        <button class="eye-btn" onclick="toggleBalanceVisibility()">👁️</button>
+      </div>
+    </header>
+
+    <main class="dash-content">
+      
+      <!-- CARROUSEL OTOMATIK -->
+      <section class="carousel-container">
+        <div class="carousel-wrapper" id="carousel-wrapper">
+          <div class="carousel-slide slide-1">
+            <div class="slide-content">
+              <h3>Fè Echanj Rapid ⚡</h3>
+              <p>Konvèti Minit/Data ak MonCash oubyen Natcash</p>
+            </div>
+          </div>
+          <div class="carousel-slide slide-2">
+            <div class="slide-content">
+              <h3>Bonus Parainaj 🎁</h3>
+              <p>Envite zanmi w yo epi gouye komisyon sou chak tranzaksyon</p>
+            </div>
+          </div>
+          <div class="carousel-slide slide-3">
+            <div class="slide-content">
+              <h3>Sekirite Garanti 🔒</h3>
+              <p>Tranzaksyon w yo pwoteje 24/7 ak Echanj Plus</p>
+            </div>
+          </div>
+        </div>
+        <!-- Pwen yo pou Carrousel la -->
+        <div class="carousel-dots">
+          <span class="dot active" onclick="goToSlide(0)"></span>
+          <span class="dot" onclick="goToSlide(1)"></span>
+          <span class="dot" onclick="goToSlide(2)"></span>
+        </div>
+      </section>
+
+      <!-- AKSYON RAPID -->
+      <section class="quick-actions">
+        <button class="action-btn" onclick="openActionModal('deposit')">
+          <div class="action-icon deposit-icon">📥</div>
+          <span>Depo</span>
+        </button>
+
+        <button class="action-btn" onclick="openActionModal('withdraw')">
+          <div class="action-icon withdraw-icon">📤</div>
+          <span>Retrè</span>
+        </button>
+
+        <button class="action-btn" onclick="openActionModal('exchange')">
+          <div class="action-icon exchange-icon">🔄</div>
+          <span>Echanj</span>
+        </button>
+
+        <button class="action-btn" onclick="openActionModal('history')">
+          <div class="action-icon history-icon">📜</div>
+          <span>Istwa</span>
+        </button>
+      </section>
+
+      <!-- DÈNYE TRANZAKSYON YO -->
+      <section class="recent-transactions">
+        <div class="section-title">
+          <h4>Dènye Tranzaksyon yo</h4>
+          <a href="#" onclick="openActionModal('history'); return false;">Gade tout</a>
+        </div>
+
+        <div class="transaction-list" id="transaction-list">
+          <div class="empty-state">Pa gen okenn tranzaksyon pou kounye a.</div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- MENI NAVIGASYON ANBA (3 NAVBAR TAB) -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchDashTab('home', this)">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Akey</span>
+      </button>
+      <button class="nav-item" onclick="switchDashTab('services', this)">
+        <span class="nav-icon">⚡</span>
+        <span class="nav-label">Sèvis</span>
+      </button>
+      <button class="nav-item" onclick="switchDashTab('profile', this)">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profil</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
