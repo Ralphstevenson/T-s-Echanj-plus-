@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echanj Plus - Otantifikasyon & Akey</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       OVERLAY LOADING (LOKAL, RAPID & SAN ENTÈNET)
+       ========================================== -->
+  <div id="loading-overlay" class="loader-backdrop">
+    <div class="loader-content">
+      <!-- Ikon SVG lokal ki pa bezwen rezo pou chaje -->
+      <div class="static-icon">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
+      </div>
+      
+      <div class="dots-orbit">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <p class="loader-text">Tann yon ti moman...</p>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SEKSYON OTANTIFIKASYON
+       ========================================== -->
+  <div class="auth-container" id="auth-container">
+    
+    <!-- Bouton Tab -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-signup" onclick="switchTab('signup')">Inscription</button>
+      <button class="tab-btn" id="tab-login" onclick="switchTab('login')">Connexion</button>
+    </div>
+
+    <!-- 1. FÒMILÈ ENSKRIPSYON -->
+    <div class="form-section active" id="signup-section">
+      <div class="form-title">Créer un compte</div>
+      
+      <form id="signup-form">
+        <!-- Telefòn (+509) -->
+        <div class="input-group">
+          <span class="prefix">🇭🇹 +509</span>
+          <input type="tel" id="signup-phone" placeholder="37000000" maxlength="8" required>
+        </div>
+
+        <!-- Modyepas -->
+        <div class="input-group">
+          <input type="password" id="signup-password" placeholder="Mot de passe" required>
+          <button type="button" class="toggle-pwd" onclick="toggleVisibility('signup-password', this)">👁️</button>
+        </div>
+
+        <!-- Règ sekirite modyepas -->
+        <ul class="rules-list">
+          <li id="rule-lowercase"><span class="status-icon"></span> Utiliser au moins une minuscule</li>
+          <li id="rule-uppercase"><span class="status-icon"></span> Utiliser au moins une majuscule</li>
+          <li id="rule-number"><span class="status-icon"></span> Utiliser au moins un chiffre</li>
+          <li id="rule-special"><span class="status-icon"></span> Utiliser au moins un caractère spécial</li>
+          <li id="rule-length"><span class="status-icon"></span> Utiliser au moins 8 caractères</li>
+          <li id="rule-no-seq-num"><span class="status-icon"></span> N'utilisez pas de suite de chiffres</li>
+          <li id="rule-no-seq-let"><span class="status-icon"></span> N'utilisez pas une séquence de lettres</li>
+          <li id="rule-no-login"><span class="status-icon"></span> N'utilisez pas votre login comme mot de passe</li>
+          <li id="rule-no-repeat"><span class="status-icon"></span> N'utilisez pas une séquence de mêmes caractères</li>
+        </ul>
+
+        <!-- Konfime modyepas -->
+        <div class="input-group">
+          <input type="password" id="signup-confirm-password" placeholder="Confirmer votre mot de passe" required>
+          <button type="button" class="toggle-pwd" onclick="toggleVisibility('signup-confirm-password', this)">👁️</button>
+        </div>
+
+        <!-- Email -->
+        <div class="input-group">
+          <input type="email" id="signup-email" placeholder="Email" required>
+        </div>
+
+        <!-- Kòd parainage -->
+        <div class="input-group">
+          <input type="text" id="signup-referral" placeholder="Code parrainage (facultatif)">
+        </div>
+
+        <button type="submit" class="submit-btn" id="signup-btn" disabled>
+          <span class="btn-text">Suivant</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- 2. FÒMILÈ KONEKSYON -->
+    <div class="form-section" id="login-section">
+      <div class="form-title">Se Connecter</div>
+      
+      <form id="login-form">
+        <div class="input-group">
+          <span class="prefix">🇭🇹 +509</span>
+          <input type="tel" id="login-phone" placeholder="37000000" maxlength="8" required>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="login-password" placeholder="Mot de passe" required>
+          <button type="button" class="toggle-pwd" onclick="toggleVisibility('login-password', this)">👁️</button>
+        </div>
+
+        <button type="submit" class="submit-btn" id="login-btn">
+          <span class="btn-text">Se connecter</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Bwat Alèt -->
+    <div id="alert-box" class="alert-msg"></div>
+
+  </div>
+
+  <!-- ==========================================
+       SEKSYON AKEY (DASHBOARD)
+       ========================================== -->
+  <div class="dashboard-container" id="dashboard-section" style="display: none;">
+    <header class="dashboard-header">
+      <h2>Byenveni sou Echanj Plus! 🎉</h2>
+      <button class="logout-btn" id="logout-btn">Dekonekte</button>
+    </header>
+
+    <div class="dashboard-content">
+      <div class="placeholder-card">
+        <h3>Sèvis ak Opsyon yo ap parèt isit la...</h3>
+        <p>Ou konekte ak nimewo: <b id="user-display-phone">--</b></p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
