@@ -13,7 +13,59 @@
        ========================================== -->
   <div id="loading-overlay" class="loader-backdrop">
     <div class="loader-content">
-      <!-- Ikon SVG lokal ki pa bezwen rezo pou chaje -->
+      <div class="static-icon">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
+      </div>
+      
+      <div class="dots-orbit">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <p class="loader-text">Tann yon ti moman...</p>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SEKSYON OTANTIFIKASYON
+       ========================================== -->
+  <div class="auth-container" id="auth-container">
+    
+    <!-- Bouton Tab -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-signup" onclick="switchTab('signup')">Inscription</button>
+      <button class="tab-btn" id="tab-login" onclick="switchTab('login')">Connexion</button>
+    </div>
+
+    <!-- 1. FÒMILÈ ENSKRIPSYON -->
+    <div class="form-section active" id="signup-section">
+      <div class="form-title">Créer un compte</div>
+      
+      <form id="signup-form">
+        <!-- Telefòn (+509) -->
+        <div class="input-group">
+          <span class="prefix">🇭🇹 +509</span>
+          <input type="tel" id="signup-phone" placeholder="37000000" maxlength="8" required>
+        </div>
+
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echanj Plus - Otantifikasyon & Akey</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       OVERLAY LOADING (LOKAL, RAPID & SAN ENTÈNET)
+       ========================================== -->
+  <div id="loading-overlay" class="loader-backdrop">
+    <div class="loader-content">
       <div class="static-icon">
         <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
@@ -123,19 +175,235 @@
        SEKSYON AKEY (DASHBOARD)
        ========================================== -->
   <div class="dashboard-container" id="dashboard-section" style="display: none;">
-    <header class="dashboard-header">
-      <h2>Byenveni sou Echanj Plus! 🎉</h2>
-      <button class="logout-btn" id="logout-btn">Dekonekte</button>
+    
+    <!-- SIDEBAR AGÒCH (MENI KACHE) -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3>Echanj Plus</h3>
+        <button class="close-sidebar-btn" onclick="toggleSidebar()">✕</button>
+      </div>
+      <div class="sidebar-user-info">
+        <div class="avatar">👤</div>
+        <p id="sidebar-user-phone">+509 --</p>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">📜</span> Istwa Tranzaksyon</a></li>
+        <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">🎁</span> Parainaj</a></li>
+        <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">💬</span> Sèvis Kliyan</a></li>
+        <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">⚙️</span> Paramèt Sekirite</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="logout-btn">Dekonekte 🚪</button>
+      </div>
+    </aside>
+
+    <!-- HEADER AK SOLDE AK BOUTON SIDEBAR -->
+    <header class="dash-header">
+      <div class="header-left">
+        <button class="menu-toggle-btn" onclick="toggleSidebar()">☰</button>
+        <div class="head-user">
+          <span class="welcome-label">Byenveni,</span>
+          <h4 id="user-display-phone" class="user-phone">+509 --</h4>
+        </div>
+      </div>
+      
+      <!-- Solde nan Head la -->
+      <div class="head-balance-box">
+        <span class="balance-title">Solde:</span>
+        <strong id="user-balance" class="balance-text">0.00 HTG</strong>
+        <button class="eye-btn" onclick="toggleBalanceVisibility()">👁️</button>
+      </div>
     </header>
 
-    <div class="dashboard-content">
-      <div class="placeholder-card">
-        <h3>Sèvis ak Opsyon yo ap parèt isit la...</h3>
-        <p>Ou konekte ak nimewo: <b id="user-display-phone">--</b></p>
-      </div>
-    </div>
+    <main class="dash-content">
+      
+      <!-- CARROUSEL OTOMATIK -->
+      <section class="carousel-container">
+        <div class="carousel-wrapper" id="carousel-wrapper">
+          <div class="carousel-slide slide-1">
+            <div class="slide-content">
+              <h3>Fè Echanj Rapid ⚡</h3>
+              <p>Konvèti Minit/Data ak MonCash oubyen Natcash</p>
+            </div>
+          </div>
+          <div class="carousel-slide slide-2">
+            <div class="slide-content">
+              <h3>Bonus Parainaj 🎁</h3>
+              <p>Envite zanmi w yo epi gouye komisyon sou chak tranzaksyon</p>
+            </div>
+          </div>
+          <div class="carousel-slide slide-3">
+            <div class="slide-content">
+              <h3>Sekirite Garanti 🔒</h3>
+              <p>Tranzaksyon w yo pwoteje 24/7 ak Echanj Plus</p>
+            </div>
+          </div>
+        </div>
+        <!-- Pwen yo pou Carrousel la -->
+        <div class="carousel-dots">
+          <span class="dot active" onclick="goToSlide(0)"></span>
+          <span class="dot" onclick="goToSlide(1)"></span>
+          <span class="dot" onclick="goToSlide(2)"></span>
+        </div>
+      </section>
+
+      <!-- AKSYON RAPID -->
+      <section class="quick-actions">
+        <button class="action-btn" onclick="openActionModal('deposit')">
+          <div class="action-icon deposit-icon">📥</div>
+          <span>Depo</span>
+        </button>
+
+        <button class="action-btn" onclick="openActionModal('withdraw')">
+          <div class="action-icon withdraw-icon">📤</div>
+          <span>Retrè</span>
+        </button>
+
+        <button class="action-btn" onclick="openActionModal('exchange')">
+          <div class="action-icon exchange-icon">🔄</div>
+          <span>Echanj</span>
+        </button>
+
+        <button class="action-btn" onclick="openActionModal('history')">
+          <div class="action-icon history-icon">📜</div>
+          <span>Istwa</span>
+        </button>
+      </section>
+
+      <!-- DÈNYE TRANZAKSYON YO -->
+      <section class="recent-transactions">
+        <div class="section-title">
+          <h4>Dènye Tranzaksyon yo</h4>
+          <a href="#" onclick="openActionModal('history'); return false;">Gade tout</a>
+        </div>
+
+        <div class="transaction-list" id="transaction-list">
+          <div class="empty-state">Pa gen okenn tranzaksyon pou kounye a.</div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- MENI NAVIGASYON ANBA (3 NAVBAR TAB) -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchDashTab('home', this)">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Akey</span>
+      </button>
+      <button class="nav-item" onclick="switchDashTab('services', this)">
+        <span class="nav-icon">⚡</span>
+        <span class="nav-label">Sèvis</span>
+      </button>
+      <button class="nav-item" onclick="switchDashTab('profile', this)">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profil</span>
+      </button>
+    </nav>
+
   </div>
 
   <script type="module" src="script.js"></script>
 </body>
 </html>
+￼Enter  <!-- Modyepas -->
+        <div class="input-group">
+          <input type="password" id="signup-password" placeholder="Mot de passe" required>
+          <button type="button" class="toggle-pwd" onclick="toggleVisibility('signup-password', this)">👁️</button>
+        </div>
+
+        <!-- Règ sekirite modyepas -->
+        <ul class="rules-list">
+          <li id="rule-lowercase"><span class="status-icon"></span> Utiliser au moins une minuscule</li>
+          <li id="rule-uppercase"><span class="status-icon"></span> Utiliser au moins une majuscule</li>
+          <li id="rule-number"><span class="status-icon"></span> Utiliser au moins un chiffre</li>
+          <li id="rule-special"><span class="status-icon"></span> Utiliser au moins un caractère spécial</li>
+          <li id="rule-length"><span class="status-icon"></span> Utiliser au moins 8 caractères</li>
+          <li id="rule-no-seq-num"><span class="status-icon"></span> N'utilisez pas de suite de chiffres</li>
+          <li id="rule-no-seq-let"><span class="status-icon"></span> N'utilisez pas une séquence de lettres</li>
+          <li id="rule-no-login"><span class="status-icon"></span> N'utilisez pas votre login comme mot de passe</li>
+          <li id="rule-no-repeat"><span class="status-icon"></span> N'utilisez pas une séquence de mêmes caractères</li>
+        </ul>
+
+        <!-- Konfime modyepas -->
+        <div class="input-group">
+          <input type="password" id="signup-confirm-password" placeholder="Confirmer votre mot de passe" required>
+          <button type="button" class="toggle-pwd" onclick="toggleVisibility('signup-confirm-password', this)">👁️</button>
+        </div>
+
+        <!-- Email -->
+        <div class="input-group">
+          <input type="email" id="signup-email" placeholder="Email" required>
+        </div>
+
+        <!-- Kòd parainage -->
+        <div class="input-group">
+          <input type="text" id="signup-referral" placeholder="Code parrainage (facultatif)">
+        </div>
+
+        <button type="submit" class="submit-btn" id="signup-btn" disabled>
+          <span class="btn-text">Suivant</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- 2. FÒMILÈ KONEKSYON -->
+    <div class="form-section" id="login-section">
+      <div class="form-title">Se Connecter</div>
+      
+      <form id="login-form">
+        <div class="input-group">
+          <span class="prefix">🇭🇹 +509</span>
+          <input type="tel" id="login-phone" placeholder="37000000" maxlength="8" required>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="login-password" placeholder="Mot de passe" required>
+          <button type="button" class="toggle-pwd" onclick="toggleVisibility('login-password', this)">👁️</button>
+        </div>
+
+        <button type="submit" class="submit-btn" id="login-btn">
+          <span class="btn-text">Se connecter</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Bwat Alèt -->
+    <div id="alert-box" class="alert-msg"></div>
+
+  </div>
+
+  <!-- ==========================================
+       SEKSYON AKEY (DASHBOARD)
+       ========================================== -->
+  <div class="dashboard-container" id="dashboard-section" style="display: none;">
+    
+    <!-- SIDEBAR AGÒCH (MENI KACHE) -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3>Echanj Plus</h3>
+        <button class="close-sidebar-btn" onclick="toggleSidebar()">✕</button>
+      </div>
+      <div class="sidebar-user-info">
+        <div class="avatar">👤</div>
+        <p id="sidebar-user-phone">+509 --</p>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">📜</span> Istwa Tranzaksyon</a></li>
+        <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">🎁</span> Parainaj</a></li>
+        <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">💬</span> Sèvis Kliyan</a></li>
+        <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">⚙️</span> Paramèt Sekirite</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="logout-btn">Dekonekte 🚪</button>
+      </div>
+    </aside>
+
+    <!-- HEADER AK SOLDE AK BOUTON SIDEBAR -->
+    <header class="dash-header">
+      <div class="header-left">
+        <button class="menu-toggle-btn" onclick="toggleSidebar()">☰</button>
+        <div class="head-user">
+          <span class="welcome-label">Byenveni,</span>
+          <h4 id="user-display-phone" class="user-phone">+509 --</h4>
