@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Import sèvis ki soti nan fichye prensipal la (main.js)
+// Import sèvis ak fonksyon UI ki soti nan fichye prensipal la (main.js)
 import { auth, showLoader, hideLoader, showAuthAlert } from "./main.js";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -97,10 +97,19 @@ function initAuthValidation() {
     }
   }
 
-  // Ekoute lè itilizatè a ap tape nan chak champ
+  // Ekoute lè itilizatè a ap tape nan chak champ pou validasyon
   if (signupPassword) signupPassword.addEventListener('input', validateForm);
   if (signupConfirm) signupConfirm.addEventListener('input', validateForm);
   if (signupPhone) signupPhone.addEventListener('input', validateForm);
+
+  // Kache alèt yo chak fwa itilizatè a kòmanse re-antre done
+  const inputs = document.querySelectorAll('#login-form input, #signup-form input');
+  inputs.forEach(input => {
+    input.addEventListener('input', () => {
+      const alertBox = document.getElementById('alert-box');
+      if (alertBox) alertBox.style.display = 'none';
+    });
+  });
 
   // ==========================================
   // SOUMISYON FÒM KONEKSYON
@@ -117,17 +126,33 @@ function initAuthValidation() {
 
       const phone = phoneInput.value.trim();
       const password = passwordInput.value;
+
+      if (phone.length !== 8) {
+        showAuthAlert("Tanpri antre yon nimewo telefòn ki valab (8 chif).", "error");
+        return;
+      }
+
       const formattedEmail = `${phone}@echanjplus.com`;
 
       showLoader();
 
       try {
         await signInWithEmailAndPassword(auth, formattedEmail, password);
-        // Firebase onAuthStateChanged nan main.js ap kouvri switch UI la
+        // Firebase onAuthStateChanged ki nan main.js ap kouvri redireksyon UI an otomatikman
       } catch (error) {
         hideLoader();
         console.error("Erè koneksyon:", error);
-        showAuthAlert("Nimewo oswa modpas la pa kòrèk.", "error");
+
+        let errorMessage = "Nimewo oswa modpas la pa kòrèk.";
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+          errorMessage = "Nimewo telefòn oswa modpas sa a pa kòrèk.";
+        } else if (error.code === 'auth/too-many-requests') {
+          errorMessage = "Trop tantativ. Tanpri tann yon ti moman anvan ou reyeleyi.";
+        } else if (error.code === 'auth/network-request-failed') {
+          errorMessage = "Pwoblèm konfeksyon entènèt. Verifye rezo w la.";
+        }
+
+        showAuthAlert(errorMessage, "error");
       }
     });
   }
@@ -153,15 +178,20 @@ function initAuthValidation() {
 
       try {
         await createUserWithEmailAndPassword(auth, email, password);
-        // Firebase onAuthStateChanged nan main.js ap kouvri switch UI la
+        // Firebase onAuthStateChanged ki nan main.js ap kouvri redireksyon UI an otomatikman
       } catch (error) {
         hideLoader();
         console.error("Erè inscription:", error);
         
         let message = "Erè nan kreyasyon kont lan.";
         if (error.code === 'auth/email-already-in-use') {
-          message = "Nimewo sa a deja gen yon kont sou pwojè a.";
+          message = "Nimewo sa a deja gen yon kont kreye sou pwojè a.";
+        } else if (error.code === 'auth/weak-password') {
+          message = "Modpas la twò feblès.";
+        } else if (error.code === 'auth/network-request-failed') {
+          message = "Pwoblèm konfeksyon entènèt. Verifye rezo w la.";
         }
+
         showAuthAlert(message, "error");
       }
     });
