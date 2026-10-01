@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Echanj Plus - Auth & Akèy = ARS</title>
+  <title>Echanj Plus - Otantifikasyon & Akèy</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <link rel="stylesheet" href="style.css">
+  <!-- CSS Prensipal -->
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
@@ -40,33 +41,12 @@
     
     <!-- Bouton Tab Yo -->
     <div class="tabs">
-      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Connexion</button>
-      <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Inscription</button>
+      <button class="tab-btn active" id="tab-signup" onclick="switchTab('signup')">Inscription</button>
+      <button class="tab-btn" id="tab-login" onclick="switchTab('login')">Connexion</button>
     </div>
 
-    <!-- FÒMILÈ KONEKSYON -->
-    <div class="form-section active" id="login-section">
-      <div class="form-title">Se Connecter</div>
-      
-      <form id="login-form">
-        <div class="input-group">
-          <span class="prefix">🇭🇹 +509</span>
-          <input type="tel" id="login-phone" placeholder="37000000" maxlength="8" required>
-        </div>
-
-        <div class="input-group">
-          <input type="password" id="login-password" placeholder="Mot de passe" required>
-          <button type="button" class="toggle-pwd" onclick="toggleVisibility('login-password', this)">👁️</button>
-        </div>
-
-        <button type="submit" class="submit-btn" id="login-btn">
-          <span class="btn-text">Se connecter</span>
-        </button>
-      </form>
-    </div>
-
-    <!-- FÒMILÈ ENSKRIPSYON -->
-    <div class="form-section" id="signup-section">
+    <!-- 1. FÒMILÈ ENSKRIPSYON -->
+    <div class="form-section active" id="signup-section">
       <div class="form-title">Créer un compte</div>
       
       <form id="signup-form">
@@ -112,6 +92,27 @@
       </form>
     </div>
 
+    <!-- 2. FÒMILÈ KONEKSYON -->
+    <div class="form-section" id="login-section">
+      <div class="form-title">Se Connecter</div>
+      
+      <form id="login-form">
+        <div class="input-group">
+          <span class="prefix">🇭🇹 +509</span>
+          <input type="tel" id="login-phone" placeholder="37000000" maxlength="8" required>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="login-password" placeholder="Mot de passe" required>
+          <button type="button" class="toggle-pwd" onclick="toggleVisibility('login-password', this)">👁️</button>
+        </div>
+
+        <button type="submit" class="submit-btn" id="login-btn">
+          <span class="btn-text">Se connecter</span>
+        </button>
+      </form>
+    </div>
+
     <!-- Bwat Alèt -->
     <div id="alert-box" class="alert-msg"></div>
 
@@ -134,7 +135,7 @@
         <p id="sidebar-user-phone">+509 --</p>
       </div>
       <ul class="sidebar-menu">
-        <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">📜</span> Istwa Tranzaksyon</a></li>
+        <li><a href="istorik.html"><span class="menu-icon">📜</span> Istwa Tranzaksyon</a></li>
         <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">🎁</span> Parainaj</a></li>
         <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">💬</span> Sèvis Kliyan</a></li>
         <li><a href="#" onclick="toggleSidebar()"><span class="menu-icon">⚙️</span> Paramèt Sekirite</a></li>
@@ -209,24 +210,24 @@
           </div>
         </section>
 
-        <!-- BOUTON AKSYON RAPID YO -->
+        <!-- BOUTON AKSYON RAPID YO (KONEKTE AK PAJ ENDEPANDAN YO) -->
         <section class="quick-actions">
-          <button class="action-btn" onclick="openActionModal('deposit')">
+          <a href="retre.html" class="action-btn" style="text-decoration: none;">
             <div class="action-icon deposit-icon">📥</div>
             <span>Depo</span>
-          </button>
-          <button class="action-btn" onclick="openActionModal('withdraw')">
+          </a>
+          <a href="retre.html" class="action-btn" style="text-decoration: none;">
             <div class="action-icon withdraw-icon">📤</div>
             <span>Retrè</span>
-          </button>
-          <button class="action-btn" onclick="openActionModal('exchange')">
+          </a>
+          <a href="echanj.html" class="action-btn" style="text-decoration: none;">
             <div class="action-icon exchange-icon">🔄</div>
             <span>Echanj</span>
-          </button>
-          <button class="action-btn" onclick="openActionModal('history')">
+          </a>
+          <a href="istorik.html" class="action-btn" style="text-decoration: none;">
             <div class="action-icon history-icon">📜</div>
             <span>Istwa</span>
-          </button>
+          </a>
         </section>
 
         <!-- STATI SÈVIS PÒTAY YO -->
@@ -269,7 +270,7 @@
         <section class="recent-transactions" style="margin-top: 20px;">
           <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <h4 style="font-size: 16px; font-weight: 700;">Dènye Tranzaksyon yo</h4>
-            <a href="#" onclick="openActionModal('history'); return false;" style="color: #3b82f6; font-size: 13px; text-decoration: none;">Gade tout</a>
+            <a href="istorik.html" style="color: #3b82f6; font-size: 13px; text-decoration: none;">Gade tout</a>
           </div>
 
           <div class="transaction-list" id="transaction-list">
@@ -315,22 +316,22 @@
 
     <!-- MENI NAVIGASYON ANBA (NAVBAR) -->
     <nav class="bottom-nav">
-      <button class="nav-item active" onclick="switchDashTab('home', this)">
+      <a href="index.html" class="nav-item active" style="text-decoration: none;">
         <span class="nav-icon">🏠</span>
         <span class="nav-label">Akey</span>
-      </button>
-      <button class="nav-item" onclick="switchDashTab('services', this)">
+      </a>
+      <a href="echanj.html" class="nav-item" style="text-decoration: none;">
         <span class="nav-icon">⚡</span>
         <span class="nav-label">Sèvis</span>
-      </button>
-      <button class="nav-item" onclick="switchDashTab('profile', this)">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">Profil</span>
-      </button>
+      </a>
+      <a href="istorik.html" class="nav-item" style="text-decoration: none;">
+        <span class="nav-icon">📜</span>
+        <span class="nav-label">Istwa</span>
+      </a>
     </nav>
 
   </div>
 
-  <script type="module" src="script.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
