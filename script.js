@@ -1,4 +1,4 @@
-/* js/main.js - Echanj Plus (Mizajou Jeneral Firebase & UI) */
+/* js/main.js - ranje redirection Dashboard apre koneksyon */
 
 import { auth, db, ref, onValue } from "./config.js";
 import { 
@@ -8,14 +8,10 @@ import {
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Varayb global pou kenbe solde ak eta aplikasyon an an memwa
 let rawUserBalance = "0.00 HTG";
 let balanceHidden = false;
 let currentSlide = 0;
 
-// ==========================================
-// KONTWÒL LOADER A
-// ==========================================
 function hideLoader() {
   const loader = document.getElementById('loading-overlay');
   if (loader) {
@@ -26,32 +22,38 @@ function hideLoader() {
   }
 }
 
-// ==========================================
-// 1. INITIALISATION PAJ LA
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-  // Masque loader apre 500ms max
-  setTimeout(hideLoader, 500);
+function showLoader() {
+  const loader = document.getElementById('loading-overlay');
+  if (loader) {
+    loader.style.display = 'flex';
+    loader.style.opacity = '1';
+  }
+}
 
-  // Initialisation pou validasyon règ modpas yo ak Carousel
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(hideLoader, 500);
   initAuthValidation();
   initCarousel();
   fetchSystemConfig();
 });
 
 // ==========================================
-// 2. OTANTIFIKASYON (FIREBASE AUTH STATE)
+// KONTWÒL ETAT OTANTIFIKASYON (FIREBASE AUTH)
 // ==========================================
 onAuthStateChanged(auth, (user) => {
-  hideLoader();
-
   const authContainer = document.getElementById('auth-container');
   const dashboardSection = document.getElementById('dashboard-section');
 
   if (user) {
-    // Si itilizatè a konekte, rantre nan Dashboard
-    if (authContainer) authContainer.style.display = 'none';
-    if (dashboardSection) dashboardSection.style.display = 'block';
+    // Si itilizatè a konekte, KACHE fòm lan epi MONTRE Dashboard la
+    if (authContainer) {
+      authContainer.style.display = 'none';
+      authContainer.classList.add('hidden');
+    }
+    if (dashboardSection) {
+      dashboardSection.style.display = 'block';
+      dashboardSection.classList.remove('hidden');
+    }
 
     const displayPhone = user.email ? user.email.split('@')[0] : 'Itilizatè';
     
@@ -60,69 +62,39 @@ onAuthStateChanged(auth, (user) => {
     if (userPhoneEl) userPhoneEl.textContent = '+509 ' + displayPhone;
     if (sidebarPhoneEl) sidebarPhoneEl.textContent = '+509 ' + displayPhone;
 
-    // Koute chanjman nan solde a an tan reyèl nan Firebase Database
+    // Chaje solde nan Firebase Database
     try {
       const userRef = ref(db, `users/${user.uid}`);
       onValue(userRef, (snapshot) => {
         const data = snapshot.val();
         if (data && data.balance !== undefined) {
           rawUserBalance = parseFloat(data.balance).toFixed(2) + " HTG";
-          updateBalanceUI();
+        } else {
+          rawUserBalance = "0.00 HTG";
         }
+        updateBalanceUI();
       });
     } catch (e) {
       console.error("Erè chajman solde:", e);
     }
 
   } else {
-    // Si li pa konekte, FORCE kache dashboard epi MONTRE fòm koneksyon an an premye
-    if (dashboardSection) dashboardSection.style.display = 'none';
-    if (authContainer) authContainer.style.display = 'block';
+    // Si li pa konekte, FORCE kache dashboard epi MONTRE auth
+    if (dashboardSection) {
+      dashboardSection.style.display = 'none';
+      dashboardSection.classList.add('hidden');
+    }
+    if (authContainer) {
+      authContainer.style.display = 'block';
+      authContainer.classList.remove('hidden');
+    }
   }
+
+  hideLoader();
 });
 
 // ==========================================
-// 3. SWITCH TAB (CONNEXION / INSCRIPTION) & TOGGLE MODPAS
-// ==========================================
-window.switchTab = function(tabName) {
-  const loginSection = document.getElementById('login-section');
-  const signupSection = document.getElementById('signup-section');
-  const tabLogin = document.getElementById('tab-login');
-  const tabSignup = document.getElementById('tab-signup');
-  const alertBox = document.getElementById('alert-box');
-
-  if (alertBox) {
-    alertBox.style.display = 'none';
-    alertBox.className = 'alert-msg';
-  }
-
-  if (tabName === 'login') {
-    if (loginSection) loginSection.classList.add('active');
-    if (signupSection) signupSection.classList.remove('active');
-    if (tabLogin) tabLogin.classList.add('active');
-    if (tabSignup) tabSignup.classList.remove('active');
-  } else {
-    if (signupSection) signupSection.classList.add('active');
-    if (loginSection) loginSection.classList.remove('active');
-    if (tabSignup) tabSignup.classList.add('active');
-    if (tabLogin) tabLogin.classList.remove('active');
-  }
-};
-
-window.toggleVisibility = function(inputId, btn) {
-  const input = document.getElementById(inputId);
-  if (!input) return;
-  if (input.type === 'password') {
-    input.type = 'text';
-    btn.textContent = '🙈';
-  } else {
-    input.type = 'password';
-    btn.textContent = '👁️';
-  }
-};
-
-// ==========================================
-// 4. VALIDASYON AK SOUMISYON FÒM YO
+// FORMULAIRE KONEKSYON AK INSCRIPTION (KÒREKSYON)
 // ==========================================
 function initAuthValidation() {
   const signupPassword = document.getElementById('signup-password');
@@ -204,36 +176,58 @@ function initAuthValidation() {
   if (signupConfirm) signupConfirm.addEventListener('input', validateForm);
   if (signupPhone) signupPhone.addEventListener('input', validateForm);
 
-  // Soumisyon Form Connexion (FIREBASE AUTH)
+  // KÒREKSYON: SOUMISYON FÒM KONEKSYON
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('login-phone').value;
-      const password = document.getElementById('login-password').value;
+      e.preventDefault(); // Anpeche paj la reload!
+      
+      const phoneInput = document.getElementById('login-phone');
+      const passwordInput = document.getElementById('login-password');
+      
+      if (!phoneInput || !passwordInput) return;
+
+      const phone = phoneInput.value.trim();
+      const password = passwordInput.value;
       const formattedEmail = `${phone}@echanjplus.com`;
+
+      showLoader();
 
       try {
         await signInWithEmailAndPassword(auth, formattedEmail, password);
+        // onAuthStateChanged ap jere switch la otomatikman
       } catch (error) {
+        hideLoader();
+        console.error("Erè koneksyon:", error);
         showAuthAlert("Nimewo oswa modpas la pa kòrèk.", "error");
       }
     });
   }
 
-  // Soumisyon Form Inscription (FIREBASE AUTH)
+  // KÒREKSYON: SOUMISYON FÒM INSCRIPTION
   const signupForm = document.getElementById('signup-form');
   if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const phone = document.getElementById('signup-phone').value;
-      const password = document.getElementById('signup-password').value;
+      e.preventDefault(); // Anpeche paj la reload!
+
+      const phoneInput = document.getElementById('signup-phone');
+      const passwordInput = document.getElementById('signup-password');
+
+      if (!phoneInput || !passwordInput) return;
+
+      const phone = phoneInput.value.trim();
+      const password = passwordInput.value;
       const email = `${phone}@echanjplus.com`;
+
+      showLoader();
 
       try {
         await createUserWithEmailAndPassword(auth, email, password);
+        // onAuthStateChanged ap jere switch la otomatikman
       } catch (error) {
-        showAuthAlert(error.message, "error");
+        hideLoader();
+        console.error("Erè inscription:", error);
+        showAuthAlert(error.message || "Erè nan kreyasyon kont lan.", "error");
       }
     });
   }
@@ -249,8 +243,45 @@ function showAuthAlert(message, type) {
 }
 
 // ==========================================
-// 5. FONKSYON SISTÈM AN TAN REYÈL (TO AK STATI)
+// AROUND UTILITIES (SWITCH TAB, SIDEBAR, ETC.)
 // ==========================================
+window.switchTab = function(tabName) {
+  const loginSection = document.getElementById('login-section');
+  const signupSection = document.getElementById('signup-section');
+  const tabLogin = document.getElementById('tab-login');
+  const tabSignup = document.getElementById('tab-signup');
+  const alertBox = document.getElementById('alert-box');
+
+  if (alertBox) {
+    alertBox.style.display = 'none';
+    alertBox.className = 'alert-msg';
+  }
+
+  if (tabName === 'login') {
+    if (loginSection) loginSection.classList.add('active');
+    if (signupSection) signupSection.classList.remove('active');
+    if (tabLogin) tabLogin.classList.add('active');
+    if (tabSignup) tabSignup.classList.remove('active');
+  } else {
+    if (signupSection) signupSection.classList.add('active');
+    if (loginSection) loginSection.classList.remove('active');
+    if (tabSignup) tabSignup.classList.add('active');
+    if (tabLogin) tabLogin.classList.remove('active');
+  }
+};
+
+window.toggleVisibility = function(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁️';
+  }
+};
+
 function fetchSystemConfig() {
   try {
     const configRef = ref(db, 'system_config');
@@ -288,9 +319,6 @@ function fetchSystemConfig() {
   }
 }
 
-// ==========================================
-// 6. INTERAKSYON DASHBOARD, BALANS AK SIDEBAR
-// ==========================================
 window.toggleSidebar = function() {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
@@ -323,13 +351,6 @@ window.switchDashTab = function(tab, btn) {
   if (btn) btn.classList.add('active');
 };
 
-window.openActionModal = function(actionType) {
-  alert(`Aksyon zgade: ${actionType.toUpperCase()}`);
-};
-
-// ==========================================
-// 7. CAROUSEL BANNER & FAQ
-// ==========================================
 function initCarousel() {
   const dots = document.querySelectorAll('.carousel-dots .dot');
   if (!dots.length) return;
@@ -372,14 +393,13 @@ window.toggleFaq = function(element) {
   }
 };
 
-// ==========================================
-// 8. DEKONEKSYON
-// ==========================================
+// Dekoneksyon
 document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
       try {
+        showLoader();
         await signOut(auth);
         const sidebar = document.getElementById('sidebar');
         if (sidebar && sidebar.classList.contains('active')) {
@@ -387,6 +407,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (error) {
         console.error("Erè dekoneksyon:", error);
+      } finally {
+        hideLoader();
       }
     });
   }
