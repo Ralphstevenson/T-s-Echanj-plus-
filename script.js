@@ -72,24 +72,31 @@ onAuthStateChanged(auth, (user) => {
   const dashboardSection = document.getElementById('dashboard-section');
 
   if (user) {
-    // Kache fòm atantifikasyon an epi afiche dashboard la
+    // Kache fòm otantifikasyon yo (Connexion / Inscription)
     if (authContainer) {
       authContainer.style.display = 'none';
       authContainer.classList.add('hidden');
     }
+
+    // Afiche Paj Akèy / Dashboard la ak tout fonksyon l yo
     if (dashboardSection) {
       dashboardSection.style.display = 'block';
       dashboardSection.classList.remove('hidden');
     }
 
-    const displayPhone = user.email ? user.email.split('@')[0] : 'Itilizatè';
-    
+    // Rekipere nimewo telefòn nan san domèn email la (@echanjplus.com)
+    let displayPhone = 'Itilizatè';
+    if (user.email) {
+      displayPhone = user.email.split('@')[0];
+    }
+
+    // Ajoute nimewo a nan Header ak Sidebar UI
     const userPhoneEl = document.getElementById('user-display-phone');
     const sidebarPhoneEl = document.getElementById('sidebar-user-phone');
     if (userPhoneEl) userPhoneEl.textContent = '+509 ' + displayPhone;
     if (sidebarPhoneEl) sidebarPhoneEl.textContent = '+509 ' + displayPhone;
 
-    // Chaje solde an tan reyèl
+    // Chaje solde itilizatè a an tan reyèl sou Realtime Database
     try {
       const userRef = ref(db, `users/${user.uid}`);
       onValue(userRef, (snapshot) => {
@@ -106,7 +113,7 @@ onAuthStateChanged(auth, (user) => {
     }
 
   } else {
-    // Si pa gen itilizatè, kache dashboard la epi afiche auth
+    // Si kliyan an dekonekte, kache akèy la epi tounen sou fòm otantifikasyon an
     if (dashboardSection) {
       dashboardSection.style.display = 'none';
       dashboardSection.classList.add('hidden');
@@ -117,7 +124,7 @@ onAuthStateChanged(auth, (user) => {
     }
   }
 
-  // Asire nou retire loader a nan nenpòt ka
+  // Retire loader an kèlkeswa sa k rive
   hideLoader();
 });
 
@@ -133,21 +140,29 @@ function fetchSystemConfig() {
 
       const buyRateEl = document.getElementById('display-rate-buy');
       const sellRateEl = document.getElementById('display-rate-sell');
-      if (buyRateEl && config.rate_buy) buyRateEl.textContent = parseFloat(config.rate_buy).toFixed(2) + " HTG";
-      if (sellRateEl && config.rate_sell) sellRateEl.textContent = parseFloat(config.rate_sell).toFixed(2) + " HTG";
+      if (buyRateEl && config.rate_buy !== undefined) {
+        buyRateEl.textContent = parseFloat(config.rate_buy).toFixed(2) + " HTG";
+      }
+      if (sellRateEl && config.rate_sell !== undefined) {
+        sellRateEl.textContent = parseFloat(config.rate_sell).toFixed(2) + " HTG";
+      }
 
       const moncashStatusEl = document.getElementById('moncash-status');
+      const moncashDot = document.getElementById('moncash-dot');
       if (moncashStatusEl && config.moncash_status) {
         const active = config.moncash_status === 'active';
         moncashStatusEl.textContent = active ? 'Operasyonèl' : 'Pa disponib';
         moncashStatusEl.style.color = active ? '#22c55e' : '#ef4444';
+        if (moncashDot) moncashDot.className = active ? 'dot-status online' : 'dot-status offline';
       }
 
       const natcashStatusEl = document.getElementById('natcash-status');
+      const natcashDot = document.getElementById('natcash-dot');
       if (natcashStatusEl && config.natcash_status) {
         const active = config.natcash_status === 'active';
         natcashStatusEl.textContent = active ? 'Operasyonèl' : 'Pa disponib';
         natcashStatusEl.style.color = active ? '#22c55e' : '#ef4444';
+        if (natcashDot) natcashDot.className = active ? 'dot-status online' : 'dot-status offline';
       }
 
       const flashEl = document.getElementById('header-flash-info');
@@ -162,13 +177,13 @@ function fetchSystemConfig() {
 }
 
 // ==========================================
-// 5. FONKSYON NAN WINDOW POU DOM / HTML LA
+// 5. FONKSYON PIVOT AK UI (WINDOW EXPORTS)
 // ==========================================
-window.switchTab = function(tabName) {
+
+// Fonksyon Pivot ant Connexion ak Inscription
+window.switchToAuthTab = function(type) {
   const loginSection = document.getElementById('login-section');
   const signupSection = document.getElementById('signup-section');
-  const tabLogin = document.getElementById('tab-login');
-  const tabSignup = document.getElementById('tab-signup');
   const alertBox = document.getElementById('alert-box');
 
   if (alertBox) {
@@ -176,28 +191,34 @@ window.switchTab = function(tabName) {
     alertBox.className = 'alert-msg';
   }
 
-  if (tabName === 'login') {
-    if (loginSection) loginSection.classList.add('active');
-    if (signupSection) signupSection.classList.remove('active');
-    if (tabLogin) tabLogin.classList.add('active');
-    if (tabSignup) tabSignup.classList.remove('active');
+  if (type === 'signup') {
+    if (loginSection) loginSection.style.display = 'none';
+    if (signupSection) signupSection.style.display = 'block';
   } else {
-    if (signupSection) signupSection.classList.add('active');
-    if (loginSection) loginSection.classList.remove('active');
-    if (tabSignup) tabSignup.classList.add('active');
-    if (tabLogin) tabLogin.classList.remove('active');
+    if (signupSection) signupSection.style.display = 'none';
+    if (loginSection) loginSection.style.display = 'block';
   }
 };
 
 window.toggleVisibility = function(inputId, btn) {
   const input = document.getElementById(inputId);
   if (!input) return;
+  const icon = btn.querySelector('i');
+  
   if (input.type === 'password') {
     input.type = 'text';
-    btn.textContent = '🙈';
+    if (icon) {
+      icon.className = 'fa-solid fa-eye';
+    } else {
+      btn.textContent = '👁️';
+    }
   } else {
     input.type = 'password';
-    btn.textContent = '👁️';
+    if (icon) {
+      icon.className = 'fa-solid fa-eye-slash';
+    } else {
+      btn.textContent = '🙈';
+    }
   }
 };
 
@@ -220,26 +241,12 @@ function updateBalanceUI() {
   const eyeIcon = document.getElementById('eye-icon');
   
   if (balanceEl) {
-    balanceEl.textContent = balanceHidden ? '••••••' : rawUserBalance;
+    balanceEl.textContent = balanceHidden ? '•••••• HTG' : rawUserBalance;
   }
   if (eyeIcon) {
     eyeIcon.className = balanceHidden ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
   }
 }
-
-window.switchDashTab = function(tab, btn) {
-  const navItems = document.querySelectorAll('.bottom-nav .nav-item');
-  navItems.forEach(item => item.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-
-  // Si w gen plizyè seksyon nan Dashboard la ki chanje lè w klike sou meni anba a:
-  const dashViews = document.querySelectorAll('.dash-view');
-  if (dashViews.length > 0) {
-    dashViews.forEach(view => view.style.display = 'none');
-    const targetView = document.getElementById(`dash-view-${tab}`);
-    if (targetView) targetView.style.display = 'block';
-  }
-};
 
 function initCarousel() {
   const dots = document.querySelectorAll('.carousel-dots .dot');
