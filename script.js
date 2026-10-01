@@ -1,4 +1,4 @@
-/* js/main.js - Echanj Plus (Kòrèk & Sekirize) */
+/* js/main.js - Echanj Plus (Kòrèk, Sekirize & Ranfòse) */
 
 import { auth, db, ref, onValue } from "./config.js";
 import { 
@@ -11,6 +11,7 @@ import {
 // Variable global pou kenbe solde a an memwa
 let rawUserBalance = "0.00 HTG";
 let balanceHidden = false;
+let currentSlide = 0;
 
 // ==========================================
 // FONKSYON POU KACHE LOADER A VITE
@@ -18,7 +19,10 @@ let balanceHidden = false;
 function hideLoader() {
   const loader = document.getElementById('loading-overlay');
   if (loader) {
-    loader.style.display = 'none';
+    loader.style.opacity = '0';
+    setTimeout(() => {
+      loader.style.display = 'none';
+    }, 300);
   }
 }
 
@@ -29,16 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Masque loader a apre 500ms max pou li pa janm rete bloke
   setTimeout(hideLoader, 500);
 
-  // Initialisation pou règ modpas yo
+  // Initialisation pou règ modpas yo ak Carousel
   initAuthValidation();
   initCarousel();
+  fetchSystemConfig();
 });
 
 // ==========================================
 // 2. OTANTIFIKASYON & LISTENERS
 // ==========================================
 onAuthStateChanged(auth, (user) => {
-  // Kach loader a tou lè Firebase fin verifye
+  // Kache loader a tou lè Firebase fin verifye
   hideLoader();
 
   const authContainer = document.getElementById('auth-container');
@@ -55,7 +60,7 @@ onAuthStateChanged(auth, (user) => {
     if (userPhoneEl) userPhoneEl.textContent = '+509 ' + displayPhone;
     if (sidebarPhoneEl) sidebarPhoneEl.textContent = '+509 ' + displayPhone;
 
-    // Chaje solde an tan reyèl
+    // Chaje solde itilizatè a an tan reyèl
     try {
       const userRef = ref(db, `users/${user.uid}`);
       onValue(userRef, (snapshot) => {
@@ -66,7 +71,7 @@ onAuthStateChanged(auth, (user) => {
         }
       });
     } catch (e) {
-      console.error("Erè Database:", e);
+      console.error("Erè Database (Solde):", e);
     }
 
   } else {
@@ -76,7 +81,55 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // ==========================================
-// 3. FONKSYON NAN WINDOW POU ONCLICK WORKS
+// 3. CHAJE KONFIGIRASYON SISTÈM NAN (TO AK STATI)
+// ==========================================
+function fetchSystemConfig() {
+  try {
+    const configRef = ref(db, 'system_config');
+    onValue(configRef, (snapshot) => {
+      const config = snapshot.val();
+      if (!config) return;
+
+      // Mete ajou To Achte / To Vant
+      const buyRateEl = document.getElementById('display-rate-buy');
+      const sellRateEl = document.getElementById('display-rate-sell');
+      if (buyRateEl && config.rate_buy) buyRateEl.textContent = parseFloat(config.rate_buy).toFixed(2) + " HTG";
+      if (sellRateEl && config.rate_sell) sellRateEl.textContent = parseFloat(config.rate_sell).toFixed(2) + " HTG";
+
+      // Mete ajou Stati MonCash
+      const moncashStatusEl = document.getElementById('moncash-status');
+      const moncashDotEl = document.getElementById('moncash-dot');
+      if (moncashStatusEl && config.moncash_status) {
+        const active = config.moncash_status === 'active';
+        moncashStatusEl.textContent = active ? 'Operasyonèl' : 'Pa disponib';
+        moncashStatusEl.style.color = active ? '#16a34a' : '#ef4444';
+        if (moncashDotEl) moncashDotEl.style.color = active ? '#22c55e' : '#ef4444';
+      }
+
+      // Mete ajou Stati NatCash
+      const natcashStatusEl = document.getElementById('natcash-status');
+      const natcashDotEl = document.getElementById('natcash-dot');
+      if (natcashStatusEl && config.natcash_status) {
+        const active = config.natcash_status === 'active';
+        natcashStatusEl.textContent = active ? 'Operasyonèl' : 'Pa disponib';
+        natcashStatusEl.style.color = active ? '#16a34a' : '#ef4444';
+        if (natcashDotEl) natcashDotEl.style.color = active ? '#22c55e' : '#ef4444';
+      }
+
+      // Flash Info Bar
+      const flashEl = document.getElementById('header-flash-info');
+      if (flashEl && config.flash_message) {
+        flashEl.textContent = config.flash_message;
+        flashEl.style.display = 'block';
+      }
+    });
+  } catch (e) {
+    console.error("Erè chajman konfigirasyon sistèm:", e);
+  }
+}
+
+// ==========================================
+// 4. FONKSYON NAN WINDOW POU ONCLICK WORKS
 // ==========================================
 window.switchTab = function(tabName) {
   const loginSection = document.getElementById('login-section');
@@ -138,7 +191,7 @@ function updateBalanceUI() {
 }
 
 // ==========================================
-// 4. VALIDASYON MODPAS & FORMS
+// 5. VALIDASYON MODPAS & FORMS
 // ==========================================
 function initAuthValidation() {
   const signupPassword = document.getElementById('signup-password');
@@ -265,10 +318,8 @@ function showAuthAlert(message, type) {
 }
 
 // ==========================================
-// 5. CAROUSEL BANNER
+// 6. CAROUSEL BANNER
 // ==========================================
-let currentSlide = 0;
-
 function initCarousel() {
   const dots = document.querySelectorAll('.carousel-dots .dot');
   if (!dots.length) return;
@@ -297,17 +348,19 @@ window.goToSlide = function(index) {
 };
 
 // ==========================================
-// 6. FAQ TOGGLE & LOGOUT
+// 7. FAQ TOGGLE & LOGOUT
 // ==========================================
 window.toggleFaq = function(element) {
   const answer = element.querySelector('.faq-answer');
   const icon = element.querySelector('.faq-question i');
 
-  if (answer.style.display === 'none' || answer.style.display === '') {
-    answer.style.display = 'block';
+  if (!answer) return;
+
+  if (answer.classList.contains('hidden')) {
+    answer.classList.remove('hidden');
     if (icon) icon.className = 'fas fa-chevron-up';
   } else {
-    answer.style.display = 'none';
+    answer.classList.add('hidden');
     if (icon) icon.className = 'fas fa-chevron-down';
   }
 };
@@ -318,7 +371,7 @@ if (logoutBtn) {
     try {
       await signOut(auth);
       if (document.getElementById('sidebar')?.classList.contains('active')) {
-        toggleSidebar();
+        window.toggleSidebar();
       }
     } catch (error) {
       console.error("Erè dekoneksyon:", error);
