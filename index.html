@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Echanj Plus - Otantifikasyon & Akèy</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- CSS Prensipal -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- Script Sikous: Debloke loader a touswit apre 600ms si yon modil an reta -->
   <script>
     setTimeout(function() {
       var loader = document.getElementById('loading-overlay');
@@ -19,78 +16,87 @@
         loader.style.opacity = '0';
         setTimeout(function() { loader.style.display = 'none'; }, 300);
       }
-    }, 600);
+    }, 500);
   </script>
 </head>
 <body>
 
-  <!-- ==========================================
-       OVERLAY LOADING (LOKAL, RAPID & SAN ENTÈNET)
-       ========================================== -->
+  <!-- LOADING OVERLAY -->
   <div id="loading-overlay" class="loader-backdrop">
     <div class="loader-content">
-      <div class="static-icon">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-        </svg>
-      </div>
-      
-      <div class="dots-orbit">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-      </div>
-      <p class="loader-text">Tann yon ti moman...</p>
+      <div class="spinner"></div>
+      <p class="loader-text">Chargement en cours...</p>
     </div>
   </div>
 
-  <!-- ==========================================
-       1. SEKSYON OTANTIFIKASYON (AUTH)
-       ========================================== -->
+  <!-- 1. SEKSYON OTANTIFIKASYON (AUTH) -->
   <div class="auth-container" id="auth-container">
     
-    <!-- Bouton Tab Yo -->
+    <!-- Bouton Tab Yo (Connexion an premye) -->
     <div class="tabs">
-      <button class="tab-btn active" id="tab-signup" onclick="window.switchTab('signup')">Inscription</button>
-      <button class="tab-btn" id="tab-login" onclick="window.switchTab('login')">Connexion</button>
+      <button class="tab-btn active" id="tab-login" onclick="window.switchTab('login')">Connexion</button>
+      <button class="tab-btn" id="tab-signup" onclick="window.switchTab('signup')">Inscription</button>
     </div>
 
-    <!-- 1. FÒMILÈ ENSKRIPSYON -->
-    <div class="form-section active" id="signup-section">
+    <!-- Bwat Alèt -->
+    <div id="alert-box" class="alert-msg"></div>
+
+    <!-- FÒMILÈ KONEKSYON (Aktif an premye) -->
+    <div class="form-section active" id="login-section">
+      <div class="form-title">Se Connecter</div>
+      
+      <form id="login-form">
+        <div class="input-group">
+          <span class="prefix">🇭🇹 +509</span>
+          <input type="tel" id="login-phone" placeholder="37000000" maxlength="8" required autocomplete="tel">
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="login-password" placeholder="Mot de passe" required autocomplete="current-password">
+          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('login-password', this)">👁️</button>
+        </div>
+
+        <button type="submit" class="submit-btn" id="login-btn">
+          <span class="btn-text">Se connecter</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- FÒMILÈ ENSKRIPSYON -->
+    <div class="form-section" id="signup-section">
       <div class="form-title">Créer un compte</div>
       
       <form id="signup-form">
         <div class="input-group">
           <span class="prefix">🇭🇹 +509</span>
-          <input type="tel" id="signup-phone" placeholder="37000000" maxlength="8" required>
+          <input type="tel" id="signup-phone" placeholder="37000000" maxlength="8" required autocomplete="tel">
         </div>
 
         <div class="input-group">
-          <input type="password" id="signup-password" placeholder="Mot de passe" required>
+          <input type="password" id="signup-password" placeholder="Mot de passe" required autocomplete="new-password">
           <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-password', this)">👁️</button>
         </div>
 
-        <!-- Règ sekirite modpas -->
+        <!-- Règ sekirite modpas ak ikon dinamik -->
         <ul class="rules-list">
-          <li id="rule-lowercase"><span class="status-icon"></span> Utiliser au moins une minuscule</li>
-          <li id="rule-uppercase"><span class="status-icon"></span> Utiliser au moins une majuscule</li>
-          <li id="rule-number"><span class="status-icon"></span> Utiliser au moins un chiffre</li>
-          <li id="rule-special"><span class="status-icon"></span> Utiliser au moins un caractère spécial</li>
-          <li id="rule-length"><span class="status-icon"></span> Utiliser au moins 8 caractères</li>
-          <li id="rule-no-seq-num"><span class="status-icon"></span> N'utilisez pas de suite de chiffres</li>
-          <li id="rule-no-seq-let"><span class="status-icon"></span> N'utilisez pas une séquence de lettres</li>
-          <li id="rule-no-login"><span class="status-icon"></span> N'utilisez pas votre login comme mot de passe</li>
-          <li id="rule-no-repeat"><span class="status-icon"></span> N'utilisez pas une séquence de mêmes caractères</li>
+          <li id="rule-lowercase"><span class="status-icon">✕</span> Utiliser au moins une minuscule</li>
+          <li id="rule-uppercase"><span class="status-icon">✕</span> Utiliser au moins une majuscule</li>
+          <li id="rule-number"><span class="status-icon">✕</span> Utiliser au moins un chiffre</li>
+          <li id="rule-special"><span class="status-icon">✕</span> Utiliser au moins un caractère spécial</li>
+          <li id="rule-length"><span class="status-icon">✕</span> Utiliser au moins 8 caractères</li>
+          <li id="rule-no-seq-num"><span class="status-icon">✕</span> N'utilisez pas de suite de chiffres</li>
+          <li id="rule-no-seq-let"><span class="status-icon">✕</span> N'utilisez pas une séquence de lettres</li>
+          <li id="rule-no-login"><span class="status-icon">✕</span> N'utilisez pas votre login comme mot de passe</li>
+          <li id="rule-no-repeat"><span class="status-icon">✕</span> N'utilisez pas une séquence de mêmes caractères</li>
         </ul>
 
         <div class="input-group">
-          <input type="password" id="signup-confirm-password" placeholder="Confirmer votre mot de passe" required>
-          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-confirm-password', this)">👁️</button>
+          <input type="password" id="signup-confirm-password" placeholder="Confirmer votre mot de passe" required autocomplete="new-password">
+          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-confirm-password', this)">👁️️</button>
         </div>
 
         <div class="input-group">
-          <input type="email" id="signup-email" placeholder="Email (facultatif)">
+          <input type="email" id="signup-email" placeholder="Email (facultatif)" autocomplete="email">
         </div>
 
         <div class="input-group">
@@ -103,35 +109,9 @@
       </form>
     </div>
 
-    <!-- 2. FÒMILÈ KONEKSYON -->
-    <div class="form-section" id="login-section">
-      <div class="form-title">Se Connecter</div>
-      
-      <form id="login-form">
-        <div class="input-group">
-          <span class="prefix">🇭🇹 +509</span>
-          <input type="tel" id="login-phone" placeholder="37000000" maxlength="8" required>
-        </div>
-
-        <div class="input-group">
-          <input type="password" id="login-password" placeholder="Mot de passe" required>
-          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('login-password', this)">👁️</button>
-        </div>
-
-        <button type="submit" class="submit-btn" id="login-btn">
-          <span class="btn-text">Se connecter</span>
-        </button>
-      </form>
-    </div>
-
-    <!-- Bwat Alèt -->
-    <div id="alert-box" class="alert-msg"></div>
-
   </div>
 
-  <!-- ==========================================
-       2. SEKSYON AKÈY (DASHBOARD)
-       ========================================== -->
+  <!-- 2. SEKSYON AKÈY (DASHBOARD) -->
   <div class="dashboard-container" id="dashboard-section" style="display: none;">
     
     <!-- SIDEBAR AGÒCH -->
@@ -142,24 +122,24 @@
         <button class="close-sidebar-btn" onclick="window.toggleSidebar()">✕</button>
       </div>
       <div class="sidebar-user-info">
-        <div class="avatar">👤</div>
+        <div class="avatar"><i class="fa-solid fa-user"></i></div>
         <p id="sidebar-user-phone">+509 --</p>
       </div>
       <ul class="sidebar-menu">
-        <li><a href="istorik.html"><span class="menu-icon">📜</span> Istwa Tranzaksyon</a></li>
-        <li><a href="#" onclick="window.toggleSidebar()"><span class="menu-icon">🎁</span> Parainaj</a></li>
-        <li><a href="#" onclick="window.toggleSidebar()"><span class="menu-icon">💬</span> Sèvis Kliyan</a></li>
-        <li><a href="#" onclick="window.toggleSidebar()"><span class="menu-icon">⚙️</span> Paramèt Sekirite</a></li>
+        <li><a href="istorik.html"><i class="fa-solid fa-clock-rotate-left"></i> Istwa Tranzaksyon</a></li>
+        <li><a href="#" onclick="window.toggleSidebar()"><i class="fa-solid fa-gift"></i> Parainaj</a></li>
+        <li><a href="#" onclick="window.toggleSidebar()"><i class="fa-solid fa-headset"></i> Sèvis Kliyan</a></li>
+        <li><a href="#" onclick="window.toggleSidebar()"><i class="fa-solid fa-shield-halved"></i> Paramèt Sekirite</a></li>
       </ul>
       <div class="sidebar-footer">
-        <button class="sidebar-logout-btn" id="logout-btn">Dekonekte 🚪</button>
+        <button class="sidebar-logout-btn" id="logout-btn">Dekonekte <i class="fa-solid fa-right-from-bracket"></i></button>
       </div>
     </aside>
 
     <!-- HEADER -->
     <header class="dash-header">
       <div class="header-left">
-        <button class="menu-toggle-btn" onclick="window.toggleSidebar()">☰</button>
+        <button class="menu-toggle-btn" onclick="window.toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
         <div class="head-user">
           <span class="welcome-label">Byenveni,</span>
           <h4 id="user-display-phone" class="user-phone">+509 --</h4>
@@ -170,7 +150,7 @@
       <div class="head-balance-box">
         <span class="balance-title">Solde:</span>
         <strong id="user-balance" class="balance-text">0.00 HTG</strong>
-        <button class="eye-btn" onclick="window.toggleBalanceVisibility()">👁️</button>
+        <button class="eye-btn" onclick="window.toggleBalanceVisibility()"><i class="fa-solid fa-eye" id="eye-icon"></i></button>
       </div>
     </header>
 
@@ -180,15 +160,15 @@
         
         <div id="header-flash-info" class="flash-info-bar"></div>
 
-        <!-- KAT TO ACHTE AK TO VANT AN TAN REYÈL -->
-        <div class="rates-display-container" style="display: flex; gap: 10px; margin: 15px 0;">
-          <div class="rate-box" style="flex: 1; background: #1e293b; padding: 12px; border-radius: 12px; text-align: center;">
-            <span style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 4px;">To Achte</span>
-            <strong id="display-rate-buy" style="font-size: 16px; color: #22c55e;">0.00 HTG</strong>
+        <!-- KAT TO ACHTE AK TO VANT -->
+        <div class="rates-display-container">
+          <div class="rate-box">
+            <span class="rate-label">To Achte</span>
+            <strong id="display-rate-buy" class="rate-value buy">0.00 HTG</strong>
           </div>
-          <div class="rate-box" style="flex: 1; background: #1e293b; padding: 12px; border-radius: 12px; text-align: center;">
-            <span style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 4px;">To Vant</span>
-            <strong id="display-rate-sell" style="font-size: 16px; color: #3b82f6;">0.00 HTG</strong>
+          <div class="rate-box">
+            <span class="rate-label">To Vant</span>
+            <strong id="display-rate-sell" class="rate-value sell">0.00 HTG</strong>
           </div>
         </div>
 
@@ -223,127 +203,126 @@
 
         <!-- BOUTON AKSYON RAPID YO -->
         <section class="quick-actions">
-          <a href="retre.html" class="action-btn" style="text-decoration: none;">
-            <div class="action-icon deposit-icon">📥</div>
+          <a href="retre.html" class="action-btn">
+            <div class="action-icon deposit-icon"><i class="fa-solid fa-arrow-down-left-and-arrow-up-right-to-center"></i></div>
             <span>Depo</span>
           </a>
-          <a href="retre.html" class="action-btn" style="text-decoration: none;">
-            <div class="action-icon withdraw-icon">📤</div>
+          <a href="retre.html" class="action-btn">
+            <div class="action-icon withdraw-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
             <span>Retrè</span>
           </a>
-          <a href="echanj.html" class="action-btn" style="text-decoration: none;">
-            <div class="action-icon exchange-icon">🔄</div>
+          <a href="echanj.html" class="action-btn">
+            <div class="action-icon exchange-icon"><i class="fa-solid fa-rotate"></i></div>
             <span>Echanj</span>
           </a>
-          <a href="istorik.html" class="action-btn" style="text-decoration: none;">
-            <div class="action-icon history-icon">📜</div>
+          <a href="istorik.html" class="action-btn">
+            <div class="action-icon history-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
             <span>Istwa</span>
           </a>
         </section>
 
         <!-- STATI SÈVIS PÒTAY YO -->
-        <div class="system-status-card" style="background: #1e293b; padding: 12px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-around;">
-          <div class="gateway-status" style="color: #ffffff; font-size: 14px;">
-            <span id="moncash-dot" style="color: #22c55e;">●</span> MonCash: <b id="moncash-status" style="color: #16a34a;">Operasyonèl</b>
+        <div class="system-status-card">
+          <div class="gateway-status">
+            <span id="moncash-dot" class="dot-status online">●</span> MonCash: <b id="moncash-status">Operasyonèl</b>
           </div>
-          <div class="gateway-status" style="color: #ffffff; font-size: 14px;">
-            <span id="natcash-dot" style="color: #22c55e;">●</span> NatCash: <b id="natcash-status" style="color: #16a34a;">Operasyonèl</b>
+          <div class="gateway-status">
+            <span id="natcash-dot" class="dot-status online">●</span> NatCash: <b id="natcash-status">Operasyonèl</b>
           </div>
         </div>
 
         <!-- NOUVÈL AK SÈVIS YO -->
         <div class="news-section-pro">
-          <div class="news-header-pro" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h3 style="font-size: 16px; font-weight: 700;">Latest News & Analytics</h3>
+          <div class="news-header-pro">
+            <h3>Latest News & Analytics</h3>
             <i class="fa-solid fa-chevron-right"></i>
           </div>
 
-          <div class="news-list-pro" style="display: flex; flex-direction: column; gap: 10px;">
-            <div class="news-card-pro" style="display: flex; gap: 12px; background: #1e293b; padding: 10px; border-radius: 10px; align-items: center;">
-              <img src="https://i.postimg.cc/1V5TGWk0/23403511-3d46-4460-a669-ccf2a18d8ec3.png" style="width: 45px; height: 45px; border-radius: 8px; object-fit: cover;" alt="Digicel">
+          <div class="news-list-pro">
+            <div class="news-card-pro">
+              <img src="https://i.postimg.cc/1V5TGWk0/23403511-3d46-4460-a669-ccf2a18d8ec3.png" alt="Digicel">
               <div class="news-info-pro">
-                <h4 style="font-size: 14px; margin-bottom: 3px;">Echanj Plus | Digicel Gateway</h4>
-                <p style="font-size: 12px; color: #94a3b8;">Frè: <b>16.5%</b> | Limit Minimòm: 100 HTG. Tretman an dirèk san pèdi tan.</p>
+                <h4>Echanj Plus | Digicel Gateway</h4>
+                <p>Frè: <b>16.5%</b> | Limit Minimòm: 100 HTG. Tretman an dirèk san pèdi tan.</p>
               </div>
             </div>
 
-            <div class="news-card-pro" style="display: flex; gap: 12px; background: #1e293b; padding: 10px; border-radius: 10px; align-items: center;">
-              <img src="https://i.postimg.cc/Jt19CnsV/recharge-com-natcom-product-card.png" style="width: 45px; height: 45px; border-radius: 8px; object-fit: cover;" alt="Natcom">
+            <div class="news-card-pro">
+              <img src="https://i.postimg.cc/Jt19CnsV/recharge-com-natcom-product-card.png" alt="Natcom">
               <div class="news-info-pro">
-                <h4 style="font-size: 14px; margin-bottom: 3px;">Echanj Plus | Natcom Gateway</h4>
-                <p style="font-size: 12px; color: #94a3b8;">Frè: <b>16.5%</b> | Limit Minimòm: 100 HTG. Validasyon otomatik.</p>
+                <h4>Echanj Plus | Natcom Gateway</h4>
+                <p>Frè: <b>16.5%</b> | Limit Minimòm: 100 HTG. Validasyon otomatik.</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- DÈNYE TRANZAKSYON YO -->
-        <section class="recent-transactions" style="margin-top: 20px;">
-          <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h4 style="font-size: 16px; font-weight: 700;">Dènye Tranzaksyon yo</h4>
-            <a href="istorik.html" style="color: #3b82f6; font-size: 13px; text-decoration: none;">Gade tout</a>
+        <section class="recent-transactions">
+          <div class="section-title">
+            <h4>Dènye Tranzaksyon yo</h4>
+            <a href="istorik.html">Gade tout</a>
           </div>
 
           <div class="transaction-list" id="transaction-list">
-            <div class="empty-state" style="text-align: center; color: #94a3b8; font-size: 13px; padding: 15px 0;">Pa gen okenn tranzaksyon pou kounye a.</div>
+            <div class="empty-state">Pa gen okenn tranzaksyon pou kounye a.</div>
           </div>
         </section>
 
         <!-- SANT ÈD / FAQ -->
-        <div class="news-section-pro" style="margin-top: 20px;">
-          <div class="news-header-pro" style="margin-bottom: 10px;">
-            <h3 style="font-size: 16px; font-weight: 700;"><i class="fa-solid fa-circle-question"></i> Sant Èd / FAQ</h3>
+        <div class="news-section-pro faq-section">
+          <div class="news-header-pro">
+            <h3><i class="fa-solid fa-circle-question"></i> Sant Èd / FAQ</h3>
           </div>
           
-          <div class="faq-item" onclick="window.toggleFaq(this)" style="background: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer;">
-            <div class="faq-question" style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600;">
+          <div class="faq-item" onclick="window.toggleFaq(this)">
+            <div class="faq-question">
               <span>Konbyen tan yon echanj pran?</span> 
-              <i class="fas fa-chevron-down"></i>
+              <i class="fas fa-chevron-down faq-arrow"></i>
             </div>
-            <div class="faq-answer hidden" style="font-size: 12px; color: #94a3b8; margin-top: 6px; display: none;">
+            <div class="faq-answer">
               Echanj yo trete otomatikman. Validasyon an pran ant 3 a 5 minit maksimòm.
             </div>
           </div>
 
-          <div class="faq-item" onclick="window.toggleFaq(this)" style="background: #1e293b; padding: 10px; border-radius: 8px; cursor: pointer;">
-            <div class="faq-question" style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600;">
+          <div class="faq-item" onclick="window.toggleFaq(this)">
+            <div class="faq-question">
               <span>Ki limit minimòm pou m mande retrè?</span> 
-              <i class="fas fa-chevron-down"></i>
+              <i class="fas fa-chevron-down faq-arrow"></i>
             </div>
-            <div class="faq-answer hidden" style="font-size: 12px; color: #94a3b8; margin-top: 6px; display: none;">
+            <div class="faq-answer">
               Ou ka mande retrè kòmanse nan 100 HTG sou MonCash oswa NatCash.
             </div>
           </div>
         </div>
 
         <!-- KONSÈY AK SEKIRITE -->
-        <div class="security-tip-box" style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 10px; border-radius: 6px; margin-top: 20px; display: flex; gap: 10px; align-items: center;">
-          <div class="sec-icon-shield" style="color: #3b82f6; font-size: 18px;"><i class="fa-solid fa-shield-halved"></i></div>
-          <p style="font-size: 12px; margin: 0;"><b>🔐 Konsèy ARS:</b> Pa janm pataje PIN tranzaksyon ou oswa modpas ou ak pèsonn, menm ak yon administratè Echanj Plus.</p>
+        <div class="security-tip-box">
+          <div class="sec-icon-shield"><i class="fa-solid fa-shield-halved"></i></div>
+          <p><b>🔐 Konsèy ARS:</b> Pa janm pataje PIN tranzaksyon ou oswa modpas ou ak pèsonn, menm ak yon administratè Echanj Plus.</p>
         </div>
 
       </section>
     </main>
 
-    <!-- MENI NAVIGASYON ANBA (NAVBAR) -->
+    <!-- NAVIGASYON ANBA -->
     <nav class="bottom-nav">
-      <a href="index.html" class="nav-item active" style="text-decoration: none;">
-        <span class="nav-icon">🏠</span>
+      <a href="index.html" class="nav-item active">
+        <i class="fa-solid fa-house nav-icon"></i>
         <span class="nav-label">Akey</span>
       </a>
-      <a href="echanj.html" class="nav-item" style="text-decoration: none;">
-        <span class="nav-icon">⚡</span>
+      <a href="echanj.html" class="nav-item">
+        <i class="fa-solid fa-bolt nav-icon"></i>
         <span class="nav-label">Sèvis</span>
       </a>
-      <a href="istorik.html" class="nav-item" style="text-decoration: none;">
-        <span class="nav-icon">📜</span>
+      <a href="istorik.html" class="nav-item">
+        <i class="fa-solid fa-clock-rotate-left nav-icon"></i>
         <span class="nav-label">Istwa</span>
       </a>
     </nav>
 
   </div>
 
-  <!-- JavaScript Modil Prensipal -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
