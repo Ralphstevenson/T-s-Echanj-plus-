@@ -72,6 +72,7 @@ onAuthStateChanged(auth, (user) => {
   const dashboardSection = document.getElementById('dashboard-section');
 
   if (user) {
+    // Kache fòm atantifikasyon an epi afiche dashboard la
     if (authContainer) {
       authContainer.style.display = 'none';
       authContainer.classList.add('hidden');
@@ -105,6 +106,7 @@ onAuthStateChanged(auth, (user) => {
     }
 
   } else {
+    // Si pa gen itilizatè, kache dashboard la epi afiche auth
     if (dashboardSection) {
       dashboardSection.style.display = 'none';
       dashboardSection.classList.add('hidden');
@@ -115,6 +117,7 @@ onAuthStateChanged(auth, (user) => {
     }
   }
 
+  // Asire nou retire loader a nan nenpòt ka
   hideLoader();
 });
 
@@ -228,6 +231,14 @@ window.switchDashTab = function(tab, btn) {
   const navItems = document.querySelectorAll('.bottom-nav .nav-item');
   navItems.forEach(item => item.classList.remove('active'));
   if (btn) btn.classList.add('active');
+
+  // Si w gen plizyè seksyon nan Dashboard la ki chanje lè w klike sou meni anba a:
+  const dashViews = document.querySelectorAll('.dash-view');
+  if (dashViews.length > 0) {
+    dashViews.forEach(view => view.style.display = 'none');
+    const targetView = document.getElementById(`dash-view-${tab}`);
+    if (targetView) targetView.style.display = 'block';
+  }
 };
 
 function initCarousel() {
