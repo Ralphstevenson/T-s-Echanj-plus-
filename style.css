@@ -402,6 +402,7 @@ body {
   color: var(--text-main);
   cursor: pointer;
   transition: transform 0.2s ease, background 0.2s ease;
+  text-decoration: none;
 }
 
 .action-btn:active {
@@ -563,6 +564,7 @@ body {
   color: var(--text-muted);
   cursor: pointer;
   transition: color 0.2s ease;
+  text-decoration: none;
 }
 
 .nav-item.active {
@@ -576,4 +578,40 @@ body {
 .nav-label {
   font-size: 11px;
   font-weight: 600;
+}
+
+/* ==========================================
+   9. ELEMAN ELARJI POU DASHBOARD & NOUVÈL
+   ========================================== */
+.flash-info-bar {
+  display: none;
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--primary-color);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.rate-box {
+  border: 1px solid var(--border-color);
+}
+
+.news-card-pro {
+  border: 1px solid var(--border-color);
+  transition: background 0.2s ease;
+}
+
+.news-card-pro:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.faq-item {
+  border: 1px solid var(--border-color);
+  transition: background 0.2s ease;
+}
+
+.faq-item:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
