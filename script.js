@@ -1,15 +1,35 @@
-/* js/main.js - Jere Dashboard, UI, ak Konfigirasyon Sistèm */
+/* js/main.js - Konfigirasyon Prensipal Firebase, Dashboard, UI ak Sèvis */
 
-import { auth, db, ref, onValue } from "./config.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+// ==========================================
+// 1. KONFIGIRASYON FIREBASE (EKSPÒTE POU TOUT PYÈS)
+// ==========================================
+const firebaseConfig = {
+  apiKey: "AIzaSyAjK6EPlokkARHnakMaDRjqRzN-yQqlayU",
+  authDomain: "echanj-plus.firebaseapp.com",
+  databaseURL: "https://echanj-plus-default-rtdb.firebaseio.com",
+  projectId: "echanj-plus",
+  storageBucket: "echanj-plus.firebasestorage.app",
+  messagingSenderId: "117332306453",
+  appId: "1:117332306453:web:41d04226aa15ca5c3fbc1c",
+  measurementId: "G-LPGLMCR7HP"
+};
+
+// Inisyalizasyon Firebase
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getDatabase(app);
+
+// ==========================================
+// 2. VARIYAB GLOBAL AK UI UTILITIES
+// ==========================================
 let rawUserBalance = "0.00 HTG";
 let balanceHidden = false;
 let currentSlide = 0;
 
-// ==========================================
-// UTILITIES UI (LOADER AK ALÈT)
-// ==========================================
 export function hideLoader() {
   const loader = document.getElementById('loading-overlay');
   if (loader) {
@@ -37,7 +57,6 @@ export function showAuthAlert(message, type) {
   }
 }
 
-// Inisyalizasyon Entèfas nan chajman paj la
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(hideLoader, 500);
   initCarousel();
@@ -46,14 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// KONTWÒL ETAT OTANTIFIKASYON (SWAP UI)
+// 3. KONTWÒL ETAT OTANTIFIKASYON (FIREBASE AUTH)
 // ==========================================
 onAuthStateChanged(auth, (user) => {
   const authContainer = document.getElementById('auth-container');
   const dashboardSection = document.getElementById('dashboard-section');
 
   if (user) {
-    // Si itilizatè a konekte, kache fòm auth epi montre Dashboard
     if (authContainer) {
       authContainer.style.display = 'none';
       authContainer.classList.add('hidden');
@@ -70,7 +88,7 @@ onAuthStateChanged(auth, (user) => {
     if (userPhoneEl) userPhoneEl.textContent = '+509 ' + displayPhone;
     if (sidebarPhoneEl) sidebarPhoneEl.textContent = '+509 ' + displayPhone;
 
-    // Chaje solde an tan reyèl nan Firebase Database
+    // Chaje solde an tan reyèl
     try {
       const userRef = ref(db, `users/${user.uid}`);
       onValue(userRef, (snapshot) => {
@@ -87,7 +105,6 @@ onAuthStateChanged(auth, (user) => {
     }
 
   } else {
-    // Si li dekonekte, kache dashboard epi montre fòm auth
     if (dashboardSection) {
       dashboardSection.style.display = 'none';
       dashboardSection.classList.add('hidden');
@@ -102,7 +119,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // ==========================================
-// KONFIGIRASYON SISTÈM AN TAN REYÈL
+// 4. KONFIGIRASYON SISTÈM AN TAN REYÈL
 // ==========================================
 function fetchSystemConfig() {
   try {
@@ -142,7 +159,7 @@ function fetchSystemConfig() {
 }
 
 // ==========================================
-// FONKSYON NAN BANDE GLOBAL (WINDOW) POU HTML LA
+// 5. FONKSYON NAN WINDOW POU DOM / HTML LA
 // ==========================================
 window.switchTab = function(tabName) {
   const loginSection = document.getElementById('login-section');
