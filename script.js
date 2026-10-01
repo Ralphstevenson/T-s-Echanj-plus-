@@ -229,9 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       } catch (error) {
         console.error("Login error:", error);
-        let msg = "Erè pandan koneksyon an.";
+        let msg = "Erè: " + error.code;
         if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
           msg = "Nimewo telefòn oswa modpas la pa korèk.";
+        } else if (error.code === 'auth/invalid-email') {
+          msg = "Fòma nimewo a pa valab pou sistèm nan.";
         }
         window.showAlert(msg);
       } finally {
@@ -288,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       } catch (error) {
         console.error("Signup error:", error);
-        let msg = "Erè pandan enskripsyon an.";
+        let msg = "Erè: " + error.code;
         if (error.code === 'auth/email-already-in-use') {
           msg = "Nimewo telefòn sa a gen yon kont ki egziste deja.";
         } else if (error.code === 'auth/weak-password') {
