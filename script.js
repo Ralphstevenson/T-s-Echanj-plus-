@@ -1,4 +1,4 @@
-/* js/main.js - Fichye Prensipal Echanj Plus */
+/* js/main.js - Echanj Plus (Kòrèk & Sekirize) */
 
 import { auth, db, ref, onValue } from "./config.js";
 import { 
@@ -13,33 +13,41 @@ let rawUserBalance = "0.00 HTG";
 let balanceHidden = false;
 
 // ==========================================
-// 1. INITIALISATION & LISTENERS
+// FONKSYON POU KACHE LOADER A VITE
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-  // Masque loader a Lè paj la fin chaje
+function hideLoader() {
   const loader = document.getElementById('loading-overlay');
   if (loader) {
-    setTimeout(() => {
-      loader.style.display = 'none';
-    }, 800);
+    loader.style.display = 'none';
   }
+}
 
-  // Initialisation pou règ modpas ak fòm yo
+// ==========================================
+// 1. INITIALISATION
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Masque loader a apre 500ms max pou li pa janm rete bloke
+  setTimeout(hideLoader, 500);
+
+  // Initialisation pou règ modpas yo
   initAuthValidation();
   initCarousel();
 });
 
-// Koute eta koneksyon Firebase (Auth State Listener)
+// ==========================================
+// 2. OTANTIFIKASYON & LISTENERS
+// ==========================================
 onAuthStateChanged(auth, (user) => {
+  // Kach loader a tou lè Firebase fin verifye
+  hideLoader();
+
   const authContainer = document.getElementById('auth-container');
   const dashboardSection = document.getElementById('dashboard-section');
 
   if (user) {
-    // Si itilizatè a konekte, montre dashboard la
     if (authContainer) authContainer.style.display = 'none';
     if (dashboardSection) dashboardSection.style.display = 'block';
 
-    // Afiche nimewo oswa enfòmasyon itilizatè a
     const displayPhone = user.email ? user.email.split('@')[0] : 'Itilizatè';
     
     const userPhoneEl = document.getElementById('user-display-phone');
@@ -47,25 +55,28 @@ onAuthStateChanged(auth, (user) => {
     if (userPhoneEl) userPhoneEl.textContent = '+509 ' + displayPhone;
     if (sidebarPhoneEl) sidebarPhoneEl.textContent = '+509 ' + displayPhone;
 
-    // Chaje solde ak enfòmasyon an tan reyèl nan Firebase Realtime Database
-    const userRef = ref(db, `users/${user.uid}`);
-    onValue(userRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data && data.balance !== undefined) {
-        rawUserBalance = parseFloat(data.balance).toFixed(2) + " HTG";
-        updateBalanceUI();
-      }
-    });
+    // Chaje solde an tan reyèl
+    try {
+      const userRef = ref(db, `users/${user.uid}`);
+      onValue(userRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.balance !== undefined) {
+          rawUserBalance = parseFloat(data.balance).toFixed(2) + " HTG";
+          updateBalanceUI();
+        }
+      });
+    } catch (e) {
+      console.error("Erè Database:", e);
+    }
 
   } else {
-    // Si itilizatè a pa konekte, montre fòmilè auth la
     if (dashboardSection) dashboardSection.style.display = 'none';
     if (authContainer) authContainer.style.display = 'block';
   }
 });
 
 // ==========================================
-// 2. OTANTIFIKASYON (AUTH) & SWITCH TAB
+// 3. FONKSYON NAN WINDOW POU ONCLICK WORKS
 // ==========================================
 window.switchTab = function(tabName) {
   const loginSection = document.getElementById('login-section');
@@ -80,21 +91,21 @@ window.switchTab = function(tabName) {
   }
 
   if (tabName === 'login') {
-    loginSection.classList.add('active');
-    signupSection.classList.remove('active');
-    tabLogin.classList.add('active');
-    tabSignup.classList.remove('active');
+    if (loginSection) loginSection.classList.add('active');
+    if (signupSection) signupSection.classList.remove('active');
+    if (tabLogin) tabLogin.classList.add('active');
+    if (tabSignup) tabSignup.classList.remove('active');
   } else {
-    signupSection.classList.add('active');
-    loginSection.classList.remove('active');
-    tabSignup.classList.add('active');
-    tabLogin.classList.remove('active');
+    if (signupSection) signupSection.classList.add('active');
+    if (loginSection) loginSection.classList.remove('active');
+    if (tabSignup) tabSignup.classList.add('active');
+    if (tabLogin) tabLogin.classList.remove('active');
   }
 };
 
-// Pèmèt gade oswa kache modpas
 window.toggleVisibility = function(inputId, btn) {
   const input = document.getElementById(inputId);
+  if (!input) return;
   if (input.type === 'password') {
     input.type = 'text';
     btn.textContent = '🙈';
@@ -104,8 +115,30 @@ window.toggleVisibility = function(inputId, btn) {
   }
 };
 
+window.toggleSidebar = function() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  
+  if (sidebar && overlay) {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  }
+};
+
+window.toggleBalanceVisibility = function() {
+  balanceHidden = !balanceHidden;
+  updateBalanceUI();
+};
+
+function updateBalanceUI() {
+  const balanceEl = document.getElementById('user-balance');
+  if (balanceEl) {
+    balanceEl.textContent = balanceHidden ? '••••••' : rawUserBalance;
+  }
+}
+
 // ==========================================
-// 3. VALIDASYON RÈG MODPAS (INSCRIPTION)
+// 4. VALIDASYON MODPAS & FORMS
 // ==========================================
 function initAuthValidation() {
   const signupPassword = document.getElementById('signup-password');
@@ -129,12 +162,9 @@ function initAuthValidation() {
 
   function validateForm() {
     const pwd = signupPassword.value;
-    const phone = signupPhone.value;
-    const confirmPwd = signupConfirm.value;
+    const phone = signupPhone ? signupPhone.value : '';
+    const confirmPwd = signupConfirm ? signupConfirm.value : '';
 
-    let allValid = true;
-
-    // Verifikasyon chak règ
     const isLower = rules.lowercase(pwd);
     updateRuleState('rule-lowercase', isLower);
 
@@ -162,11 +192,12 @@ function initAuthValidation() {
     const isNoRepeat = rules.noRepeat(pwd);
     updateRuleState('rule-no-repeat', isNoRepeat);
 
-    allValid = isLower && isUpper && isNum && isSpec && isLen && isNoSeqNum && isNoSeqLet && isNoLogin && isNoRepeat;
-
-    // Bouton an ap limen sèlman si tout règ valab epi modpas yo parey
+    const allValid = isLower && isUpper && isNum && isSpec && isLen && isNoSeqNum && isNoSeqLet && isNoLogin && isNoRepeat;
     const isConfirmMatch = pwd === confirmPwd && confirmPwd.length > 0;
-    signupBtn.disabled = !(allValid && isConfirmMatch && phone.length === 8);
+
+    if (signupBtn) {
+      signupBtn.disabled = !(allValid && isConfirmMatch && phone.length === 8);
+    }
   }
 
   function updateRuleState(elementId, isValid) {
@@ -186,41 +217,37 @@ function initAuthValidation() {
   }
 
   signupPassword.addEventListener('input', validateForm);
-  signupConfirm.addEventListener('input', validateForm);
-  signupPhone.addEventListener('input', validateForm);
+  if (signupConfirm) signupConfirm.addEventListener('input', validateForm);
+  if (signupPhone) signupPhone.addEventListener('input', validateForm);
 
-  // SOUMISYON FORM KONEKSYON (FIREBASE LOGIN)
+  // Login Submit
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const phone = document.getElementById('login-phone').value;
       const password = document.getElementById('login-password').value;
-      
-      // Gen anpil fwa nimewo w la sèvi kòm baz pou email
       const formattedEmail = `${phone}@echanjplus.com`;
 
       try {
         await signInWithEmailAndPassword(auth, formattedEmail, password);
-        console.log("Koneksyon reyisi!");
       } catch (error) {
         showAuthAlert("Nimewo oswa modpas la pa kòrèk.", "error");
       }
     });
   }
 
-  // SOUMISYON FORM ENSKRIPSYON (FIREBASE SIGNUP)
+  // Signup Submit
   const signupForm = document.getElementById('signup-form');
   if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const phone = document.getElementById('signup-phone').value;
       const password = document.getElementById('signup-password').value;
-      const email = document.getElementById('signup-email').value || `${phone}@echanjplus.com`;
+      const email = document.getElementById('signup-email')?.value || `${phone}@echanjplus.com`;
 
       try {
         await createUserWithEmailAndPassword(auth, email, password);
-        console.log("Enskripsyon reyisi!");
       } catch (error) {
         showAuthAlert(error.message, "error");
       }
@@ -234,36 +261,6 @@ function showAuthAlert(message, type) {
     alertBox.textContent = message;
     alertBox.className = `alert-msg ${type}`;
     alertBox.style.display = 'block';
-  }
-}
-
-// ==========================================
-// 4. SIDEBAR & DASHBOARD INTERACTIONS
-// ==========================================
-window.toggleSidebar = function() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
-  
-  if (sidebar && overlay) {
-    sidebar.classList.toggle('active');
-    overlay.classList.toggle('active');
-  }
-};
-
-// Kach-kach / Montre Balans
-window.toggleBalanceVisibility = function() {
-  balanceHidden = !balanceHidden;
-  updateBalanceUI();
-};
-
-function updateBalanceUI() {
-  const balanceEl = document.getElementById('user-balance');
-  if (balanceEl) {
-    if (balanceHidden) {
-      balanceEl.textContent = '••••••';
-    } else {
-      balanceEl.textContent = rawUserBalance;
-    }
   }
 }
 
@@ -300,7 +297,7 @@ window.goToSlide = function(index) {
 };
 
 // ==========================================
-// 6. SANT ÈD / FAQ TOGGLE
+// 6. FAQ TOGGLE & LOGOUT
 // ==========================================
 window.toggleFaq = function(element) {
   const answer = element.querySelector('.faq-answer');
@@ -315,7 +312,6 @@ window.toggleFaq = function(element) {
   }
 };
 
-// Dekoneksyon (Firebase Logout)
 const logoutBtn = document.getElementById('logout-btn');
 if (logoutBtn) {
   logoutBtn.addEventListener('click', async () => {
@@ -325,7 +321,7 @@ if (logoutBtn) {
         toggleSidebar();
       }
     } catch (error) {
-      console.error("Erè pandan dekoneksyon an:", error);
+      console.error("Erè dekoneksyon:", error);
     }
   });
 }
