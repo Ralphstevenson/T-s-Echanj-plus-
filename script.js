@@ -1,4 +1,4 @@
-/* js/main.js - Echanj Plus (Konfigirasyon Auth & Firebase Otantik) */
+/* js/main.js - Echanj Plus (Mizajou Jeneral Firebase & UI) */
 
 import { auth, db, ref, onValue } from "./config.js";
 import { 
@@ -8,7 +8,7 @@ import {
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Variable global pou kenbe solde ak eta aplikasyon an an memwa
+// Varayb global pou kenbe solde ak eta aplikasyon an an memwa
 let rawUserBalance = "0.00 HTG";
 let balanceHidden = false;
 let currentSlide = 0;
@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 // 2. OTANTIFIKASYON (FIREBASE AUTH STATE)
 // ==========================================
-// Sa a ap asire ke se paj auth (koneksyon) ki parèt an premye si moun lan pa konekte
 onAuthStateChanged(auth, (user) => {
   hideLoader();
 
@@ -83,7 +82,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // ==========================================
-// 3. SWITCH TAB (CONNEXION / INSCRIPTION)
+// 3. SWITCH TAB (CONNEXION / INSCRIPTION) & TOGGLE MODPAS
 // ==========================================
 window.switchTab = function(tabName) {
   const loginSection = document.getElementById('login-section');
@@ -268,14 +267,14 @@ function fetchSystemConfig() {
       if (moncashStatusEl && config.moncash_status) {
         const active = config.moncash_status === 'active';
         moncashStatusEl.textContent = active ? 'Operasyonèl' : 'Pa disponib';
-        moncashStatusEl.style.color = active ? '#16a34a' : '#ef4444';
+        moncashStatusEl.style.color = active ? '#22c55e' : '#ef4444';
       }
 
       const natcashStatusEl = document.getElementById('natcash-status');
       if (natcashStatusEl && config.natcash_status) {
         const active = config.natcash_status === 'active';
         natcashStatusEl.textContent = active ? 'Operasyonèl' : 'Pa disponib';
-        natcashStatusEl.style.color = active ? '#16a34a' : '#ef4444';
+        natcashStatusEl.style.color = active ? '#22c55e' : '#ef4444';
       }
 
       const flashEl = document.getElementById('header-flash-info');
@@ -290,14 +289,14 @@ function fetchSystemConfig() {
 }
 
 // ==========================================
-// 6. INTERAKSYON DASHBOARD & SIDEBAR
+// 6. INTERAKSYON DASHBOARD, BALANS AK SIDEBAR
 // ==========================================
 window.toggleSidebar = function() {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
   if (sidebar && overlay) {
     sidebar.classList.toggle('active');
-    overlay.classList.toggle('active');
+    overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
   }
 };
 
@@ -308,8 +307,13 @@ window.toggleBalanceVisibility = function() {
 
 function updateBalanceUI() {
   const balanceEl = document.getElementById('user-balance');
+  const eyeIcon = document.getElementById('eye-icon');
+  
   if (balanceEl) {
     balanceEl.textContent = balanceHidden ? '••••••' : rawUserBalance;
+  }
+  if (eyeIcon) {
+    eyeIcon.className = balanceHidden ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
   }
 }
 
@@ -359,26 +363,31 @@ window.toggleFaq = function(element) {
 
   if (!answer) return;
 
-  if (answer.classList.contains('hidden')) {
-    answer.classList.remove('hidden');
-    if (icon) icon.className = 'fas fa-chevron-up';
+  if (answer.classList.contains('show')) {
+    answer.classList.remove('show');
+    if (icon) icon.className = 'fas fa-chevron-down faq-arrow';
   } else {
-    answer.classList.add('hidden');
-    if (icon) icon.className = 'fas fa-chevron-down';
+    answer.classList.add('show');
+    if (icon) icon.className = 'fas fa-chevron-up faq-arrow';
   }
 };
 
-// Dekoneksyon ak Firebase
-const logoutBtn = document.getElementById('logout-btn');
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', async () => {
-    try {
-      await signOut(auth);
-      if (document.getElementById('sidebar')?.classList.contains('active')) {
-        window.toggleSidebar();
+// ==========================================
+// 8. DEKONEKSYON
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar && sidebar.classList.contains('active')) {
+          window.toggleSidebar();
+        }
+      } catch (error) {
+        console.error("Erè dekoneksyon:", error);
       }
-    } catch (error) {
-      console.error("Erè dekoneksyon:", error);
-    }
-  });
-}
+    });
+  }
+});
