@@ -1,5 +1,19 @@
+/* js/main.js - Fichye Prensipal Echanj Plus */
+
+import { auth, db, ref, onValue } from "./config.js";
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// Variable global pou kenbe solde a an memwa
+let rawUserBalance = "0.00 HTG";
+let balanceHidden = false;
+
 // ==========================================
-// 1. ELEMAN AK VARIAB PRENSIPAL YO
+// 1. INITIALISATION & LISTENERS
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   // Masque loader a Lè paj la fin chaje
@@ -13,6 +27,41 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialisation pou règ modpas ak fòm yo
   initAuthValidation();
   initCarousel();
+});
+
+// Koute eta koneksyon Firebase (Auth State Listener)
+onAuthStateChanged(auth, (user) => {
+  const authContainer = document.getElementById('auth-container');
+  const dashboardSection = document.getElementById('dashboard-section');
+
+  if (user) {
+    // Si itilizatè a konekte, montre dashboard la
+    if (authContainer) authContainer.style.display = 'none';
+    if (dashboardSection) dashboardSection.style.display = 'block';
+
+    // Afiche nimewo oswa enfòmasyon itilizatè a
+    const displayPhone = user.email ? user.email.split('@')[0] : 'Itilizatè';
+    
+    const userPhoneEl = document.getElementById('user-display-phone');
+    const sidebarPhoneEl = document.getElementById('sidebar-user-phone');
+    if (userPhoneEl) userPhoneEl.textContent = '+509 ' + displayPhone;
+    if (sidebarPhoneEl) sidebarPhoneEl.textContent = '+509 ' + displayPhone;
+
+    // Chaje solde ak enfòmasyon an tan reyèl nan Firebase Realtime Database
+    const userRef = ref(db, `users/${user.uid}`);
+    onValue(userRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data && data.balance !== undefined) {
+        rawUserBalance = parseFloat(data.balance).toFixed(2) + " HTG";
+        updateBalanceUI();
+      }
+    });
+
+  } else {
+    // Si itilizatè a pa konekte, montre fòmilè auth la
+    if (dashboardSection) dashboardSection.style.display = 'none';
+    if (authContainer) authContainer.style.display = 'block';
+  }
 });
 
 // ==========================================
@@ -140,35 +189,51 @@ function initAuthValidation() {
   signupConfirm.addEventListener('input', validateForm);
   signupPhone.addEventListener('input', validateForm);
 
-  // Soumisyon Form Connexion
+  // SOUMISYON FORM KONEKSYON (FIREBASE LOGIN)
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const phone = document.getElementById('login-phone').value;
+      const password = document.getElementById('login-password').value;
       
-      // Similasyon koneksyon reyisi
-      document.getElementById('auth-container').style.display = 'none';
-      document.getElementById('dashboard-section').style.display = 'block';
-      
-      document.getElementById('user-display-phone').textContent = '+509 ' + phone;
-      document.getElementById('sidebar-user-phone').textContent = '+509 ' + phone;
+      // Gen anpil fwa nimewo w la sèvi kòm baz pou email
+      const formattedEmail = `${phone}@echanjplus.com`;
+
+      try {
+        await signInWithEmailAndPassword(auth, formattedEmail, password);
+        console.log("Koneksyon reyisi!");
+      } catch (error) {
+        showAuthAlert("Nimewo oswa modpas la pa kòrèk.", "error");
+      }
     });
   }
 
-  // Soumisyon Form Inscription
+  // SOUMISYON FORM ENSKRIPSYON (FIREBASE SIGNUP)
   const signupForm = document.getElementById('signup-form');
   if (signupForm) {
-    signupForm.addEventListener('submit', (e) => {
+    signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const phone = document.getElementById('signup-phone').value;
+      const password = document.getElementById('signup-password').value;
+      const email = document.getElementById('signup-email').value || `${phone}@echanjplus.com`;
 
-      document.getElementById('auth-container').style.display = 'none';
-      document.getElementById('dashboard-section').style.display = 'block';
-
-      document.getElementById('user-display-phone').textContent = '+509 ' + phone;
-      document.getElementById('sidebar-user-phone').textContent = '+509 ' + phone;
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        console.log("Enskripsyon reyisi!");
+      } catch (error) {
+        showAuthAlert(error.message, "error");
+      }
     });
+  }
+}
+
+function showAuthAlert(message, type) {
+  const alertBox = document.getElementById('alert-box');
+  if (alertBox) {
+    alertBox.textContent = message;
+    alertBox.className = `alert-msg ${type}`;
+    alertBox.style.display = 'block';
   }
 }
 
@@ -179,38 +244,28 @@ window.toggleSidebar = function() {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
   
-  sidebar.classList.toggle('active');
-  overlay.classList.toggle('active');
-};
-
-// Kach-kach / Montre Balans
-let balanceHidden = false;
-const originalBalance = "0.00 HTG";
-
-window.toggleBalanceVisibility = function() {
-  const balanceEl = document.getElementById('user-balance');
-  balanceHidden = !balanceHidden;
-
-  if (balanceHidden) {
-    balanceEl.textContent = '••••••';
-  } else {
-    balanceEl.textContent = originalBalance;
+  if (sidebar && overlay) {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
   }
 };
 
-// Switch Tab nan Dashboard anba (Bottom Nav)
-window.switchDashTab = function(tab, btn) {
-  const navItems = document.querySelectorAll('.bottom-nav .nav-item');
-  navItems.forEach(item => item.classList.remove('active'));
-  btn.classList.add('active');
-  
-  // Isit la ou ka ajoute lojik pou chanje paj nan dashboard la (ex: Sèvis, Profil)
+// Kach-kach / Montre Balans
+window.toggleBalanceVisibility = function() {
+  balanceHidden = !balanceHidden;
+  updateBalanceUI();
 };
 
-// Bouton Aksyon Rapid yo (Depo, Retrè, Echanj, Istwa)
-window.openActionModal = function(actionType) {
-  alert(`Ou klike sou: ${actionType.toUpperCase()}`);
-};
+function updateBalanceUI() {
+  const balanceEl = document.getElementById('user-balance');
+  if (balanceEl) {
+    if (balanceHidden) {
+      balanceEl.textContent = '••••••';
+    } else {
+      balanceEl.textContent = rawUserBalance;
+    }
+  }
+}
 
 // ==========================================
 // 5. CAROUSEL BANNER
@@ -222,7 +277,7 @@ function initCarousel() {
   if (!dots.length) return;
 
   setInterval(() => {
-    currentSlide = (currentSlide + 1) % 3;
+    currentSlide = (currentSlide + 1) % dots.length;
     goToSlide(currentSlide);
   }, 4000);
 }
@@ -260,12 +315,17 @@ window.toggleFaq = function(element) {
   }
 };
 
-// Dekoneksyon
+// Dekoneksyon (Firebase Logout)
 const logoutBtn = document.getElementById('logout-btn');
 if (logoutBtn) {
-  logoutBtn.addEventListener('click', () => {
-    toggleSidebar();
-    document.getElementById('dashboard-section').style.display = 'none';
-    document.getElementById('auth-container').style.display = 'block';
+  logoutBtn.addEventListener('click', async () => {
+    try {
+      await signOut(auth);
+      if (document.getElementById('sidebar')?.classList.contains('active')) {
+        toggleSidebar();
+      }
+    } catch (error) {
+      console.error("Erè pandan dekoneksyon an:", error);
+    }
   });
 }
