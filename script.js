@@ -1,11 +1,24 @@
-/* js/main.js - Konfigirasyon Prensipal Firebase, Dashboard, UI ak Sèvis */
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+// ==========================================
+// 1. ENPÒTASYON SDK FIREBASE (v10+ ES Modules)
+// ==========================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // ==========================================
-// 1. KONFIGIRASYON FIREBASE (EKSPÒTE POU TOUT PYÈS)
+// 2. KONFIGIRASYON FIREBASE
 // ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyAjK6EPlokkARHnakMaDRjqRzN-yQqlayU",
@@ -20,245 +33,86 @@ const firebaseConfig = {
 
 // Inisyalizasyon Firebase
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getDatabase(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-// ==========================================
-// 2. VARIYAB GLOBAL AK UI UTILITIES
-// ==========================================
-let rawUserBalance = "0.00 HTG";
-let balanceHidden = false;
+// Variables Globales pou UI
+let isBalanceHidden = false;
+let currentBalanceValue = "0.00 HTG";
 let currentSlide = 0;
 
-export function hideLoader() {
-  const loader = document.getElementById('loading-overlay');
-  if (loader) {
-    loader.style.opacity = '0';
-    setTimeout(() => {
-      loader.style.display = 'none';
-    }, 300);
-  }
-}
+// ==========================================
+// 3. FONKSYON GLOBAL POU UI (Attaché sur window)
+// ==========================================
 
-export function showLoader() {
-  const loader = document.getElementById('loading-overlay');
-  if (loader) {
-    loader.style.display = 'flex';
-    loader.style.opacity = '1';
-  }
-}
-
-export function showAuthAlert(message, type) {
+// Affichage messages d'alerte
+window.showAlert = function (message, type = 'danger') {
   const alertBox = document.getElementById('alert-box');
-  if (alertBox) {
-    alertBox.textContent = message;
-    alertBox.className = `alert-msg ${type}`;
-    alertBox.style.display = 'block';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(hideLoader, 500);
-  initCarousel();
-  fetchSystemConfig();
-  initLogoutEvent();
-});
-
-// ==========================================
-// 3. KONTWÒL ETAT OTANTIFIKASYON (FIREBASE AUTH)
-// ==========================================
-onAuthStateChanged(auth, (user) => {
-  const authContainer = document.getElementById('auth-container');
-  const dashboardSection = document.getElementById('dashboard-section');
-
-  if (user) {
-    // Kache fòm otantifikasyon yo (Connexion / Inscription)
-    if (authContainer) {
-      authContainer.style.display = 'none';
-      authContainer.classList.add('hidden');
-    }
-
-    // Afiche Paj Akèy / Dashboard la ak tout fonksyon l yo
-    if (dashboardSection) {
-      dashboardSection.style.display = 'block';
-      dashboardSection.classList.remove('hidden');
-    }
-
-    // Rekipere nimewo telefòn nan san domèn email la (@echanjplus.com)
-    let displayPhone = 'Itilizatè';
-    if (user.email) {
-      displayPhone = user.email.split('@')[0];
-    }
-
-    // Ajoute nimewo a nan Header ak Sidebar UI
-    const userPhoneEl = document.getElementById('user-display-phone');
-    const sidebarPhoneEl = document.getElementById('sidebar-user-phone');
-    if (userPhoneEl) userPhoneEl.textContent = '+509 ' + displayPhone;
-    if (sidebarPhoneEl) sidebarPhoneEl.textContent = '+509 ' + displayPhone;
-
-    // Chaje solde itilizatè a an tan reyèl sou Realtime Database
-    try {
-      const userRef = ref(db, `users/${user.uid}`);
-      onValue(userRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data && data.balance !== undefined) {
-          rawUserBalance = parseFloat(data.balance).toFixed(2) + " HTG";
-        } else {
-          rawUserBalance = "0.00 HTG";
-        }
-        updateBalanceUI();
-      });
-    } catch (e) {
-      console.error("Erè chajman solde:", e);
-    }
-
-  } else {
-    // Si kliyan an dekonekte, kache akèy la epi tounen sou fòm otantifikasyon an
-    if (dashboardSection) {
-      dashboardSection.style.display = 'none';
-      dashboardSection.classList.add('hidden');
-    }
-    if (authContainer) {
-      authContainer.style.display = 'block';
-      authContainer.classList.remove('hidden');
-    }
-  }
-
-  // Retire loader an kèlkeswa sa k rive
-  hideLoader();
-});
-
-// ==========================================
-// 4. KONFIGIRASYON SISTÈM AN TAN REYÈL
-// ==========================================
-function fetchSystemConfig() {
-  try {
-    const configRef = ref(db, 'system_config');
-    onValue(configRef, (snapshot) => {
-      const config = snapshot.val();
-      if (!config) return;
-
-      const buyRateEl = document.getElementById('display-rate-buy');
-      const sellRateEl = document.getElementById('display-rate-sell');
-      if (buyRateEl && config.rate_buy !== undefined) {
-        buyRateEl.textContent = parseFloat(config.rate_buy).toFixed(2) + " HTG";
-      }
-      if (sellRateEl && config.rate_sell !== undefined) {
-        sellRateEl.textContent = parseFloat(config.rate_sell).toFixed(2) + " HTG";
-      }
-
-      const moncashStatusEl = document.getElementById('moncash-status');
-      const moncashDot = document.getElementById('moncash-dot');
-      if (moncashStatusEl && config.moncash_status) {
-        const active = config.moncash_status === 'active';
-        moncashStatusEl.textContent = active ? 'Operasyonèl' : 'Pa disponib';
-        moncashStatusEl.style.color = active ? '#22c55e' : '#ef4444';
-        if (moncashDot) moncashDot.className = active ? 'dot-status online' : 'dot-status offline';
-      }
-
-      const natcashStatusEl = document.getElementById('natcash-status');
-      const natcashDot = document.getElementById('natcash-dot');
-      if (natcashStatusEl && config.natcash_status) {
-        const active = config.natcash_status === 'active';
-        natcashStatusEl.textContent = active ? 'Operasyonèl' : 'Pa disponib';
-        natcashStatusEl.style.color = active ? '#22c55e' : '#ef4444';
-        if (natcashDot) natcashDot.className = active ? 'dot-status online' : 'dot-status offline';
-      }
-
-      const flashEl = document.getElementById('header-flash-info');
-      if (flashEl && config.flash_message) {
-        flashEl.textContent = config.flash_message;
-        flashEl.style.display = 'block';
-      }
-    });
-  } catch (e) {
-    console.error("Erè konfigirasyon:", e);
-  }
-}
-
-// ==========================================
-// 5. FONKSYON PIVOT AK UI (WINDOW EXPORTS)
-// ==========================================
-
-// Fonksyon Pivot ant Connexion ak Inscription
-window.switchToAuthTab = function(type) {
-  const loginSection = document.getElementById('login-section');
-  const signupSection = document.getElementById('signup-section');
-  const alertBox = document.getElementById('alert-box');
-
-  if (alertBox) {
-    alertBox.style.display = 'none';
-    alertBox.className = 'alert-msg';
-  }
-
-  if (type === 'signup') {
-    if (loginSection) loginSection.style.display = 'none';
-    if (signupSection) signupSection.style.display = 'block';
-  } else {
-    if (signupSection) signupSection.style.display = 'none';
-    if (loginSection) loginSection.style.display = 'block';
-  }
+  if (!alertBox) return;
+  alertBox.className = `alert-msg alert-${type}`;
+  alertBox.innerText = message;
+  alertBox.style.display = 'block';
+  setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
 };
 
-window.toggleVisibility = function(inputId, btn) {
-  const input = document.getElementById(inputId);
+// Afiche / Kache modpas
+window.toggleVisibility = function (fieldId, btnEl) {
+  const input = document.getElementById(fieldId);
   if (!input) return;
-  const icon = btn.querySelector('i');
-  
+  const icon = btnEl.querySelector('i');
   if (input.type === 'password') {
     input.type = 'text';
-    if (icon) {
-      icon.className = 'fa-solid fa-eye';
-    } else {
-      btn.textContent = '👁️';
-    }
+    if (icon) icon.className = 'fa-solid fa-eye';
   } else {
     input.type = 'password';
-    if (icon) {
-      icon.className = 'fa-solid fa-eye-slash';
-    } else {
-      btn.textContent = '🙈';
-    }
+    if (icon) icon.className = 'fa-solid fa-eye-slash';
   }
 };
 
-window.toggleSidebar = function() {
+// Basculer ant Connexion ak Inscription
+window.switchToAuthTab = function (tab) {
+  const loginSec = document.getElementById('login-section');
+  const signupSec = document.getElementById('signup-section');
+  if (!loginSec || !signupSec) return;
+
+  if (tab === 'signup') {
+    loginSec.style.display = 'none';
+    signupSec.style.display = 'block';
+  } else {
+    signupSec.style.display = 'none';
+    loginSec.style.display = 'block';
+  }
+};
+
+// Louvri / Fèmen Meni SideBar
+window.toggleSidebar = function () {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
   if (sidebar && overlay) {
     sidebar.classList.toggle('active');
-    overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+    overlay.classList.toggle('active');
   }
 };
 
-window.toggleBalanceVisibility = function() {
-  balanceHidden = !balanceHidden;
-  updateBalanceUI();
-};
-
-function updateBalanceUI() {
-  const balanceEl = document.getElementById('user-balance');
+// Afiche / Maske Solde Itilizatè a
+window.toggleBalanceVisibility = function () {
+  const balanceText = document.getElementById('user-balance');
   const eyeIcon = document.getElementById('eye-icon');
-  
-  if (balanceEl) {
-    balanceEl.textContent = balanceHidden ? '•••••• HTG' : rawUserBalance;
+  if (!balanceText || !eyeIcon) return;
+
+  if (isBalanceHidden) {
+    balanceText.innerText = currentBalanceValue;
+    eyeIcon.className = 'fa-solid fa-eye';
+    isBalanceHidden = false;
+  } else {
+    balanceText.innerText = '•••••• HTG';
+    eyeIcon.className = 'fa-solid fa-eye-slash';
+    isBalanceHidden = true;
   }
-  if (eyeIcon) {
-    eyeIcon.className = balanceHidden ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-  }
-}
+};
 
-function initCarousel() {
-  const dots = document.querySelectorAll('.carousel-dots .dot');
-  if (!dots.length) return;
-
-  setInterval(() => {
-    currentSlide = (currentSlide + 1) % dots.length;
-    goToSlide(currentSlide);
-  }, 4000);
-}
-
-window.goToSlide = function(index) {
+// Controle Carousel Banner
+window.goToSlide = function (index) {
   const wrapper = document.getElementById('carousel-wrapper');
   const dots = document.querySelectorAll('.carousel-dots .dot');
   if (!wrapper) return;
@@ -267,45 +121,245 @@ window.goToSlide = function(index) {
   wrapper.style.transform = `translateX(-${index * 100}%)`;
 
   dots.forEach((dot, idx) => {
-    if (idx === index) {
-      dot.classList.add('active');
-    } else {
-      dot.classList.remove('active');
-    }
+    dot.classList.toggle('active', idx === index);
   });
 };
 
-window.toggleFaq = function(element) {
-  const answer = element.querySelector('.faq-answer');
-  const icon = element.querySelector('.faq-question i');
-
-  if (!answer) return;
-
-  if (answer.classList.contains('show')) {
-    answer.classList.remove('show');
-    if (icon) icon.className = 'fas fa-chevron-down faq-arrow';
-  } else {
-    answer.classList.add('show');
-    if (icon) icon.className = 'fas fa-chevron-up faq-arrow';
-  }
+// Accordion pou FAQ
+window.toggleFaq = function (element) {
+  element.classList.toggle('active');
 };
 
-function initLogoutEvent() {
+// ==========================================
+// 4. VALIDATION RÈG SEKIRITE MODPAS
+// ==========================================
+function validatePasswordRules() {
+  const phoneVal = document.getElementById('signup-phone')?.value.trim() || '';
+  const pwdVal = document.getElementById('signup-password')?.value || '';
+  const confirmPwdVal = document.getElementById('signup-confirm-password')?.value || '';
+  const signupBtn = document.getElementById('signup-btn');
+
+  const rules = {
+    lowercase: /[a-z]/.test(pwdVal),
+    uppercase: /[A-Z]/.test(pwdVal),
+    number: /[0-9]/.test(pwdVal),
+    special: /[^a-zA-Z0-9]/.test(pwdVal),
+    length: pwdVal.length >= 8,
+    noSeqNum: !/(012|123|234|345|456|567|678|789|890)/.test(pwdVal),
+    noSeqLet: !/(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)/i.test(pwdVal),
+    noLogin: phoneVal ? !pwdVal.includes(phoneVal) : true,
+    noRepeat: !/(.)\1\1/.test(pwdVal)
+  };
+
+  const setRuleUI = (ruleId, isValid) => {
+    const el = document.getElementById(ruleId);
+    if (!el) return;
+    const icon = el.querySelector('.status-icon');
+    if (isValid) {
+      el.classList.add('valid');
+      el.classList.remove('invalid');
+      if (icon) icon.innerText = '✓';
+    } else {
+      el.classList.add('invalid');
+      el.classList.remove('valid');
+      if (icon) icon.innerText = '✕';
+    }
+  };
+
+  setRuleUI('rule-lowercase', rules.lowercase);
+  setRuleUI('rule-uppercase', rules.uppercase);
+  setRuleUI('rule-number', rules.number);
+  setRuleUI('rule-special', rules.special);
+  setRuleUI('rule-length', rules.length);
+  setRuleUI('rule-no-seq-num', rules.noSeqNum);
+  setRuleUI('rule-no-seq-let', rules.noSeqLet);
+  setRuleUI('rule-no-login', rules.noLogin);
+  setRuleUI('rule-no-repeat', rules.noRepeat);
+
+  const allValid = Object.values(rules).every(Boolean) && (pwdVal === confirmPwdVal) && (pwdVal.length > 0);
+  if (signupBtn) signupBtn.disabled = !allValid;
+}
+
+// ==========================================
+// 5. EVENT LISTENERS & FORM SUBMISSIONS
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Listeners pou fòm modpas
+  const signupPwd = document.getElementById('signup-password');
+  const signupConfirmPwd = document.getElementById('signup-confirm-password');
+  const signupPhone = document.getElementById('signup-phone');
+
+  if (signupPwd) signupPwd.addEventListener('input', validatePasswordRules);
+  if (signupConfirmPwd) signupConfirmPwd.addEventListener('input', validatePasswordRules);
+  if (signupPhone) signupPhone.addEventListener('input', validatePasswordRules);
+
+  // Auto-play Carousel chak 4 segonn
+  setInterval(() => {
+    const wrapper = document.getElementById('carousel-wrapper');
+    if (wrapper) {
+      currentSlide = (currentSlide + 1) % 3;
+      window.goToSlide(currentSlide);
+    }
+  }, 4000);
+
+  // 1. FORM KONEKSYON (LOGIN)
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const phoneInput = document.getElementById('login-phone').value.trim();
+      const passwordInput = document.getElementById('login-password').value;
+      const submitBtn = document.getElementById('login-btn');
+
+      if (phoneInput.length !== 8) {
+        window.showAlert("Tanpri antre yon nimewo telefòn 8 chif ki valab.");
+        return;
+      }
+
+      // Email entèn pou simule sous telefòn sou Firebase Auth
+      const formattedEmail = `509${phoneInput}@echanjplus.com`;
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="btn-text">Connexion en cours...</span>';
+
+        await signInWithEmailAndPassword(auth, formattedEmail, passwordInput);
+        // Tretman reye siksè nan onAuthStateChanged
+
+      } catch (error) {
+        console.error("Login error:", error);
+        let msg = "Erè pandan koneksyon an.";
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          msg = "Nimewo telefòn oswa modpas la pa korèk.";
+        }
+        window.showAlert(msg);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span class="btn-text">Se connecter</span>';
+      }
+    });
+  }
+
+  // 2. FORM ENSKRIPSYON (SIGNUP)
+  const signupForm = document.getElementById('signup-form');
+  if (signupForm) {
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const phone = document.getElementById('signup-phone').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm-password').value;
+      const email = document.getElementById('signup-email').value.trim();
+      const referral = document.getElementById('signup-referral').value.trim();
+      const submitBtn = document.getElementById('signup-btn');
+
+      if (phone.length !== 8) {
+        window.showAlert("Nimewo telefòn lan dwe gen 8 chif.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        window.showAlert("Modpas yo pa sanble.");
+        return;
+      }
+
+      const formattedAuthEmail = `509${phone}@echanjplus.com`;
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="btn-text">Création du compte...</span>';
+
+        // Kreyasyon kont Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, formattedAuthEmail, password);
+        const user = userCredential.user;
+
+        // Anrejistre pwofil nan Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          phone: phone,
+          email: email || null,
+          referralCode: referral || null,
+          balance: 0.00,
+          createdAt: serverTimestamp(),
+          role: "user"
+        });
+
+        window.showAlert("Kont ou kreye ak siksè!", "success");
+
+      } catch (error) {
+        console.error("Signup error:", error);
+        let msg = "Erè pandan enskripsyon an.";
+        if (error.code === 'auth/email-already-in-use') {
+          msg = "Nimewo telefòn sa a gen yon kont ki egziste deja.";
+        } else if (error.code === 'auth/weak-password') {
+          msg = "Modpas la tro fèb.";
+        }
+        window.showAlert(msg);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span class="btn-text">Suivant</span>';
+      }
+    });
+  }
+
+  // 3. BOUTON DEKONEKSYON
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
       try {
-        showLoader();
         await signOut(auth);
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar && sidebar.classList.contains('active')) {
-          window.toggleSidebar();
-        }
-      } catch (error) {
-        console.error("Erè dekoneksyon:", error);
-      } finally {
-        hideLoader();
+        window.location.reload();
+      } catch (err) {
+        console.error("Logout Error:", err);
       }
     });
   }
-}
+});
+
+// ==========================================
+// 6. SUIVI ETAT DE KONEKSYON (STATE OBSERVER)
+// ==========================================
+onAuthStateChanged(auth, async (user) => {
+  const authContainer = document.getElementById('auth-container');
+  const dashContainer = document.getElementById('dashboard-section');
+  const loader = document.getElementById('loading-overlay');
+
+  if (user) {
+    // Si itilizatè a konekte -> Kache auth, Afiche Dashboard
+    if (authContainer) authContainer.style.display = 'none';
+    if (dashContainer) dashContainer.style.display = 'block';
+
+    try {
+      // Reperan done pwofil nan Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        const phoneFormatted = `+509 ${data.phone || ''}`;
+        
+        const sidebarPhone = document.getElementById('sidebar-user-phone');
+        const displayPhone = document.getElementById('user-display-phone');
+        
+        if (sidebarPhone) sidebarPhone.innerText = phoneFormatted;
+        if (displayPhone) displayPhone.innerText = phoneFormatted;
+        
+        currentBalanceValue = `${(data.balance || 0).toFixed(2)} HTG`;
+        const userBalanceEl = document.getElementById('user-balance');
+        if (userBalanceEl && !isBalanceHidden) {
+          userBalanceEl.innerText = currentBalanceValue;
+        }
+      }
+    } catch (e) {
+      console.error("Erreur chargement profil:", e);
+    }
+  } else {
+    // Si itilizatè a pa konekte -> Afiche auth, Kache Dashboard
+    if (dashContainer) dashContainer.style.display = 'none';
+    if (authContainer) authContainer.style.display = 'block';
+  }
+
+  // Retire Loader la
+  if (loader) {
+    loader.style.opacity = '0';
+    setTimeout(() => { loader.style.display = 'none'; }, 300);
+  }
+});
