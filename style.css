@@ -1,5 +1,5 @@
 /* ==========================================
-   1. REGLE JENERAL AK VARIAB (THEME DARK)
+   1. RÈG JENERAL AK VARIAB (THEME DARK)
    ========================================== */
 :root {
   --primary-color: #3b82f6;
@@ -12,6 +12,7 @@
   --border-color: rgba(255, 255, 255, 0.08);
   --success-color: #22c55e;
   --danger-color: #ef4444;
+  --warning-color: #f59e0b;
   --radius: 12px;
 }
 
@@ -46,6 +47,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: opacity 0.3s ease, display 0.3s ease;
 }
 
 .loader-content {
@@ -581,7 +583,7 @@ body {
 }
 
 /* ==========================================
-   9. ELEMAN ELARJI POU DASHBOARD & NOUVÈL
+   9. ELEMAN ELARJI POU DASHBOARD, KAT TO AK NOUVÈL
    ========================================== */
 .flash-info-bar {
   display: none;
@@ -592,26 +594,68 @@ body {
   font-size: 12px;
   margin-bottom: 12px;
   border: 1px solid rgba(59, 130, 246, 0.3);
+  text-align: center;
 }
 
 .rate-box {
   border: 1px solid var(--border-color);
+  transition: border-color 0.3s ease;
+}
+
+.rate-box:hover {
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
 .news-card-pro {
   border: 1px solid var(--border-color);
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .news-card-pro:hover {
   background: rgba(255, 255, 255, 0.03);
+  transform: translateY(-1px);
+}
+
+.system-status-card {
+  border: 1px solid var(--border-color);
+}
+
+.gateway-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .faq-item {
   border: 1px solid var(--border-color);
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .faq-item:hover {
   background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.faq-answer {
+  transition: all 0.3s ease;
+}
+
+.faq-answer:not(.hidden) {
+  display: block !important;
+}
+
+.security-tip-box {
+  background: rgba(59, 130, 246, 0.08);
+  border-left: 4px solid var(--primary-color);
+}
+
+/* RESPONSIVE DESIGN (Pous adaptasyon ekran piti) */
+@media (max-width: 360px) {
+  .quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .head-balance-box {
+    padding: 4px 8px;
+  }
 }
