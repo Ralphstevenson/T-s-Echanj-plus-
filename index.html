@@ -32,49 +32,54 @@
   <!-- 1. SEKSYON OTANTIFIKASYON (AUTH) -->
   <div class="auth-container" id="auth-container">
     
-    <!-- Bouton Tab Yo (Connexion an premye) -->
-    <div class="tabs">
-      <button class="tab-btn active" id="tab-login" onclick="window.switchTab('login')">Connexion</button>
-      <button class="tab-btn" id="tab-signup" onclick="window.switchTab('signup')">Inscription</button>
-    </div>
-
     <!-- Bwat Alèt -->
     <div id="alert-box" class="alert-msg"></div>
 
-    <!-- FÒMILÈ KONEKSYON (Aktif an premye) -->
+    <!-- 1. FÒMILÈ KONEKSYON (CONNEXION) -->
     <div class="form-section active" id="login-section">
-      <div class="form-title">Se Connecter</div>
+      <div class="auth-header-banner">CONNEXION</div>
       
       <form id="login-form">
         <div class="input-group">
           <span class="prefix">🇭🇹 +509</span>
-          <input type="tel" id="login-phone" placeholder="37000000" maxlength="8" required autocomplete="tel">
+          <input type="tel" id="login-phone" placeholder="Identifiant" maxlength="8" required autocomplete="tel">
         </div>
 
         <div class="input-group">
+          <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
           <input type="password" id="login-password" placeholder="Mot de passe" required autocomplete="current-password">
-          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('login-password', this)">👁️</button>
+          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('login-password', this)"><i class="fa-solid fa-eye-slash"></i></button>
         </div>
 
-        <button type="submit" class="submit-btn" id="login-btn">
+        <button type="submit" class="submit-btn btn-primary-green" id="login-btn">
           <span class="btn-text">Se connecter</span>
         </button>
+
+        <div class="forgot-pass-container">
+          <a href="#" class="forgot-pass-link">Mot de passe oublié ?</a>
+        </div>
       </form>
+
+      <!-- Pivot pou chanje ale nan Enskripsyon -->
+      <div class="switch-auth-text">
+        Nouveau ? <a href="javascript:void(0)" onclick="window.switchToAuthTab('signup')">Crée-toi un compte en quelques minutes !</a>
+      </div>
     </div>
 
-    <!-- FÒMILÈ ENSKRIPSYON -->
-    <div class="form-section" id="signup-section">
-      <div class="form-title">Créer un compte</div>
+    <!-- 2. FÒMILÈ ENSKRIPSYON (INSCRIPTION) -->
+    <div class="form-section" id="signup-section" style="display: none;">
+      <div class="auth-header-banner">INSCRIPTION</div>
       
       <form id="signup-form">
         <div class="input-group">
           <span class="prefix">🇭🇹 +509</span>
-          <input type="tel" id="signup-phone" placeholder="37000000" maxlength="8" required autocomplete="tel">
+          <input type="tel" id="signup-phone" placeholder="Numéro de téléphone" maxlength="8" required autocomplete="tel">
         </div>
 
         <div class="input-group">
+          <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
           <input type="password" id="signup-password" placeholder="Mot de passe" required autocomplete="new-password">
-          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-password', this)">👁️</button>
+          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-password', this)"><i class="fa-solid fa-eye-slash"></i></button>
         </div>
 
         <!-- Règ sekirite modpas ak ikon dinamik -->
@@ -84,29 +89,37 @@
           <li id="rule-number"><span class="status-icon">✕</span> Utiliser au moins un chiffre</li>
           <li id="rule-special"><span class="status-icon">✕</span> Utiliser au moins un caractère spécial</li>
           <li id="rule-length"><span class="status-icon">✕</span> Utiliser au moins 8 caractères</li>
-          <li id="rule-no-seq-num"><span class="status-icon">✕</span> N'utilisez pas de suite de chiffres</li>
-          <li id="rule-no-seq-let"><span class="status-icon">✕</span> N'utilisez pas une séquence de lettres</li>
-          <li id="rule-no-login"><span class="status-icon">✕</span> N'utilisez pas votre login comme mot de passe</li>
-          <li id="rule-no-repeat"><span class="status-icon">✕</span> N'utilisez pas une séquence de mêmes caractères</li>
+          <li id="rule-no-seq-num"><span class="status-icon">✓</span> N'utilisez pas de suite de chiffres</li>
+          <li id="rule-no-seq-let"><span class="status-icon">✓</span> N'utilisez pas une séquence de lettres</li>
+          <li id="rule-no-login"><span class="status-icon">✓</span> N'utilisez pas votre login comme mot de passe</li>
+          <li id="rule-no-repeat"><span class="status-icon">✓</span> N'utilisez pas une séquence de mêmes caractères</li>
         </ul>
 
         <div class="input-group">
+          <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
           <input type="password" id="signup-confirm-password" placeholder="Confirmer votre mot de passe" required autocomplete="new-password">
-          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-confirm-password', this)">👁️️</button>
+          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-confirm-password', this)"><i class="fa-solid fa-eye-slash"></i></button>
         </div>
 
         <div class="input-group">
+          <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
           <input type="email" id="signup-email" placeholder="Email (facultatif)" autocomplete="email">
         </div>
 
         <div class="input-group">
+          <span class="input-icon"><i class="fa-solid fa-gift"></i></span>
           <input type="text" id="signup-referral" placeholder="Code parrainage (facultatif)">
         </div>
 
-        <button type="submit" class="submit-btn" id="signup-btn" disabled>
+        <button type="submit" class="submit-btn btn-primary-green" id="signup-btn" disabled>
           <span class="btn-text">Suivant</span>
         </button>
       </form>
+
+      <!-- Pivot pou tounen nan Koneksyon -->
+      <div class="switch-auth-text">
+        Déjà un compte ? <a href="javascript:void(0)" onclick="window.switchToAuthTab('login')">Se connecter</a>
+      </div>
     </div>
 
   </div>
@@ -323,6 +336,8 @@
 
   </div>
 
-  <script type="module" src="script.js"></script>
+  <!-- ENPÒTASYON JAVASCRIPT YO -->
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/auth.js"></script>
 </body>
 </html>
