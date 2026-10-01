@@ -1,11 +1,11 @@
-/* js/auth.js - Jere Validasyon ak Soumisyon Fòm Auth yo */
+/* js/auth.js - Jere Validasyon, Inscription ak Connexion Firebase Auth */
 
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Import sèvis ak fonksyon UI ki soti nan fichye prensipal la (main.js)
+// Import sèvis Firebase ak UI ki soti nan main.js
 import { auth, showLoader, hideLoader, showAuthAlert } from "./main.js";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -31,7 +31,7 @@ function initAuthValidation() {
     noRepeat: (val) => !/(.)\1{2,}/.test(val)
   };
 
-  // Kalkile chak kondisyon nan lis HTML la an tan reyèl
+  // Validasyon règ modpas yo an tan reyèl
   function validateForm() {
     if (!signupPassword) return;
 
@@ -66,21 +66,21 @@ function initAuthValidation() {
     const isNoRepeat = rules.noRepeat(pwd);
     updateRuleState('rule-no-repeat', isNoRepeat);
 
-    // Verifye si tout règ modpas yo respekte
+    // Verifye si tout 9 kondisyon yo bon
     const allRulesPassed = isLower && isUpper && isNum && isSpec && isLen && 
                            isNoSeqNum && isNoSeqLet && isNoLogin && isNoRepeat;
 
-    // Verifye si konfimasyon modpas la koresponn ak nimewo telefòn nan gen 8 chif
+    // Verifye konfimasyon modpas ak gwosè telefòn (8 chif)
     const isConfirmMatch = (pwd === confirmPwd) && confirmPwd.length > 0;
     const isPhoneValid = phone.length === 8;
 
-    // Debloke bouton "Suivant" an sèlman si tout kondisyon yo ranpli
+    // Debloke bouton "Suivant" an sèlman si tout bagay konfòm
     if (signupBtn) {
       signupBtn.disabled = !(allRulesPassed && isConfirmMatch && isPhoneValid);
     }
   }
 
-  // Mettre à jour ikon ✓ ak ✕ yo ansanm ak klas CSS yo
+  // Mete ajou ikòn ✓ ak ✕ yo
   function updateRuleState(elementId, isValid) {
     const el = document.getElementById(elementId);
     if (!el) return;
@@ -97,12 +97,12 @@ function initAuthValidation() {
     }
   }
 
-  // Ekoute lè itilizatè a ap tape nan chak champ pou validasyon
+  // Koute antre nan champa yo pou validasyon an tan reyèl
   if (signupPassword) signupPassword.addEventListener('input', validateForm);
   if (signupConfirm) signupConfirm.addEventListener('input', validateForm);
   if (signupPhone) signupPhone.addEventListener('input', validateForm);
 
-  // Kache alèt yo chak fwa itilizatè a kòmanse re-antre done
+  // Kache tout bwat alèt chak fwa itilizatè a ap re-tape
   const inputs = document.querySelectorAll('#login-form input, #signup-form input');
   inputs.forEach(input => {
     input.addEventListener('input', () => {
@@ -112,7 +112,7 @@ function initAuthValidation() {
   });
 
   // ==========================================
-  // SOUMISYON FÒM KONEKSYON
+  // 1. SOUMISYON FÒM KONEKSYON (CONNEXION)
   // ==========================================
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
@@ -128,28 +128,30 @@ function initAuthValidation() {
       const password = passwordInput.value;
 
       if (phone.length !== 8) {
-        showAuthAlert("Tanpri antre yon nimewo telefòn ki valab (8 chif).", "error");
+        showAuthAlert("Tanpri antre yon nimewo telefòn ki gen 8 chif.", "error");
         return;
       }
 
+      // Format Email pou Firebase Auth (eg: 37000000@echanjplus.com)
       const formattedEmail = `${phone}@echanjplus.com`;
 
       showLoader();
 
       try {
+        // Otantifikasyon ak Firebase
         await signInWithEmailAndPassword(auth, formattedEmail, password);
-        // Firebase onAuthStateChanged ki nan main.js ap kouvri redireksyon UI an otomatikman
+        // Si sa reyisi, `onAuthStateChanged` ki nan `main.js` ap afiche akèy/dashboard la otomatikman!
       } catch (error) {
         hideLoader();
         console.error("Erè koneksyon:", error);
 
-        let errorMessage = "Nimewo oswa modpas la pa kòrèk.";
+        let errorMessage = "Nimewo telefòn oswa modpas la pa kòrèk.";
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-          errorMessage = "Nimewo telefòn oswa modpas sa a pa kòrèk.";
+          errorMessage = "Identifiant oswa modpas sa a pa kòrèk.";
         } else if (error.code === 'auth/too-many-requests') {
-          errorMessage = "Trop tantativ. Tanpri tann yon ti moman anvan ou reyeleyi.";
+          errorMessage = "Twòp tantativ ki echwe. Tanpri tann yon ti moman anvan ou reyele.";
         } else if (error.code === 'auth/network-request-failed') {
-          errorMessage = "Pwoblèm konfeksyon entènèt. Verifye rezo w la.";
+          errorMessage = "Pwoblèm rezo entènèt. Tanpri verifye konneksyon w.";
         }
 
         showAuthAlert(errorMessage, "error");
@@ -158,7 +160,7 @@ function initAuthValidation() {
   }
 
   // ==========================================
-  // SOUMISYON FÒM ENSKRIPSYON
+  // 2. SOUMISYON FÒM ENSKRIPSYON (INSCRIPTION)
   // ==========================================
   const signupForm = document.getElementById('signup-form');
   if (signupForm) {
@@ -172,24 +174,25 @@ function initAuthValidation() {
 
       const phone = phoneInput.value.trim();
       const password = passwordInput.value;
-      const email = `${phone}@echanjplus.com`;
+      const formattedEmail = `${phone}@echanjplus.com`;
 
       showLoader();
 
       try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        // Firebase onAuthStateChanged ki nan main.js ap kouvri redireksyon UI an otomatikman
+        // Kreyasyon kont sou Firebase Auth
+        await createUserWithEmailAndPassword(auth, formattedEmail, password);
+        // Si sa reyisi, `onAuthStateChanged` ki nan `main.js` ap ire dirèkteman sou paj Akèy la!
       } catch (error) {
         hideLoader();
-        console.error("Erè inscription:", error);
+        console.error("Erè enskripsyon:", error);
         
-        let message = "Erè nan kreyasyon kont lan.";
+        let message = "Gen yon erè nan kreyasyon kont lan.";
         if (error.code === 'auth/email-already-in-use') {
-          message = "Nimewo sa a deja gen yon kont kreye sou pwojè a.";
+          message = "Nimewo telefòn sa a deja gen yon kont kreye.";
         } else if (error.code === 'auth/weak-password') {
           message = "Modpas la twò feblès.";
         } else if (error.code === 'auth/network-request-failed') {
-          message = "Pwoblèm konfeksyon entènèt. Verifye rezo w la.";
+          message = "Pwoblèm rezo entènèt. Tanpri verifye konneksyon w.";
         }
 
         showAuthAlert(message, "error");
