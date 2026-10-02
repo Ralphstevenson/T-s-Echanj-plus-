@@ -12,12 +12,12 @@ import {
   serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Reperan instans Firebase ki deja inisyalize nan script prensipal la
+// Reperan instans Firebase
 const app = getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Konfigirasyon Rezo, Frais ak Limit yo
+// Konfigirasyon Rezo ak Limit yo
 const DIGICEL_NUM = "34132015";
 const NATCOM_NUM = "32160708";
 const NATCOM_PIN = "88888888";
@@ -25,115 +25,185 @@ const NATCOM_PIN = "88888888";
 const FEE_DIGICEL = 18.3; // 18.3% pou Digicel
 const FEE_NATCOM = 17.5;  // 17.5% pou Natcom
 
-const MIN_AMOUNT = 100;    // Minimum 100 HTG pou tou de rezo yo
-const MAX_DIGICEL = 1000;  // Maximum 1000 HTG pou Digicel
-const MAX_NATCOM = 500;    // Maximum 500 HTG pou Natcom
+const MIN_AMOUNT = 100;
+const MAX_DIGICEL = 1000;
+const MAX_NATCOM = 500;
 
-let selectedRezo = null;
-
-// Fonksyon pou chwazi rezo a
-window.selectRezo = function(rezo) {
-  selectedRezo = rezo;
-  
-  const btnDigi = document.getElementById('btn-digi');
-  const btnNat = document.getElementById('btn-nat');
-  const formEchanj = document.getElementById('form-echanj');
-  
-  // Update klase ak style vizyèl pou bouton yo
-  if (btnDigi) {
-    if (rezo === 'digicel') btnDigi.classList.add('selected');
-    else btnDigi.classList.remove('selected');
-  }
-
-  if (btnNat) {
-    if (rezo === 'natcom') btnNat.classList.add('selected');
-    else btnNat.classList.remove('selected');
-  }
-  
-  // Afiche fòm echanj la
-  if (formEchanj) {
-    formEchanj.style.display = 'block';
-  }
+// Objè pou kenbe done tranzaksyon an pandan navigasyon an
+let currentTransaction = {
+  rezo: null,
+  amount: 0,
+  feePercent: 0,
+  feeAmount: 0,
+  netAmount: 0,
+  ussdCode: ''
 };
 
-// Lè paj la fin chaje
+// Fonksyon pou kache tout fenèt pop-up (modals) yo
+function closeAllModals() {
+  document.querySelectorAll('.modal-echanj').forEach(m => m.classList.add('hidden'));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  const btnDigi = document.getElementById('btn-digi');
-  const btnNat = document.getElementById('btn-nat');
-  const btnVoye = document.getElementById('btn-voye-echanj');
+  const btnDigicel = document.getElementById('btn-digi');
+  const btnNatcom = document.getElementById('btn-nat');
+  
+  const modalAmount = document.getElementById('modal-step-amount');
+  const modalSummary = document.getElementById('modal-step-summary');
+  const modalPin = document.getElementById('modal-step-pin');
 
-  // Koute klik sou bouton rezo yo (si yo pa itilize onclick nan HTML)
-  if (btnDigi) {
-    btnDigi.addEventListener('click', () => window.selectRezo('digicel'));
-  }
+  const inputAmount = document.getElementById('input-montan-echanj');
+  const inputPin = document.getElementById('input-pin-echanj');
 
-  if (btnNat) {
-    btnNat.addEventListener('click', () => window.selectRezo('natcom'));
-  }
+  // Fèmen fenèt lè w klike sou bouton X
+  document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.addEventListener('click', closeAllModals);
+  });
 
-  // Soumisyon ak tretman tranzaksyon an
-  if (btnVoye) {
-    btnVoye.addEventListener('click', async () => {
-      const currentUser = auth.currentUser;
+  // 1. KLIK SOU BOUTON DIGICEL
+  if (btnDigicel) {
+    btnDigicel.addEventListener('click', () => {
+      currentTransaction.rezo = 'digicel';
+      currentTransaction.feePercent = FEE_DIGICEL;
       
-      // 1. Verifye si itilizatè a konekte
-      if (!currentUser) {
-        if (typeof window.showAlert === 'function') {
-          window.showAlert("Tanpri konekte nan kont ou anvan.");
-        } else {
-          alert("Tanpri konekte nan kont ou anvan.");
-        }
-        return;
-      }
+      const txtRezo = document.getElementById('txt-selected-rezo');
+      const txtLimit = document.getElementById('txt-limit-info');
+      
+      if (txtRezo) txtRezo.innerText = 'Digicel';
+      if (txtLimit) txtLimit.innerText = `Limit: Min ${MIN_AMOUNT} HTG - Max ${MAX_DIGICEL} HTG`;
+      
+      if (inputAmount) inputAmount.value = '';
+      closeAllModals();
+      if (modalAmount) modalAmount.classList.remove('hidden');
+    });
+  }
 
-      if (!selectedRezo) {
-        alert("Tanpri chwazi yon rezo (Digicel oswa Natcom).");
-        return;
-      }
+  // 2. KLIK SOU BOUTON NATCOM
+  if (btnNatcom) {
+    btnNatcom.addEventListener('click', () => {
+      currentTransaction.rezo = 'natcom';
+      currentTransaction.feePercent = FEE_NATCOM;
 
-      const amountInput = document.getElementById('input-montan');
-      const pinInput = document.getElementById('input-pin');
+      const txtRezo = document.getElementById('txt-selected-rezo');
+      const txtLimit = document.getElementById('txt-limit-info');
 
-      if (!amountInput || !pinInput) {
-        console.error("Champ montan oswa PIN pa egziste nan HTML la.");
-        return;
-      }
+      if (txtRezo) txtRezo.innerText = 'Natcom';
+      if (txtLimit) txtLimit.innerText = `Limit: Min ${MIN_AMOUNT} HTG - Max ${MAX_NATCOM} HTG`;
 
-      const amount = parseFloat(amountInput.value);
-      const userPinEntered = pinInput.value.trim();
+      if (inputAmount) inputAmount.value = '';
+      closeAllModals();
+      if (modalAmount) modalAmount.classList.remove('hidden');
+    });
+  }
 
-      // 2. VALIDASYON MONTAN MINIMUM AK MAXIMUM
-      if (!amount || isNaN(amount)) {
+  // 3. SOUMÈT MONTAN AN SOU FENÈT DETAY (SUIVANT - ETAP 1)
+  const btnToStepSummary = document.getElementById('btn-to-step-summary');
+  if (btnToStepSummary) {
+    btnToStepSummary.addEventListener('click', () => {
+      if (!inputAmount) return;
+      const amountVal = parseFloat(inputAmount.value);
+      const maxLimit = currentTransaction.rezo === 'digicel' ? MAX_DIGICEL : MAX_NATCOM;
+
+      if (!amountVal || isNaN(amountVal)) {
         alert("Tanpri antre yon montan ki valab.");
         return;
       }
 
-      if (amount < MIN_AMOUNT) {
+      if (amountVal < MIN_AMOUNT) {
         alert(`Minimum ou ka transfere se ${MIN_AMOUNT} HTG.`);
         return;
       }
 
-      if (selectedRezo === 'digicel' && amount > MAX_DIGICEL) {
-        alert(`Kantitè maksimòm pou Digicel se ${MAX_DIGICEL} HTG.`);
+      if (amountVal > maxLimit) {
+        alert(`Montan an pa dwe depase ${maxLimit} HTG pou rezo sa a.`);
         return;
       }
 
-      if (selectedRezo === 'natcom' && amount > MAX_NATCOM) {
-        alert(`Kantitè maksimòm pou Natcom se ${MAX_NATCOM} HTG.`);
+      // Kalkil Frè ak Montan Nèt
+      const fee = (amountVal * currentTransaction.feePercent) / 100;
+      const net = amountVal - fee;
+
+      currentTransaction.amount = amountVal;
+      currentTransaction.feeAmount = fee;
+      currentTransaction.netAmount = net;
+
+      // Generasyon kòd USSD
+      if (currentTransaction.rezo === 'digicel') {
+        currentTransaction.ussdCode = `*128*509${DIGICEL_NUM}*${amountVal}#`;
+      } else {
+        currentTransaction.ussdCode = `*123*${NATCOM_PIN}*${NATCOM_NUM}*${amountVal}#`;
+      }
+
+      // Mete detay yo nan fenèt Rezime a
+      const summaryRezo = document.getElementById('summary-rezo');
+      const summaryAmount = document.getElementById('summary-amount');
+      const summaryFeePercent = document.getElementById('summary-fee-percent');
+      const summaryFee = document.getElementById('summary-fee');
+      const summaryNet = document.getElementById('summary-net');
+
+      if (summaryRezo) summaryRezo.innerText = currentTransaction.rezo.toUpperCase();
+      if (summaryAmount) summaryAmount.innerText = amountVal.toFixed(2);
+      if (summaryFeePercent) summaryFeePercent.innerText = currentTransaction.feePercent;
+      if (summaryFee) summaryFee.innerText = fee.toFixed(2);
+      if (summaryNet) summaryNet.innerText = net.toFixed(2);
+
+      closeAllModals();
+      if (modalSummary) modalSummary.classList.remove('hidden');
+    });
+  }
+
+  // 4. RETOUNEN SOU FENÈT MONTAN (RETOUNEN - ETAP 2)
+  const btnBackToAmount = document.getElementById('btn-back-to-amount');
+  if (btnBackToAmount) {
+    btnBackToAmount.addEventListener('click', () => {
+      closeAllModals();
+      if (modalAmount) modalAmount.classList.remove('hidden');
+    });
+  }
+
+  // 5. PASE NAN FENÈT PIN (SUIVANT - ETAP 2)
+  const btnToStepPin = document.getElementById('btn-to-step-pin');
+  if (btnToStepPin) {
+    btnToStepPin.addEventListener('click', () => {
+      if (inputPin) inputPin.value = '';
+      closeAllModals();
+      if (modalPin) modalPin.classList.remove('hidden');
+    });
+  }
+
+  // 6. RETOUNEN SOU REZIME (RETOUNEN - ETAP 3)
+  const btnBackToSummary = document.getElementById('btn-back-to-summary');
+  if (btnBackToSummary) {
+    btnBackToSummary.addEventListener('click', () => {
+      closeAllModals();
+      if (modalSummary) modalSummary.classList.remove('hidden');
+    });
+  }
+
+  // 7. VERIFIKASYON PIN, ANREJISTREMAN FIRESTORE AK VOYE CALL
+  const btnFinalConfirm = document.getElementById('btn-final-confirm');
+  if (btnFinalConfirm) {
+    btnFinalConfirm.addEventListener('click', async () => {
+      const currentUser = auth.currentUser;
+
+      if (!currentUser) {
+        alert("Tanpri konekte nan kont ou anvan.");
         return;
       }
 
-      // 3. Verifye si l antre PIN 4 chif
+      if (!inputPin) return;
+      const userPinEntered = inputPin.value.trim();
+
       if (!userPinEntered || userPinEntered.length !== 4) {
         alert("Tanpri antre PIN sekirite 4 chif ou an.");
         return;
       }
 
       try {
-        btnVoye.disabled = true;
-        btnVoye.innerText = "N ap verifye PIN...";
+        btnFinalConfirm.disabled = true;
+        btnFinalConfirm.innerText = "N ap verifye...";
 
-        // 4. CHÈCHE AK VERIFYE PIN NAN SETTINGS (FIRESTORE)
+        // Chèche PIN pou verifye
         const userDocRef = doc(db, "users", currentUser.uid);
         const userDocSnap = await getDoc(userDocRef);
 
@@ -146,60 +216,45 @@ document.addEventListener('DOMContentLoaded', () => {
         const savedPin = userData.pinSecurity || userData.pin;
 
         if (!savedPin) {
-          alert("Ou pa ankò kreye yon PIN sekirite nan Settings. Tanpri ale nan Settings pou w kreye youn anvan.");
+          alert("Ou pa gen yon PIN sekirite ki anrejistre nan kont ou. Tanpri kreye youn nan Settings.");
           return;
         }
 
         if (userPinEntered !== String(savedPin)) {
-          alert("PIN sekirite a pa kòrèk! Ou pa ka kontinye tranzaksyon an.");
+          alert("PIN sekirite a pa kòrèk!");
           return;
         }
 
-        // 5. KALKIL FRAIS AK KÒD USSD
-        let currentFeePercent = 0;
-        let ussdCode = "";
+        btnFinalConfirm.innerText = "N ap anrejistre...";
 
-        if (selectedRezo === 'digicel') {
-          currentFeePercent = FEE_DIGICEL;
-          ussdCode = `*128*509${DIGICEL_NUM}*${amount}#`;
-        } else {
-          currentFeePercent = FEE_NATCOM;
-          ussdCode = `*123*${NATCOM_PIN}*${NATCOM_NUM}*${amount}#`;
-        }
-
-        const fee = (amount * currentFeePercent) / 100;
-        const netAmount = amount - fee;
-
-        btnVoye.innerText = "N ap anrejistre...";
-
-        // 6. Anrejistre tranzaksyon an nan Firebase
+        // Anrejistre tranzaksyon an sou Firestore
         await addDoc(collection(db, "transactions"), {
           userId: currentUser.uid,
           userPhone: userData.phone || null,
           type: "echanj_minit",
-          rezo: selectedRezo,
-          amount: amount,
-          feePercent: currentFeePercent,
-          fee: fee,
-          netAmount: netAmount,
-          ussdSent: ussdCode,
+          rezo: currentTransaction.rezo,
+          amount: currentTransaction.amount,
+          feePercent: currentTransaction.feePercent,
+          feeAmount: currentTransaction.feeAmount,
+          netAmount: currentTransaction.netAmount,
+          ussdSent: currentTransaction.ussdCode,
           status: "pending",
           createdAt: serverTimestamp()
         });
 
-        // Vide fòm lan
-        amountInput.value = '';
-        pinInput.value = '';
+        closeAllModals();
+        if (inputAmount) inputAmount.value = '';
+        if (inputPin) inputPin.value = '';
 
-        // 7. Ouvè Dialer telefòn nan ak kòd USSD a
-        window.location.href = `tel:${encodeURIComponent(ussdCode)}`;
+        // Ouvè Dialer telefòn nan pou voye kòd USSD a otomatikman
+        window.location.href = `tel:${encodeURIComponent(currentTransaction.ussdCode)}`;
 
       } catch (error) {
-        console.error("Erè nan echanj:", error);
-        alert("Gen yon erè ki rive. Tanpri eseye ankò.");
+        console.error("Erè nan konfimasyon tranzaksyon an:", error);
+        alert("Gen yon erè ki rive pandan anrejistreman an. Tanpri eseye ankò.");
       } finally {
-        btnVoye.disabled = false;
-        btnVoye.innerText = "KONEKTE AK DIALER";
+        btnFinalConfirm.disabled = false;
+        btnFinalConfirm.innerText = "Konfime & Voye Call";
       }
     });
   }
