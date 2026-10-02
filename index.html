@@ -322,177 +322,61 @@
 
 
 <!-- PAJ ECHANJ (SÈVIS PRENSIPAL) -->
+<!-- PAJ ECHANJ (SÈVIS PRENSIPAL SENPYE) -->
 <section id="paj-echanj" class="app-section" style="display: none;">
-  <div class="container">
+  <div class="container" style="max-width: 450px; margin: 0 auto; padding: 15px;">
     
-    <!-- ENTÈT SEKSYON LA -->
+    <!-- ENTÈT -->
     <div class="section-header" style="text-align: center; margin-bottom: 20px;">
       <h2 style="color: #2c3e50; font-size: 22px; font-weight: 700;">Sèvis Echanj Minit</h2>
-      <p style="color: #6c757d; font-size: 14px;">Vann minit Digicel oswa Natcom ou yo rapid pou w resevwa kach.</p>
+      <p style="color: #6c757d; font-size: 14px;">Chwazi rezo a pou w ka vann minit ou yo.</p>
     </div>
 
-    <!-- BOUTON SELEKSYON REZO YO -->
-    <div class="rezo-selection-box" style="display: flex; gap: 10px; margin-bottom: 25px;">
-      <button class="btn-main btn-digi" onclick="openDialer('digicel')" style="flex: 1; padding: 15px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; background: #e60000; color: #fff;">
-        <i class="fas fa-phone-alt"></i> Digicel Minit
+    <!-- BOUTON REZO YO -->
+    <div class="rezo-selection-box" style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <button id="btn-digi" onclick="selectRezo('digicel')" style="flex: 1; padding: 15px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; background: #e60000; color: #fff; font-size: 15px;">
+        <i class="fas fa-phone-alt"></i> Digicel
       </button>
-      <button class="btn-main btn-nat" onclick="openDialer('natcom')" style="flex: 1; padding: 15px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; background: #ff8c00; color: #fff;">
-        <i class="fas fa-phone-alt"></i> Natcom Minit
+      <button id="btn-nat" onclick="selectRezo('natcom')" style="flex: 1; padding: 15px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; background: #ff8c00; color: #fff; font-size: 15px;">
+        <i class="fas fa-phone-alt"></i> Natcom
       </button>
     </div>
 
-    <!-- GRIYAJ KAT ENFÒMASYON (FEATURES GRID) -->
-    <div class="features-poster-grid">
+    <!-- FÒM ANTRE MONTAN AK PIN -->
+    <div id="form-echanj" style="display: none; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
       
-      <!-- KAT 1: KALKILATRIS -->
-      <div class="feature-poster-card" onclick="openFeatureModal('modal-konveti')">
-        <div class="poster-img-wrapper">
-          <img src="https://i.postimg.cc/bsDPD5Nz/Kantite-kob-wap-konveti-a.png" alt="Kalkilatris">
-          <div class="poster-hover-hint"><i class="fas fa-eye"></i> Gade</div>
-        </div>
-        <h4 class="poster-card-title">Kalkilatris Konvèsyon</h4>
+      <!-- MONTAN -->
+      <div style="margin-bottom: 15px;">
+        <label for="input-montan" style="display: block; font-weight: bold; margin-bottom: 5px; color: #333; font-size: 14px;">
+          Kantite Minit (HTG):
+        </label>
+        <input 
+          type="number" 
+          id="input-montan" 
+          placeholder="Eg: 100" 
+          style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; outline: none; box-sizing: border-box;"
+        >
       </div>
 
-      <!-- KAT 2: PARENAJ -->
-      <div class="feature-poster-card" onclick="openFeatureModal('modal-parenaj-desc')">
-        <div class="poster-img-wrapper">
-          <img src="https://i.postimg.cc/xqdnYCwY/Parenaj.png" alt="Parenaj">
-          <div class="poster-hover-hint"><i class="fas fa-eye"></i> Gade</div>
-        </div>
-        <h4 class="poster-card-title">Sistèm Parennaj</h4>
+      <!-- PIN SEKIRITE -->
+      <div style="margin-bottom: 20px;">
+        <label for="input-pin" style="display: block; font-weight: bold; margin-bottom: 5px; color: #333; font-size: 14px;">
+          <i class="fas fa-lock"></i> PIN Sekirite (4 Chif):
+        </label>
+        <input 
+          type="password" 
+          id="input-pin" 
+          maxlength="4" 
+          placeholder="****" 
+          style="width: 100%; padding: 12px; text-align: center; font-size: 20px; letter-spacing: 4px; border: 1px solid #ccc; border-radius: 8px; outline: none; box-sizing: border-box;"
+        >
       </div>
 
-      <!-- KAT 3: RESI TRANZAKSYON YO -->
-      <div class="feature-poster-card" onclick="openFeatureModal('modal-resi-desc')">
-        <div class="poster-img-wrapper">
-          <img src="https://i.postimg.cc/GH8R8fhb/Resi-transaction-yo.png" alt="Resi">
-          <div class="poster-hover-hint"><i class="fas fa-eye"></i> Gade</div>
-        </div>
-        <h4 class="poster-card-title">Resi Tranzaksyon</h4>
-      </div>
+      <!-- BOUTON SOUMÈT -->
+      <button id="btn-voye-echanj" style="width: 100%; padding: 14px; background: #28a745; color: #fff; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;">
+        KONEKTE AK DIALER
+      </button>
 
-    </div>
-
-    <!-- MODAL KONFIMASYON TRANZAKSYON AK PIN -->
-    <div id="modal-confirm-echanj" class="feature-overlay-modal hidden" onclick="closeFeatureModalOnOverlay(event, 'modal-confirm-echanj')">
-      <div class="feature-modal-card">
-        <div class="feature-close-btn" onclick="femenModalEchanj()">&times;</div>
-        
-        <div class="feature-modal-header">
-          <i class="fas fa-shield-alt"></i> Konfime Tranzaksyon Ou
-        </div>
-        
-        <div class="feature-modal-body">
-          <p style="text-align: center; color: #555; margin-bottom: 15px;">
-            Tanpri verifye detay yo epi antre PIN sekirite ou an anvan w ale nan dialer a.
-          </p>
-
-          <!-- REZIME DETAY TRANZAKSYON LA -->
-          <div class="summary-box" style="background: #f8f9fa; border: 1px solid #e9ecef; padding: 12px; border-radius: 10px; margin-bottom: 15px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-              <span>Kantite Minit:</span>
-              <strong id="sum-minit">0.00 HTG</strong>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #dc3545;">
-              <span>Frè Sistèm (<span id="sum-fee-percent">16.5</span>%):</span>
-              <strong id="sum-fre">-0.00 HTG</strong>
-            </div>
-            <hr style="border: 0; border-top: 1px solid #ccc; margin: 8px 0;">
-            <div style="display: flex; justify-content: space-between; font-size: 1.1rem; color: #28a745;">
-              <span>Nèt Pou Resevwa:</span>
-              <strong id="sum-total">0.00 HTG</strong>
-            </div>
-          </div>
-
-          <!-- ANTRE PIN LA -->
-          <div class="input-group-pin" style="margin-bottom: 15px; text-align: center;">
-            <label for="input-pin-echanj" style="display: block; font-weight: bold; margin-bottom: 5px; color: #333;">
-              <i class="fas fa-lock"></i> Antre PIN Sekirite (4 Chif):
-            </label>
-            <input 
-              type="password" 
-              id="input-pin-echanj" 
-              maxlength="4" 
-              placeholder="****" 
-              style="width: 100%; max-width: 200px; text-align: center; font-size: 22px; letter-spacing: 6px; padding: 10px; border: 2px solid #007bff; border-radius: 8px; outline: none;"
-            >
-          </div>
-
-          <!-- BOUTON KONFIMASYON FINAL LA -->
-          <button id="btn-konfime-final" class="btn-main bg-green" style="width: 100%; padding: 14px; font-size: 16px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; background: #28a745; color: #fff;">
-            <i class="fas fa-check-circle"></i> KONFIME AK VOYE KÒD
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- POPUPS ENTÈRFAZ VIZYÈL (FEATURE MODALS) -->
-    
-    <!-- 1. MODAL KALKILATRIS AK SIMILASYON DIRÈK -->
-    <div id="modal-konveti" class="feature-overlay-modal hidden" onclick="closeFeatureModalOnOverlay(event, 'modal-konveti')">
-      <div class="feature-modal-card">
-        <div class="feature-close-btn" onclick="closeFeatureModal('modal-konveti')">&times;</div>
-        <div class="feature-modal-header">
-          <i class="fas fa-calculator"></i> Kalkilatris Konvèsyon
-        </div>
-        <div class="feature-modal-body">
-          <p style="font-size: 13px; color: #555; margin-bottom: 12px;">Testa ak kalkile valè minit yo an kòb kach anvan ou konfime tranzaksyon an.</p>
-          
-          <div style="margin-bottom: 15px;">
-            <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px;">Mete Kantite Minit (HTG):</label>
-            <input type="number" id="calc-sim-input" placeholder="Eg: 500" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;">
-          </div>
-
-          <div style="background: #eef7ff; border: 1px solid #bce0fd; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px;">
-              <span>Frè Sistèm (16.5%):</span>
-              <strong id="calc-sim-fre" style="color: #d9534f;">0.00 HTG</strong>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: bold; color: #28a745;">
-              <span>W ap Resevwa:</span>
-              <strong id="calc-sim-total">0.00 HTG</strong>
-            </div>
-          </div>
-
-          <button onclick="closeFeatureModal('modal-konveti')" style="width: 100%; padding: 10px; background: #6c757d; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-            Fèmen Kalkilatris
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2. MODAL PARENAJ -->
-    <div id="modal-parenaj-desc" class="feature-overlay-modal hidden" onclick="closeFeatureModalOnOverlay(event, 'modal-parenaj-desc')">
-      <div class="feature-modal-card">
-        <div class="feature-close-btn" onclick="closeFeatureModal('modal-parenaj-desc')">&times;</div>
-        <div class="feature-modal-header">
-          <i class="fas fa-crown"></i> Pwogram Parennaj Echanj Plus
-        </div>
-        <div class="feature-modal-body">
-          <p style="font-size: 14px; color: #444;">Sistèm parennaj la se yon fason entèlijan pou w fè revni pasif chak jou nan pataje kòd ARS pèsonèl ou.</p>
-          <ul style="padding-left: 20px; font-size: 13px; line-height: 1.6; margin-top: 10px;">
-            <li><i class="fas fa-gift" style="color: #e60000;"></i> <strong>Pou Fiyèl la</strong>: Li jwenn yon rabè 9.5 HTG sou premye echanj li.</li>
-            <li><i class="fas fa-chart-line" style="color: #28a745;"></i> <strong>Pou Ou menm</strong>: Ou touche 4.5% komisyon sou premye tranzaksyon fiyèl la.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. MODAL RESI -->
-    <div id="modal-resi-desc" class="feature-overlay-modal hidden" onclick="closeFeatureModalOnOverlay(event, 'modal-resi-desc')">
-      <div class="feature-modal-card">
-        <div class="feature-close-btn" onclick="closeFeatureModal('modal-resi-desc')">&times;</div>
-        <div class="feature-modal-header">
-          <i class="fas fa-file-invoice-dollar"></i> Resi Tranzaksyon yo
-        </div>
-        <div class="feature-modal-body">
-          <p style="font-size: 14px; color: #444;">Chak operasyon ou reyalize sou Echanj Plus gen yon resi dijital pwofesyonèl ki pwouve sekirite ak transparans sèvis la.</p>
-          <ul style="padding-left: 20px; font-size: 13px; line-height: 1.6; margin-top: 10px;">
-            <li><i class="fas fa-check" style="color: #28a745;"></i> Swiv estati an dirèk: Enatant, Valide, oswa Echwe.</li>
-            <li><i class="fas fa-share-nodes" style="color: #007bff;"></i> Pataje rapid sou WhatsApp oswa SMS.</li>
-          </ul>
-        </div>
-      </div>
     </div>
 
   </div>
