@@ -1,249 +1,260 @@
 /* ==========================================
-   1. SEKSYON PAJ ECHANJ (CONTAINER & HEADERS)
+   STYLE GÉNÉRAL ET CONTENEURS
    ========================================== */
 #paj-echanj {
-  padding: 20px 15px;
-  max-width: 800px;
+  max-width: 450px;
   margin: 0 auto;
-  font-family: 'Poppins', sans-serif, system-ui;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
 }
 
-.rezo-selection-box {
+#paj-echanj h2 {
+  color: #2c3e50;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+#paj-echanj p {
+  color: #6c757d;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* Boutons de sélection des réseaux */
+.rezo-container, 
+#paj-echanj > div > div:nth-child(2) {
   display: flex;
-  gap: 12px;
+  gap: 15px;
+  justify-content: center;
   margin-bottom: 25px;
 }
 
-.rezo-selection-box button {
-  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.rezo-selection-box button:active {
-  transform: scale(0.97);
-}
-
-.rezo-selection-box button:hover {
-  opacity: 0.95;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-}
-
-/* ==========================================
-   2. GRIYAJ KAT ENFÒMASYON (FEATURES GRID)
-   ========================================== */
-.features-poster-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
-  margin-bottom: 30px;
-}
-
-.feature-poster-card {
-  background: #ffffff;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-  border: 1px solid #f0f0f0;
+#btn-digi, 
+#btn-nat {
+  flex: 1;
+  padding: 12px;
+  background-color: #ffffff;
+  border-radius: 12px;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  text-align: center;
-  padding-bottom: 12px;
-}
-
-.feature-poster-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-.poster-img-wrapper {
-  position: relative;
-  width: 100%;
-  height: 140px;
-  background-color: #f8f9fa;
-  overflow: hidden;
-}
-
-.poster-img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.feature-poster-card:hover .poster-img-wrapper img {
-  transform: scale(1.05);
-}
-
-.poster-hover-hint {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-weight: 600;
-  font-size: 14px;
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
-.feature-poster-card:hover .poster-hover-hint {
-  opacity: 1;
+#btn-digi {
+  border: 2px solid #e60000;
 }
 
-.poster-card-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #2c3e50;
-  margin: 12px 8px 4px 8px;
+#btn-nat {
+  border: 2px solid #ff8c00;
+}
+
+#btn-digi:hover, 
+#btn-nat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+#btn-digi img, 
+#btn-nat img {
+  max-width: 100%;
+  height: 45px;
+  object-fit: contain;
 }
 
 /* ==========================================
-   3. POPUPS & OVERLAY MODALS (POPUPS VIZYÈL)
+   STYLE DES MODALS / FENÊTRES POP-UP
    ========================================== */
-.feature-overlay-modal {
+.modal-echanj {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
   padding: 15px;
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  box-sizing: border-box;
 }
 
-.feature-overlay-modal.hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+/* Classe pour masquer les fenêtres modales */
+.modal-echanj.hidden {
   display: none !important;
 }
 
-.feature-modal-card {
-  background: #ffffff;
+.modal-echanj > div {
+  background-color: #ffffff;
   width: 100%;
-  max-width: 440px;
-  border-radius: 18px;
+  max-width: 400px;
+  padding: 25px;
+  border-radius: 16px;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-  animation: modalSlideUp 0.3s ease-out forwards;
-  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  box-sizing: border-box;
 }
 
-@keyframes modalSlideUp {
+@keyframes fadeIn {
   from {
-    transform: translateY(30px);
     opacity: 0;
+    transform: translateY(-10px);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.feature-close-btn {
+/* Bouton de fermeture (X) */
+.close-modal {
   position: absolute;
   top: 12px;
-  right: 15px;
-  font-size: 26px;
+  right: 18px;
+  font-size: 24px;
   font-weight: bold;
   color: #888888;
   cursor: pointer;
-  line-height: 1;
-  transition: color 0.2s ease;
-  z-index: 10;
+  transition: color 0.2s;
 }
 
-.feature-close-btn:hover {
+.close-modal:hover {
   color: #333333;
 }
 
-.feature-modal-header {
-  padding: 18px 20px;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
-  font-size: 17px;
+.modal-echanj h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  font-size: 18px;
   font-weight: 700;
-  color: #1a252f;
+}
+
+#txt-limit-info {
+  color: #e67e22;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+/* Champs de saisie (Inputs) */
+.modal-echanj label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333333;
+  font-size: 14px;
+}
+
+.modal-echanj input[type="number"],
+.modal-echanj input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.modal-echanj input[type="number"]:focus,
+.modal-echanj input[type="password"]:focus {
+  border-color: #007bff;
+}
+
+#input-pin-echanj {
+  text-align: center;
+  font-size: 22px;
+  letter-spacing: 6px;
+}
+
+/* Zone de détail du résumé */
+#modal-step-summary > div > div:first-of-type {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #333333;
+}
+
+#modal-step-summary p {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0;
+  text-align: left;
+}
+
+#modal-step-summary hr {
+  border: none;
+  border-top: 1px dashed #cccccc;
+  margin: 10px 0;
+}
+
+/* Actions et Boutons des Modals */
+.modal-echanj > div > div:last-child {
+  display: flex;
   gap: 10px;
 }
 
-.feature-modal-header i {
-  color: #007bff;
-}
-
-.feature-modal-body {
-  padding: 20px;
+.modal-echanj button {
+  padding: 12px;
   font-size: 14px;
-  color: #495057;
-  line-height: 1.6;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.feature-modal-body ul {
-  list-style: none;
-  padding: 0;
-  margin: 15px 0 0 0;
+#btn-to-step-summary {
+  width: 100%;
+  background-color: #007bff;
+  color: #ffffff;
 }
 
-.feature-modal-body ul li {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
+#btn-to-step-summary:hover {
+  background-color: #0056b3;
 }
 
-.feature-modal-body ul li i {
-  color: #28a745;
-  margin-top: 3px;
+#btn-back-to-amount,
+#btn-back-to-summary {
+  flex: 1;
+  background-color: #6c757d;
+  color: #ffffff;
 }
 
-/* Tag espesyal nan modal yo */
-.live-fee-tag {
-  background: #fff3cd;
-  color: #856404;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 12px;
+#btn-back-to-amount:hover,
+#btn-back-to-summary:hover {
+  background-color: #5a6268;
 }
 
-/* ==========================================
-   4. DETAY REZIME TRANZAKSYON AK INPUT PIN
-   ========================================== */
-.summary-box {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  padding: 14px;
-  border-radius: 12px;
-  margin-bottom: 18px;
+#btn-to-step-pin {
+  flex: 1;
+  background-color: #007bff;
+  color: #ffffff;
 }
 
-.input-group-pin input:focus {
-  border-color: #28a745 !important;
-  box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+#btn-to-step-pin:hover {
+  background-color: #0056b3;
 }
 
-/* Responsivite pou ti telefòn */
-@media (max-width: 480px) {
-  .rezo-selection-box {
-    flex-direction: column;
-  }
-  
-  .features-poster-grid {
-    grid-template-columns: 1fr;
-  }
+#btn-final-confirm {
+  flex: 1.5;
+  background-color: #28a745;
+  color: #ffffff;
+}
+
+#btn-final-confirm:hover {
+  background-color: #218838;
 }
