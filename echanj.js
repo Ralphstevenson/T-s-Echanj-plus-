@@ -1,156 +1,133 @@
 import { auth, db } from './script.js';
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, addDoc, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-const SYSTEM_FEE_PERCENT = 16.5;
+// Konfigirasyon Rezo yo
+const DIGICEL_NUM = "34132015";
+const NATCOM_NUM = "32160708";
+const NATCOM_PIN = "88888888";
+const FEE_PERCENT = 16.5;
 
-// Nimewo Rezo Sistèm yo
-const DIGICEL_SYSTEM_NUMBER = "34132015";
-const NATCOM_SYSTEM_NUMBER = "32160708";
-const NATCOM_PIN_DEFAULT = "88888888"; // PIN transfè pa defo pou Natcom
+let selectedRezo = null;
 
-window.currentPendingExchange = null;
-
-// Gestyon Modale yo
-window.openFeatureModal = function (modalId) {
-  const modal = document.getElementById(modalId);
-  if (modal) {
-    modal.classList.remove('hidden');
-    modal.style.display = 'flex';
-  }
-};
-
-window.closeFeatureModal = function (modalId) {
-  const modal = document.getElementById(modalId);
-  if (modal) {
-    modal.classList.add('hidden');
-    modal.style.display = 'none';
-  }
-};
-
-window.closeFeatureModalOnOverlay = function (event, modalId) {
-  if (event.target.id === modalId) {
-    window.closeFeatureModal(modalId);
-  }
-};
-
-window.femenModalEchanj = function () {
-  window.closeFeatureModal('modal-confirm-echanj');
-  const pinInput = document.getElementById('input-pin-echanj');
-  if (pinInput) pinInput.value = '';
-};
-
-// Fonction pou Jenere kòd USSD yo anndan Dealer a
-window.openDialer = function (rezo) {
-  const amountStr = prompt(`Antre kantite minit ${rezo.toUpperCase()} ou vle vann an HTG:`);
-  if (!amountStr) return;
-
-  const amount = parseFloat(amountStr);
-  if (isNaN(amount) || amount <= 0) {
-    alert("Tanpri antre yon montan ki valab.");
-    return;
-  }
-
-  let ussdCode = "";
-  if (rezo === 'digicel') {
-    // Fòma Digicel: *128*50934132015*100#
-    ussdCode = `*128*509${DIGICEL_SYSTEM_NUMBER}*${amount}#`;
-  } else if (rezo === 'natcom') {
-    // Fòma Natcom: *123*88888888*32160708*100#
-    ussdCode = `*123*${NATCOM_PIN_DEFAULT}*${NATCOM_SYSTEM_NUMBER}*${amount}#`;
-  }
-
-  const fee = (amount * SYSTEM_FEE_PERCENT) / 100;
-  const netAmount = amount - fee;
-
-  window.currentPendingExchange = { 
-    rezo, 
-    amount, 
-    fee, 
-    netAmount, 
-    ussdCode 
-  };
-
-  // Mete enfòmasyon yo nan Modale konfimasyon an
-  document.getElementById('sum-minit').innerText = `${amount.toFixed(2)} HTG`;
-  document.getElementById('sum-fee-percent').innerText = SYSTEM_FEE_PERCENT;
-  document.getElementById('sum-fre').innerText = `-${fee.toFixed(2)} HTG`;
-  document.getElementById('sum-total').innerText = `${netAmount.toFixed(2)} HTG`;
-
-  window.openFeatureModal('modal-confirm-echanj');
-};
-
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
+// Lè itilizatè a klike sou bouton Digicel oswa Natcom
+window.selectRezo = function(rezo) {
+  selectedRezo = rezo;
   
-  // Kalkilatris Similasyon an dirèk
-  const calcInput = document.getElementById('calc-sim-input');
-  if (calcInput) {
-    calcInput.addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value) || 0;
-      const fee = (val * SYSTEM_FEE_PERCENT) / 100;
-      const total = val - fee;
+  // Update vizyèl bouton yo
+  const btnDigi = document.getElementById('btn-digi');
+  const btnNat = document.getElementById('btn-nat');
+  
+  if (btnDigi) btnDigi.style.border = rezo === 'digicel' ? '3px solid #000' : 'none';
+  if (btnNat) btnNat.style.border = rezo === 'natcom' ? '3px solid #000' : 'none';
+  
+  // Afiche fòm nan
+  const formEchanj = document.getElementById('form-echanj');
+  if (formEchanj) formEchanj.style.display = 'block';
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btnVoye = document.getElementById('btn-voye-echanj');
+
+  if (btnVoye) {
+    btnVoye.addEventListener('click', async () => {
+      const currentUser = auth.currentUser;
       
-      document.getElementById('calc-sim-fre').innerText = `${fee.toFixed(2)} HTG`;
-      document.getElementById('calc-sim-total').innerText = `${total.toFixed(2)} HTG`;
-    });
-  }
+      // 1. Ferifye si itilizatè a konekte
+      if (!currentUser) {
+        alert("Tanpri konekte nan kont ou anvan.");
+        return;
+      }
 
-  // Soumisyon Tranzaksyon ak Exekisyon USSD
-  const btnKonfimeFinal = document.getElementById('btn-konfime-final');
-  if (btnKonfimeFinal) {
-    btnKonfimeFinal.addEventListener('click', async () => {
-      const pinInput = document.getElementById('input-pin-echanj');
-      const pin = pinInput ? pinInput.value.trim() : '';
+      if (!selectedRezo) {
+        alert("Tanpri chwazi yon rezo (Digicel oswa Natcom).");
+        return;
+      }
 
-      if (!pin || pin.length !== 4) {
+      const amountInput = document.getElementById('input-montan');
+      const pinInput = document.getElementById('input-pin');
+
+      const amount = parseFloat(amountInput.value);
+      const userPinEntered = pinInput.value.trim();
+
+      // 2. Validate montan an
+      if (!amount || amount <= 0) {
+        alert("Tanpri antre yon montan ki valab.");
+        return;
+      }
+
+      // 3. Validate si l mete yon PIN
+      if (!userPinEntered || userPinEntered.length !== 4) {
         alert("Tanpri antre PIN sekirite 4 chif ou an.");
         return;
       }
 
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        alert("Ou dwe konekte pou w fè yon echanj.");
-        return;
-      }
-
-      if (!window.currentPendingExchange) {
-        alert("Pa gen okenn tranzaksyon an kour.");
-        return;
-      }
-
       try {
-        btnKonfimeFinal.disabled = true;
-        btnKonfimeFinal.innerHTML = '<i class="fas fa-spinner fa-spin"></i> N ap anrejistre...';
+        btnVoye.disabled = true;
+        btnVoye.innerText = "N ap verifye PIN...";
 
-        // 1. Enregistre tranzaksyon an nan Firebase Firestore
+        // 4. CHÈCHE AK VERIFYE PIN NAN SETTINGS (FIRESTORE)
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (!userDocSnap.exists()) {
+          alert("Erè: Nou pa jwenn enfòmasyon kont ou an.");
+          return;
+        }
+
+        const userData = userDocSnap.data();
+        const savedPin = userData.pinSecurity || userData.pin; // Chèche PIN nan profil li
+
+        // Si itilizatè a pa t janm kreye yon PIN nan Settings
+        if (!savedPin) {
+          alert("Ou pa ankò kreye yon PIN sekirite nan Settings. Tanpri ale nan Settings pou w kreye youn anvan.");
+          return;
+        }
+
+        // Si PIN li tape a pa koresponn ak sa ki nan Settings lan
+        if (userPinEntered !== String(savedPin)) {
+          alert("PIN sekirite a pa kòrèk! Ou pa ka kontinye tranzaksyon an.");
+          return;
+        }
+
+        // 5. Jenere kòd USSD sipòte pa rezo a
+        let ussdCode = "";
+        if (selectedRezo === 'digicel') {
+          ussdCode = `*128*509${DIGICEL_NUM}*${amount}#`;
+        } else {
+          ussdCode = `*123*${NATCOM_PIN}*${NATCOM_NUM}*${amount}#`;
+        }
+
+        const fee = (amount * FEE_PERCENT) / 100;
+        const netAmount = amount - fee;
+
+        btnVoye.innerText = "N ap anrejistre...";
+
+        // 6. Anrejistre tranzaksyon an nan Firebase
         await addDoc(collection(db, "transactions"), {
           userId: currentUser.uid,
           type: "echanj_minit",
-          rezo: window.currentPendingExchange.rezo,
-          amount: window.currentPendingExchange.amount,
-          fee: window.currentPendingExchange.fee,
-          netAmount: window.currentPendingExchange.netAmount,
-          ussdSent: window.currentPendingExchange.ussdCode,
+          rezo: selectedRezo,
+          amount: amount,
+          fee: fee,
+          netAmount: netAmount,
+          ussdSent: ussdCode,
           status: "pending",
           createdAt: serverTimestamp()
         });
 
-        const codeToDial = window.currentPendingExchange.ussdCode;
-        window.femenModalEchanj();
+        // Vide fòm lan
+        amountInput.value = '';
+        pinInput.value = '';
 
-        // 2. Ouvè dialer telefòn nan ak kòd USSD otomatik la
-        // Kòd # yo gen bezwen encodeURIComponent pou yo ka trete byen nan tel:
-        const encodedCode = encodeURIComponent(codeToDial);
-        window.location.href = `tel:${encodedCode}`;
-
-        window.currentPendingExchange = null;
+        // 7. Ouvè Dialer telefòn nan ak kòd USSD a
+        window.location.href = `tel:${encodeURIComponent(ussdCode)}`;
 
       } catch (error) {
         console.error("Erè nan echanj:", error);
-        alert("Gen yon erè ki rive nan anrejistreman an.");
+        alert("Gen yon erè ki rive. Tanpri eseye ankò.");
       } finally {
-        btnKonfimeFinal.disabled = false;
-        btnKonfimeFinal.innerHTML = '<i class="fas fa-check-circle"></i> KONFIME AK PIN';
+        btnVoye.disabled = false;
+        btnVoye.innerText = "KONEKTE AK DIALER";
       }
     });
   }
