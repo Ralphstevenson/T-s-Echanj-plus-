@@ -321,69 +321,90 @@
       </section>
 
 
-<!-- PAJ ECHANJ (SÈVIS PRENSIPAL) -->
-<!-- PAJ ECHANJ (SÈVIS PRENSIPAL SENPYE) -->
-<section id="paj-echanj" class="app-section" style="display: none;">
-  <div class="container" style="max-width: 450px; margin: 0 auto; padding: 15px;">
+
+      <!-- PAJ ECHANJ (SÈVIS PRENSIPAL SENPYE) -->
+<section id="paj-echanj" class="app-section">
+  <div>
     
     <!-- ENTÈT -->
-    <div class="section-header" style="text-align: center; margin-bottom: 20px;">
-      <h2 style="color: #2c3e50; font-size: 22px; font-weight: 700;">Sèvis Echanj Minit</h2>
-      <p style="color: #6c757d; font-size: 14px;">Chwazi rezo a pou w ka vann minit ou yo.</p>
+    <div>
+      <h2>Sèvis Echanj Minit</h2>
+      <p>Chwazi rezo a pou w ka vann minit ou yo.</p>
     </div>
 
-    <!-- BOUTON REZO YO -->
-    <div class="rezo-selection-box" style="display: flex; gap: 10px; margin-bottom: 20px;">
-      <button id="btn-digi" onclick="selectRezo('digicel')" style="flex: 1; padding: 15px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; background: #e60000; color: #fff; font-size: 15px;">
-        <i class="fas fa-phone-alt"></i> Digicel
+    <!-- BOUTON REZO YO (AK FOTO) -->
+    <div>
+      <button id="btn-digi">
+        <img src="https://i.postimg.cc/YvBbkLrW/Digicel-Logo.png" alt="Digicel">
       </button>
-      <button id="btn-nat" onclick="selectRezo('natcom')" style="flex: 1; padding: 15px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; background: #ff8c00; color: #fff; font-size: 15px;">
-        <i class="fas fa-phone-alt"></i> Natcom
+      <button id="btn-nat">
+        <img src="https://i.postimg.cc/k2Pf9RJB/The-Natcom-Logo.png" alt="Natcom">
       </button>
-    </div>
-
-    <!-- FÒM ANTRE MONTAN AK PIN -->
-    <div id="form-echanj" style="display: none; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
-      
-      <!-- MONTAN -->
-      <div style="margin-bottom: 15px;">
-        <label for="input-montan" style="display: block; font-weight: bold; margin-bottom: 5px; color: #333; font-size: 14px;">
-          Kantite Minit (HTG):
-        </label>
-        <input 
-          type="number" 
-          id="input-montan" 
-          placeholder="Eg: 100" 
-          style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; outline: none; box-sizing: border-box;"
-        >
-      </div>
-
-      <!-- PIN SEKIRITE -->
-      <div style="margin-bottom: 20px;">
-        <label for="input-pin" style="display: block; font-weight: bold; margin-bottom: 5px; color: #333; font-size: 14px;">
-          <i class="fas fa-lock"></i> PIN Sekirite (4 Chif):
-        </label>
-        <input 
-          type="password" 
-          id="input-pin" 
-          maxlength="4" 
-          placeholder="****" 
-          style="width: 100%; padding: 12px; text-align: center; font-size: 20px; letter-spacing: 4px; border: 1px solid #ccc; border-radius: 8px; outline: none; box-sizing: border-box;"
-        >
-      </div>
-
-      <!-- BOUTON SOUMÈT -->
-      <button id="btn-voye-echanj" style="width: 100%; padding: 14px; background: #28a745; color: #fff; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;">
-        KONEKTE AK DIALER
-      </button>
-
     </div>
 
   </div>
 </section>
 
+<!-- ========================================== -->
+<!-- MODALS / POP-UPS ETAP PA ETAP -->
+<!-- ========================================== -->
 
-      
+<!-- ETAP 1: FENÈT ANTRE MONTAN -->
+<div id="modal-step-amount" class="modal-echanj hidden">
+  <div>
+    <span class="close-modal">&times;</span>
+    <h3>Montan Echanj (<span id="txt-selected-rezo"></span>)</h3>
+    <p id="txt-limit-info"></p>
+    
+    <div>
+      <label for="input-montan-echanj">Kantite Minit (HTG):</label>
+      <input type="number" id="input-montan-echanj" placeholder="Eg: 100">
+    </div>
+    
+    <button id="btn-to-step-summary">Suivant</button>
+  </div>
+</div>
+
+<!-- ETAP 2: FENÈT REZIME AK DETAY TRANZAKSYON AN -->
+<div id="modal-step-summary" class="modal-echanj hidden">
+  <div>
+    <span class="close-modal">&times;</span>
+    <h3>Detay Tranzaksyon an</h3>
+    
+    <div>
+      <p><span>Rezo:</span> <strong id="summary-rezo"></strong></p>
+      <p><span>Montan w ap vann:</span> <strong><span id="summary-amount"></span> HTG</strong></p>
+      <p><span>Frè Sistèm (<span id="summary-fee-percent"></span>%):</span> <strong>-<span id="summary-fee"></span> HTG</strong></p>
+      <hr>
+      <p><span>W ap resevwa:</span> <strong><span id="summary-net"></span> HTG</strong></p>
+    </div>
+
+    <div>
+      <button id="btn-back-to-amount">Retounen</button>
+      <button id="btn-to-step-pin">Suivant</button>
+    </div>
+  </div>
+</div>
+
+<!-- ETAP 3: FENÈT ANTRE PIN SEKIRITE -->
+<div id="modal-step-pin" class="modal-echanj hidden">
+  <div>
+    <span class="close-modal">&times;</span>
+    <h3>PIN Sekirite</h3>
+    <p>Antre PIN 4 chif ou an pou konfime epi ale sou dialer la:</p>
+    
+    <div>
+      <input type="password" id="input-pin-echanj" maxlength="4" placeholder="••••">
+    </div>
+
+    <div>
+      <button id="btn-back-to-summary">Retounen</button>
+      <button id="btn-final-confirm">Konfime & Voye Call</button>
+    </div>
+  </div>
+</div>
+      </section>
+
 
       <!-- 3. PAJ ISTORIK -->
       <section id="paj-istorik" class="app-section" style="display: none;">
