@@ -40,10 +40,29 @@ const db = getFirestore(app);
 let isBalanceHidden = false;
 let currentBalanceValue = "0.00 HTG";
 let currentSlide = 0;
+let selectedNetwork = '';
 
 // ==========================================
 // 3. FONKSYON GLOBAL POU UI (Attaché sur window)
 // ==========================================
+
+// Navigasyon ant seksyon SPA yo
+window.showSection = function (sectionId, navElement = null) {
+  const sections = document.querySelectorAll('.app-section');
+  sections.forEach(sec => sec.style.display = 'none');
+
+  const targetSection = document.getElementById(sectionId);
+  if (targetSection) {
+    targetSection.style.display = 'block';
+  }
+
+  // Mete klas active sou meni navigasyon anba a
+  if (navElement) {
+    const navItems = document.querySelectorAll('.bottom-nav .nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    navElement.classList.add('active');
+  }
+};
 
 // Affichage messages d'alerte
 window.showAlert = function (message, type = 'danger') {
@@ -131,7 +150,44 @@ window.toggleFaq = function (element) {
 };
 
 // ==========================================
-// 4. VALIDATION RÈG SEKIRITE MODPAS
+// 4. JESTYON MODAL AK SÈVIS ECHANJ (SPA UI)
+// ==========================================
+
+// Louvri modal enfòmasyon/sèvis
+window.openFeatureModal = function (modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) modal.classList.remove('hidden');
+};
+
+// Fèmen modal enfòmasyon/sèvis
+window.closeFeatureModal = function (modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) modal.classList.add('hidden');
+};
+
+// Fèmen modal lè w klike sou background
+window.closeFeatureModalOnOverlay = function (event, modalId) {
+  if (event.target.id === modalId) {
+    window.closeFeatureModal(modalId);
+  }
+};
+
+// Fèmen modal echanj espesifik
+window.femenModalEchanj = function () {
+  window.closeFeatureModal('modal-confirm-echanj');
+};
+
+// Ouvri modal echanj pou rezo
+window.openDialer = function (rezo) {
+  selectedNetwork = rezo;
+  const modal = document.getElementById('modal-confirm-echanj');
+  if (modal) {
+    modal.classList.remove('hidden');
+  }
+};
+
+// ==========================================
+// 5. VALIDATION RÈG SEKIRITE MODPAS
 // ==========================================
 function validatePasswordRules() {
   const phoneVal = document.getElementById('signup-phone')?.value.trim() || '';
@@ -181,7 +237,7 @@ function validatePasswordRules() {
 }
 
 // ==========================================
-// 5. EVENT LISTENERS & FORM SUBMISSIONS
+// 6. EVENT LISTENERS & FORM SUBMISSIONS
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   // Listeners pou fòm modpas
@@ -225,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.innerHTML = '<span class="btn-text">Connexion en cours...</span>';
 
         await signInWithEmailAndPassword(auth, formattedEmail, passwordInput);
-        // Tretman reye siksè nan onAuthStateChanged
 
       } catch (error) {
         console.error("Login error:", error);
@@ -316,10 +371,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // 4. BOUTON KONFIMASYON FINAL TRANZAKSYON ECHANJ
+  const btnKonfimeFinal = document.getElementById('btn-konfime-final');
+  if (btnKonfimeFinal) {
+    btnKonfimeFinal.addEventListener('click', () => {
+      const pinInput = document.getElementById('input-pin-echanj');
+      if (!pinInput || pinInput.value.length !== 4) {
+        alert("Tanpri antre yon PIN 4 chif ki valab.");
+        return;
+      }
+      alert(`Tranzaksyon pou rezo ${selectedNetwork.toUpperCase()} anrejistre avèk siksè!`);
+      window.femenModalEchanj();
+      if (pinInput) pinInput.value = '';
+    });
+  }
 });
 
 // ==========================================
-// 6. SUIVI ETAT DE KONEKSYON (STATE OBSERVER)
+// 7. SUIVI ETAT DE KONEKSYON (STATE OBSERVER)
 // ==========================================
 onAuthStateChanged(auth, async (user) => {
   const authContainer = document.getElementById('auth-container');
