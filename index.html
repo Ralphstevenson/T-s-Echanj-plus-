@@ -408,10 +408,8 @@
 
 
 
-
-
 <!-- SEKSYON ISTORIK TRANZAKSYON -->
-<section id="paj-istorik" class="app-section">
+<section id="paj-historique" class="app-section">
   <div class="container">
     
     <!-- ENTÈT PAJ LA -->
@@ -424,15 +422,15 @@
     <div class="date-filter-box">
       <i class="far fa-calendar-alt"></i>
       <input type="date" id="filter-date-input" onchange="filterByDate()">
-      <button onclick="clearDateFilter()">Tout Dat</button>
+      <button type="button" onclick="clearDateFilter()">Tout Dat</button>
     </div>
 
     <!-- ONGLÈ FILTÈ YO (TABS) -->
     <div class="tabs-container">
-      <button class="tab-btn-ist active" onclick="switchIstorik('tout', this)">Tout</button>
-      <button class="tab-btn-ist" onclick="switchIstorik('echanj', this)">Echanj</button>
-      <button class="tab-btn-ist" onclick="switchIstorik('retre', this)">Retrè</button>
-      <button class="tab-btn-ist" onclick="switchIstorik('echwe', this)">Echwe</button>
+      <button type="button" class="tab-btn-ist active" onclick="switchIstorik('tout', this)">Tout</button>
+      <button type="button" class="tab-btn-ist" onclick="switchIstorik('echanj', this)">Echanj</button>
+      <button type="button" class="tab-btn-ist" onclick="switchIstorik('retre', this)">Retrè</button>
+      <button type="button" class="tab-btn-ist" onclick="switchIstorik('echwe', this)">Echwe</button>
     </div>
 
     <!-- KONTNI PA ONGLÈ -->
@@ -464,8 +462,8 @@
     </div>
 
     <div>
-      <button onclick="closeReceipt()">Fèmen</button>
-      <button onclick="shareReceipt()">
+      <button type="button" onclick="closeReceipt()">Fèmen</button>
+      <button type="button" onclick="shareReceipt()">
         <i class="fab fa-whatsapp"></i> Pataje Resi
       </button>
     </div>
