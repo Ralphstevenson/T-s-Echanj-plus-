@@ -1,0 +1,261 @@
+/* ============================================================
+   CSS ISTORIK TRANZAKSYON - ECHANJ PLUS
+   ============================================================ */
+
+/* Utilitaires généraux */
+.hidden {
+  display: none !important;
+}
+
+/* Container principal de la section */
+#paj-historique {
+  padding: 15px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+#paj-historique .section-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+#paj-historique .section-header h2 {
+  color: #2c3e50;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+}
+
+#paj-historique .section-header p {
+  color: #6c757d;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* Boîte de filtre par date */
+.date-filter-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.date-filter-box i {
+  color: #007bff;
+  font-size: 16px;
+}
+
+.date-filter-box input[type="date"] {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333333;
+  flex: 1;
+}
+
+.date-filter-box button {
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 11px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.date-filter-box button:hover {
+  background: #e2e8f0;
+}
+
+/* Barre des onglets (Tabs) */
+.tabs-container {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 15px;
+  background: #eef2f5;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.tab-btn-ist {
+  flex: 1;
+  padding: 9px 4px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #555555;
+  transition: all 0.2s ease;
+}
+
+.tab-btn-ist.active {
+  background: #ffffff !important;
+  color: #007bff !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* En-têtes de groupe chronologique (Jodi a, Semèn sa a, etc.) */
+.time-group-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: #007bff;
+  margin: 15px 0 8px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Cartes de transaction */
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  margin-bottom: 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.transaction-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* État vide (Aucune transaction) */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #757575;
+}
+
+.empty-state i {
+  font-size: 42px;
+  color: #cccccc;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: #555555;
+}
+
+.empty-state small {
+  font-size: 12px;
+  color: #888888;
+}
+
+/* Modal Reçu de Transaction */
+.modal-echanj {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: #ffffff;
+  width: 90%;
+  max-width: 400px;
+  padding: 22px;
+  border-radius: 16px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.close-modal {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #888888;
+  transition: color 0.2s ease;
+}
+
+.close-modal:hover {
+  color: #333333;
+}
+
+.modal-content h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.modal-content p {
+  color: #757575;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.modal-content > div:nth-child(3) {
+  background: #f8f9fa;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: #333333;
+}
+
+.modal-content > div:nth-child(3) p {
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  color: #333333;
+  font-size: 13px;
+}
+
+.modal-content > div:nth-child(4) {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-content > div:nth-child(4) button:nth-child(1) {
+  flex: 1;
+  padding: 11px;
+  background: #6c757d;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal-content > div:nth-child(4) button:nth-child(2) {
+  flex: 1.5;
+  padding: 11px;
+  background: #25d366;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
