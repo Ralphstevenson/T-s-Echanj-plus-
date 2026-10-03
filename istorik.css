@@ -1,5 +1,5 @@
 /* ============================================================
-   CSS ISTORIK TRANZAKSYON - ECHANJ PLUS
+   STYLE ISTORIK TRANZAKSYON - ECHANJ PLUS
    ============================================================ */
 
 /* Utilitaires généraux */
@@ -7,7 +7,7 @@
   display: none !important;
 }
 
-/* Container principal de la section */
+/* Container principal */
 #paj-historique {
   padding: 15px;
   max-width: 480px;
@@ -76,7 +76,7 @@
   background: #e2e8f0;
 }
 
-/* Barre des onglets (Tabs) */
+/* Onglets (Bouton Filtè yo) */
 .tabs-container {
   display: flex;
   gap: 6px;
@@ -96,13 +96,16 @@
   border-radius: 8px;
   cursor: pointer;
   color: #555555;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease-in-out;
 }
 
+/* EFÈ AKTIFF LÈ OU KLIKE SOU BOUTON AN */
 .tab-btn-ist.active {
   background: #ffffff !important;
   color: #007bff !important;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  font-weight: 700 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+  transform: scale(1.02);
 }
 
 /* En-têtes de groupe chronologique (Jodi a, Semèn sa a, etc.) */
@@ -134,7 +137,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
-/* État vide (Aucune transaction) */
+/* État vide (Lè pa gen tranzaksyon) */
 .empty-state {
   text-align: center;
   padding: 40px 20px;
@@ -159,7 +162,7 @@
   color: #888888;
 }
 
-/* Modal Reçu de Transaction */
+/* Modal Resi */
 .modal-echanj {
   position: fixed;
   top: 0;
@@ -208,54 +211,4 @@
   color: #757575;
   font-size: 12px;
   margin-top: 2px;
-}
-
-.modal-content > div:nth-child(3) {
-  background: #f8f9fa;
-  padding: 14px;
-  border-radius: 10px;
-  margin-bottom: 18px;
-  font-size: 13px;
-  color: #333333;
-}
-
-.modal-content > div:nth-child(3) p {
-  margin: 8px 0;
-  display: flex;
-  justify-content: space-between;
-  color: #333333;
-  font-size: 13px;
-}
-
-.modal-content > div:nth-child(4) {
-  display: flex;
-  gap: 10px;
-}
-
-.modal-content > div:nth-child(4) button:nth-child(1) {
-  flex: 1;
-  padding: 11px;
-  background: #6c757d;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.modal-content > div:nth-child(4) button:nth-child(2) {
-  flex: 1.5;
-  padding: 11px;
-  background: #25d366;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
 }
