@@ -1,16 +1,19 @@
+/* ============================================================
+   JS ISTORIK FINAL & KONPLÈ - ECHANJ PLUS
+   ============================================================ */
 import { getDatabase, ref, onValue, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Variable global yo pou jere eta (State)
+// Variab pou jere eta (State)
 let allUserTransactions = [];
 let activeTab = 'tout';
 let currentReceiptData = null;
 
-// Chèche instances Firebase yo (Si ou gen yon aplikasyon centralisé)
+// Chèche instances Firebase yo
 const auth = getAuth();
 const db = getDatabase();
 
-// 1. Ekoutè sou eta atantifikasyon an (Auth State Listener)
+// Ekoutè sou eta atantifikasyon an
 onAuthStateChanged(auth, (user) => {
   if (user) {
     initIstorik(user.uid);
@@ -20,7 +23,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 /**
- * Charge ak koute tranzaksyon itilizatè a an tan reyèl nan Firebase
+ * Chaje ak koute tranzaksyon itilizatè a an tan reyèl nan Firebase
  * @param {string} uid - ID itilizatè a
  */
 export function initIstorik(uid) {
@@ -46,7 +49,7 @@ export function initIstorik(uid) {
 
     renderCurrentView();
   }, (error) => {
-    console.error("Ere lè n ap chaje tranzaksyon yo:", error);
+    console.error("Erè lè n ap chaje tranzaksyon yo:", error);
   });
 }
 
@@ -89,7 +92,7 @@ function renderCurrentView() {
     if (el) el.innerHTML = "";
   });
 
-  // Afiche liss filtre a
+  // Afiche lis filtre a
   renderCategorizedList(`list-${activeTab}`, listToRender);
 }
 
@@ -130,7 +133,7 @@ function groupTransactionsByDate(transactions) {
 }
 
 /**
- * Injecter dom/HTML liss tranzaksyon an nan container a
+ * Afiche liss tranzaksyon an nan veso DOM lan
  */
 function renderCategorizedList(containerId, transactions) {
   const container = document.getElementById(containerId);
@@ -173,7 +176,7 @@ function renderCategorizedList(containerId, transactions) {
 }
 
 /**
- * Kreye yon kat tranzaksyon (Element HTML)
+ * Kreye ti kat pou chak tranzaksyon
  */
 function createCardElement(t, montan) {
   const isValid = ['Validé', 'Success', 'Complété', 'Approuvé', 'Valide'].includes(t.status);
@@ -209,19 +212,36 @@ function createCardElement(t, montan) {
 }
 
 /**
- * Changement d'onglet (Onglet Tout, Echanj, Retrè, Echwe)
+ * Changement d'onglet ak jere aparans aktiv bouton an
  */
 export function switchIstorik(targetId, btn) {
   activeTab = targetId;
 
-  document.querySelectorAll('.tab-btn-ist').forEach((b) => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+  // 1. Retire klas active nan tout bouton yo
+  document.querySelectorAll('.tab-btn-ist').forEach((b) => {
+    b.classList.remove('active');
+  });
 
-  document.querySelectorAll('.ist-content').forEach((div) => div.classList.add('hidden'));
+  // 2. Mete klas active sou bouton ki klike a
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const defaultBtn = document.querySelector(`.tab-btn-ist[onclick*="'${targetId}'"]`);
+    if (defaultBtn) defaultBtn.classList.add('active');
+  }
 
-  const target = document.getElementById(`list-${targetId}`);
-  if (target) target.classList.remove('hidden');
+  // 3. Kache tout div kontni yo
+  document.querySelectorAll('.ist-content').forEach((div) => {
+    div.classList.add('hidden');
+  });
 
+  // 4. Montre div kontni aktif la
+  const targetContainer = document.getElementById(`list-${targetId}`);
+  if (targetContainer) {
+    targetContainer.classList.remove('hidden');
+  }
+
+  // 5. Re-afiche tranzaksyon yo
   renderCurrentView();
 }
 
@@ -233,7 +253,7 @@ export function filterByDate() {
 }
 
 /**
- * Annule filtre dat la
+ * Netwaye filtre dat la
  */
 export function clearDateFilter() {
   const input = document.getElementById('filter-date-input');
@@ -275,7 +295,7 @@ export function closeReceipt() {
 }
 
 /**
- * Pataje resi a sou WhatsApp / Web Share API
+ * Pataje resi a sou WhatsApp
  */
 export async function shareReceipt() {
   if (!currentReceiptData) return;
@@ -295,7 +315,7 @@ export async function shareReceipt() {
 }
 
 /**
- * Netwaye interface la lè itilizatè a deconnecte
+ * Netwaye interface la si itilizatè a dekonekte
  */
 function clearUI() {
   allUserTransactions = [];
@@ -305,7 +325,7 @@ function clearUI() {
   });
 }
 
-// Rann fonksyon yo disponib nan window pou evenman onclick HTML yo
+// Rann tout fonksyon sa yo vizib pou HTML
 window.switchIstorik = switchIstorik;
 window.filterByDate = filterByDate;
 window.clearDateFilter = clearDateFilter;
