@@ -406,29 +406,32 @@
       </section>
 
 
-      <!-- SEKSYON ISTORIK TRANZAKSYON -->
-<section id="paj-historique" class="app-section">
-  <div class="container" style="max-width: 480px; margin: 0 auto; padding: 15px;">
+
+
+
+<!-- SEKSYON ISTORIK TRANZAKSYON -->
+<section id="paj-istorik" class="app-section">
+  <div class="container">
     
     <!-- ENTÈT PAJ LA -->
-    <div class="section-header" style="text-align: center; margin-bottom: 15px;">
-      <h2 style="color: #2c3e50; font-size: 22px; font-weight: 700; margin-bottom: 5px;">Istorik Tranzaksyon</h2>
-      <p style="color: #6c757d; font-size: 13px; margin: 0;">Gade tout aktivite ou te fè sou kont ou an.</p>
+    <div class="section-header">
+      <h2>Istorik Tranzaksyon</h2>
+      <p>Gade tout aktivite ou te fè sou kont ou an.</p>
     </div>
 
     <!-- SEKSYON FILTÈ PA DAT -->
-    <div class="date-filter-box" style="display: flex; align-items: center; gap: 8px; background: #fff; padding: 8px 12px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
-      <i class="far fa-calendar-alt" style="color: #007bff; font-size: 16px;"></i>
-      <input type="date" id="filter-date-input" onchange="filterByDate()" style="border: none; outline: none; background: transparent; font-size: 13px; font-weight: 600; color: #333; flex: 1;">
-      <button onclick="clearDateFilter()" style="border: none; background: #f1f5f9; color: #64748b; font-size: 11px; padding: 5px 8px; border-radius: 6px; cursor: pointer; font-weight: 600;">Tout Dat</button>
+    <div class="date-filter-box">
+      <i class="far fa-calendar-alt"></i>
+      <input type="date" id="filter-date-input" onchange="filterByDate()">
+      <button onclick="clearDateFilter()">Tout Dat</button>
     </div>
 
     <!-- ONGLÈ FILTÈ YO (TABS) -->
-    <div class="tabs-container" style="display: flex; gap: 6px; margin-bottom: 15px; background: #eef2f5; padding: 4px; border-radius: 10px;">
-      <button class="tab-btn-ist active" onclick="switchIstorik('tout', this)" style="flex: 1; padding: 9px 4px; font-size: 13px; font-weight: 600; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: #333;">Tout</button>
-      <button class="tab-btn-ist" onclick="switchIstorik('echanj', this)" style="flex: 1; padding: 9px 4px; font-size: 13px; font-weight: 600; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: #333;">Echanj</button>
-      <button class="tab-btn-ist" onclick="switchIstorik('retre', this)" style="flex: 1; padding: 9px 4px; font-size: 13px; font-weight: 600; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: #333;">Retrè</button>
-      <button class="tab-btn-ist" onclick="switchIstorik('echwe', this)" style="flex: 1; padding: 9px 4px; font-size: 13px; font-weight: 600; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: #333;">Echwe</button>
+    <div class="tabs-container">
+      <button class="tab-btn-ist active" onclick="switchIstorik('tout', this)">Tout</button>
+      <button class="tab-btn-ist" onclick="switchIstorik('echanj', this)">Echanj</button>
+      <button class="tab-btn-ist" onclick="switchIstorik('retre', this)">Retrè</button>
+      <button class="tab-btn-ist" onclick="switchIstorik('echwe', this)">Echwe</button>
     </div>
 
     <!-- KONTNI PA ONGLÈ -->
@@ -441,44 +444,36 @@
 </section>
 
 <!-- MODAL DETAY RESI TRANZAKSYON (RECEIPT) -->
-<div id="modal-receipt" class="modal-echanj hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 9999;">
-  <div class="modal-content" style="background: #fff; width: 90%; max-width: 400px; padding: 22px; border-radius: 16px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-    <span class="close-modal" onclick="closeReceipt()" style="position: absolute; top: 12px; right: 18px; font-size: 24px; cursor: pointer; color: #888;">&times;</span>
+<div id="modal-receipt" class="modal-echanj hidden">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeReceipt()">&times;</span>
     
-    <div style="text-align: center; margin-bottom: 18px;">
-      <h3 style="margin: 0; color: #2c3e50; font-size: 18px; font-weight: 700;">Resi Tranzaksyon</h3>
-      <p style="color: #757575; font-size: 12px; margin-top: 2px;">Echanj Plus</p>
+    <div>
+      <h3>Resi Tranzaksyon</h3>
+      <p>Echanj Plus</p>
     </div>
 
-    <div style="background: #f8f9fa; padding: 14px; border-radius: 10px; margin-bottom: 18px; font-size: 13px; color: #333;">
-      <p style="margin: 8px 0; display: flex; justify-content: space-between;"><span>ID Tranzaksyon:</span> <strong id="rec-id">---</strong></p>
-      <p style="margin: 8px 0; display: flex; justify-content: space-between;"><span>Statut:</span> <strong id="rec-status">---</strong></p>
-      <p style="margin: 8px 0; display: flex; justify-content: space-between;"><span>Montan:</span> <strong id="rec-amount">---</strong></p>
-      <p style="margin: 8px 0; display: flex; justify-content: space-between;"><span>Metòd / Rezo:</span> <strong id="rec-method">---</strong></p>
-      <p style="margin: 8px 0; display: flex; justify-content: space-between;"><span>Telefòn:</span> <strong id="rec-phone">---</strong></p>
-      <p style="margin: 8px 0; display: flex; justify-content: space-between;"><span>Dat:</span> <strong id="rec-date">---</strong></p>
+    <div>
+      <p><span>ID Tranzaksyon:</span> <strong id="rec-id">---</strong></p>
+      <p><span>Statut:</span> <strong id="rec-status">---</strong></p>
+      <p><span>Montan:</span> <strong id="rec-amount">---</strong></p>
+      <p><span>Metòd / Rezo:</span> <strong id="rec-method">---</strong></p>
+      <p><span>Telefòn:</span> <strong id="rec-phone">---</strong></p>
+      <p><span>Dat:</span> <strong id="rec-date">---</strong></p>
     </div>
 
-    <div style="display: flex; gap: 10px;">
-      <button onclick="closeReceipt()" style="flex: 1; padding: 11px; background: #6c757d; color: #fff; font-size: 13px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;">Fèmen</button>
-      <button onclick="shareReceipt()" style="flex: 1.5; padding: 11px; background: #25D366; color: #fff; font-size: 13px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+    <div>
+      <button onclick="closeReceipt()">Fèmen</button>
+      <button onclick="shareReceipt()">
         <i class="fab fa-whatsapp"></i> Pataje Resi
       </button>
     </div>
   </div>
 </div>
 
-<!-- STYLES NECESSAIRES POUR L'AFFICHAGE -->
-<style>
-  .hidden { 
-    display: none !important; 
-  }
-  .tab-btn-ist.active {
-    background: #ffffff !important;
-    color: #007bff !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-  }
-</style>
+
+
+      
 
     </main>
 
