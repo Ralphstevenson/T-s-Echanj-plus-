@@ -1,1 +1,54 @@
+/* Style du PIN & Modals supplémentaires */
+.pin-input {
+  width: 100%;
+  padding: 12px;
+  text-align: center;
+  font-size: 22px;
+  letter-spacing: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  margin: 15px 0;
+  outline: none;
+}
+
+.recap-body {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 15px 0;
+  text-align: left;
+}
+
+.recap-body p {
+  margin: 6px 0;
+  font-size: 13px;
+  color: #334155;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-secondary {
+  flex: 1;
+  padding: 12px;
+  background: #e2e8f0;
+  color: #475569;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.success-icon {
+  font-size: 48px;
+  color: #109121;
+  margin-bottom: 10px;
+}
+
+.text-center {
+  text-align: center;
+}
 
