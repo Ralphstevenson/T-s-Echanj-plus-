@@ -478,11 +478,12 @@
 <!-- SEKSYON RETRÈ -->
 
 
-<!-- SEKSYON PRENSIPAL RETRÈ -->
+
+<!-- SECTIONS ETAP RETRÈ -->
 <section id="paj-retre" class="app-section">
   <div class="container">
 
-    <!-- ETAP 1: CHWA METÒD PEYMAN (Menm jan ak foto a) -->
+    <!-- ETAP 1: CHWA METÒD PEYMAN -->
     <div id="step-select-method" class="retre-card">
       <div class="retre-header">
         <i class="fas fa-wallet"></i>
@@ -493,37 +494,25 @@
 
       <div class="payment-methods-list">
         <!-- Natcash -->
-        <div class="method-item" onclick="selectRetreMethod('natcash', 'NatCash - Online', 20, 40000)">
+        <div class="method-item" onclick="selectRetreMethod('natcash', 'NatCash - Online', 50, 5000)">
           <div class="method-logo">
             <img src="assets/natcash-logo.png" alt="Natcash">
           </div>
           <div class="method-info">
             <h3>NatCash - Online</h3>
-            <p>Min : 20 <span>HTG</span> &nbsp; Max : 40 000 <span>HTG</span></p>
+            <p>Min : 50 <span>HTG</span> &nbsp; Max : 5 000 <span>HTG</span></p>
           </div>
           <i class="fas fa-chevron-right arrow-icon"></i>
         </div>
 
         <!-- Moncash -->
-        <div class="method-item" onclick="selectRetreMethod('moncash', 'MonCash - Online', 20, 100000)">
+        <div class="method-item" onclick="selectRetreMethod('moncash', 'MonCash - Online', 50, 5000)">
           <div class="method-logo">
             <img src="assets/moncash-logo.png" alt="MonCash">
           </div>
           <div class="method-info">
             <h3>MonCash - Online</h3>
-            <p>Min : 20 <span>HTG</span> &nbsp; Max : 100 000 <span>HTG</span></p>
-          </div>
-          <i class="fas fa-chevron-right arrow-icon"></i>
-        </div>
-
-        <!-- Sogexpress -->
-        <div class="method-item" onclick="selectRetreMethod('sogexpress', 'SogExpress', 100, 1000000)">
-          <div class="method-logo">
-            <img src="assets/sogexpress-logo.png" alt="SogExpress">
-          </div>
-          <div class="method-info">
-            <h3>SogExpress</h3>
-            <p>Min : 100 <span>HTG</span> &nbsp; Max : 1 000 000 <span>HTG</span></p>
+            <p>Min : 50 <span>HTG</span> &nbsp; Max : 5 000 <span>HTG</span></p>
           </div>
           <i class="fas fa-chevron-right arrow-icon"></i>
         </div>
@@ -548,13 +537,13 @@
       <p class="step-desc">Entrez le montant à retirer</p>
 
       <div class="input-amount-group">
-        <input type="number" id="retre-amount-input" placeholder="Montant" min="20" required>
+        <input type="number" id="retre-amount-input" placeholder="Montant" min="50" max="5000" required>
         <span class="currency-tag">HTG</span>
       </div>
 
       <p class="min-max-text">
-        Minimum : <span id="display-min-limit">20</span> HTG &nbsp; 
-        Maximum : <span id="display-max-limit">40 000</span> HTG
+        Minimum : <span id="display-min-limit">50</span> HTG &nbsp; 
+        Maximum : <span id="display-max-limit">5 000</span> HTG
       </p>
 
       <button type="button" id="btn-validate-amount" class="btn-action-green" onclick="validateAmountStep()">
@@ -638,7 +627,7 @@
   </div>
 </div>
 
-<!-- MODAL ETAP 5: ANTRE PIN / REDIRÈKSYON PARAMÈT -->
+<!-- MODAL ETAP 5: ANTRE PIN -->
 <div id="modal-retre-pin" class="modal-echanj hidden">
   <div class="modal-content">
     <h3>Sécurité - Code PIN</h3>
