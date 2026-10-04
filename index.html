@@ -476,118 +476,189 @@
 
 
 <!-- SEKSYON RETRÈ -->
+
+
+<!-- SEKSYON PRENSIPAL RETRÈ -->
 <section id="paj-retre" class="app-section">
   <div class="container">
-    
-    <!-- ENTÈT PAJ LA -->
-    <div class="section-header">
-      <h2>Fè yon Retrè</h2>
-      <p>Retire lajan sou kont Échanj Plus ou rapidman.</p>
-    </div>
 
-    <!-- SÒLD DISPONIB AK ID ARS -->
-    <div class="balance-card">
-      <div>
-        <span>Sòld ki disponib:</span>
-        <h3 id="display-balance">0.00 HTG</h3>
+    <!-- ETAP 1: CHWA METÒD PEYMAN (Menm jan ak foto a) -->
+    <div id="step-select-method" class="retre-card">
+      <div class="retre-header">
+        <i class="fas fa-wallet"></i>
+        <h2>RETIRER</h2>
       </div>
-      <div>
-        <small>ID Kont:</small>
-        <span id="display-ars-id">ARS-000000</span>
-      </div>
-    </div>
-
-    <!-- FÒMILÈ RETRÈ -->
-    <form id="form-retre" onsubmit="event.preventDefault();">
       
-      <!-- CHWA METÒD / REZO -->
-      <div class="form-group">
-        <label for="retre-method">Chwazi Rezo / Metòd</label>
-        <select id="retre-method" required>
-          <option value="MonCash">MonCash</option>
-          <option value="Natcash">Natcash</option>
-          <option value="Virement">Virement Bancaire</option>
-        </select>
+      <p class="section-subtitle">Choisissez votre moyen de paiement :</p>
+
+      <div class="payment-methods-list">
+        <!-- Natcash -->
+        <div class="method-item" onclick="selectRetreMethod('natcash', 'NatCash - Online', 20, 40000)">
+          <div class="method-logo">
+            <img src="assets/natcash-logo.png" alt="Natcash">
+          </div>
+          <div class="method-info">
+            <h3>NatCash - Online</h3>
+            <p>Min : 20 <span>HTG</span> &nbsp; Max : 40 000 <span>HTG</span></p>
+          </div>
+          <i class="fas fa-chevron-right arrow-icon"></i>
+        </div>
+
+        <!-- Moncash -->
+        <div class="method-item" onclick="selectRetreMethod('moncash', 'MonCash - Online', 20, 100000)">
+          <div class="method-logo">
+            <img src="assets/moncash-logo.png" alt="MonCash">
+          </div>
+          <div class="method-info">
+            <h3>MonCash - Online</h3>
+            <p>Min : 20 <span>HTG</span> &nbsp; Max : 100 000 <span>HTG</span></p>
+          </div>
+          <i class="fas fa-chevron-right arrow-icon"></i>
+        </div>
+
+        <!-- Sogexpress -->
+        <div class="method-item" onclick="selectRetreMethod('sogexpress', 'SogExpress', 100, 1000000)">
+          <div class="method-logo">
+            <img src="assets/sogexpress-logo.png" alt="SogExpress">
+          </div>
+          <div class="method-info">
+            <h3>SogExpress</h3>
+            <p>Min : 100 <span>HTG</span> &nbsp; Max : 1 000 000 <span>HTG</span></p>
+          </div>
+          <i class="fas fa-chevron-right arrow-icon"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETAP 2: ANTRE MONTAN AN -->
+    <div id="step-enter-amount" class="retre-card hidden">
+      <div class="retre-header">
+        <button type="button" class="btn-back" onclick="goToStep('step-select-method')">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <i class="fas fa-wallet"></i>
+        <h2>RETIRER</h2>
       </div>
 
-      <!-- NON RESEPTÈ A -->
-      <div class="form-group">
-        <label for="retre-name">Nom complet du destinataire</label>
-        <input type="text" id="retre-name" placeholder="Eg: Jean Baptiste" required>
+      <div class="selected-method-badge">
+        <span id="selected-method-name">NatCash - Online</span>
       </div>
 
-      <!-- NIMOWO TELEFÒN -->
-      <div class="form-group">
-        <label for="retre-phone">Numéro de téléphone / Compte</label>
-        <input type="text" id="retre-phone" placeholder="Eg: +50931234567" required>
+      <h3 class="step-title">Effectuez un retrait</h3>
+      <p class="step-desc">Entrez le montant à retirer</p>
+
+      <div class="input-amount-group">
+        <input type="number" id="retre-amount-input" placeholder="Montant" min="20" required>
+        <span class="currency-tag">HTG</span>
       </div>
 
-      <!-- MONTAN POU RETIRE -->
-      <div class="form-group">
-        <label for="retre-amount">Montant (HTG)</label>
-        <input type="number" id="retre-amount" placeholder="Minimòm 100 HTG" min="100" step="any" required>
-      </div>
+      <p class="min-max-text">
+        Minimum : <span id="display-min-limit">20</span> HTG &nbsp; 
+        Maximum : <span id="display-max-limit">40 000</span> HTG
+      </p>
 
-      <!-- BOUTON PRENSIPAL -->
-      <button type="button" id="btn-konfime-retre" class="btn-primary" disabled style="background: #ccc;">
-        Minimòm 100 HTG
+      <button type="button" id="btn-validate-amount" class="btn-action-green" onclick="validateAmountStep()">
+        Valider
       </button>
 
-    </form>
+      <p class="warning-note">
+        Assurez-vous d'avoir un compte au préalable avec le même numéro de téléphone ou la transaction sera impossible.
+      </p>
+    </div>
+
+    <!-- ETAP 3: NUMÈWO TELEFÒN AK NON TITULAIRE -->
+    <div id="step-enter-account" class="retre-card hidden">
+      <div class="retre-header">
+        <button type="button" class="btn-back" onclick="goToStep('step-enter-amount')">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <i class="fas fa-wallet"></i>
+        <h2>RETIRER</h2>
+      </div>
+
+      <h3 class="step-title">Information du compte</h3>
+
+      <!-- Alèti Enpòtan -->
+      <div class="alert-warning-box">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p><strong>Atansyon:</strong> Ou dwe antre non egzak ki sou kont lan. Si non an pa koresponn ak titilè kont lan, admin lan ap **rejete** retrè a epi ou riske pèdi kòb la!</p>
+      </div>
+
+      <div class="form-group-custom">
+        <label for="retre-phone-input">Nimewo Telefòn / Kont</label>
+        <input type="tel" id="retre-phone-input" placeholder="Eg: 31234567" required>
+      </div>
+
+      <div class="form-group-custom">
+        <label for="retre-holder-input">Non ak Siyati Titulaires Kont lan</label>
+        <input type="text" id="retre-holder-input" placeholder="Eg: Jean Baptiste" required>
+      </div>
+
+      <button type="button" class="btn-action-green" onclick="validateAccountStep()">
+        Kontinye
+      </button>
+    </div>
 
   </div>
 </section>
 
-<!-- MODAL ÉTAPE 1 : RÉCAPITULATIF -->
-<div id="modal-step1" class="modal-echanj hidden">
+<!-- MODAL ETAP 4: REKAPITILASYON AK DETAY TRANZAKSYON AN -->
+<div id="modal-retre-details" class="modal-echanj hidden">
   <div class="modal-content">
-    <h3>Konfime enfòmasyon yo</h3>
-    <div id="info-recap" class="recap-body"></div>
-    <div class="modal-actions">
-      <button type="button" onclick="closeAllModals()" class="btn-secondary">Anule</button>
-      <button type="button" id="next-to-step2" class="btn-primary">Kontinye</button>
+    <h3>Détails du retrait</h3>
+    <p class="modal-subtitle">Tanpri verifye tout enfòmasyon yo anvan ou valide.</p>
+
+    <div class="details-list-box">
+      <div class="detail-row">
+        <span>Méthode:</span>
+        <strong id="dt-method">NatCash</strong>
+      </div>
+      <div class="detail-row">
+        <span>Montant:</span>
+        <strong id="dt-amount">0 HTG</strong>
+      </div>
+      <div class="detail-row">
+        <span>Numéro:</span>
+        <strong id="dt-phone">--</strong>
+      </div>
+      <div class="detail-row">
+        <span>Titulaire:</span>
+        <strong id="dt-holder">--</strong>
+      </div>
+      <div class="detail-row">
+        <span>Date & Heure:</span>
+        <strong id="dt-date">--</strong>
+      </div>
+    </div>
+
+    <div class="modal-actions-row">
+      <button type="button" class="btn-secondary" onclick="closeModal('modal-retre-details')">Anule</button>
+      <button type="button" class="btn-action-green" onclick="proceedToPinStep()">Valider & Entrer PIN</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL ÉTAPE 2 : VERIFICATION PIN -->
-<div id="modal-pin-retre" class="modal-echanj hidden">
+<!-- MODAL ETAP 5: ANTRE PIN / REDIRÈKSYON PARAMÈT -->
+<div id="modal-retre-pin" class="modal-echanj hidden">
   <div class="modal-content">
-    <h3>Antre PIN ou</h3>
-    <p>Antre kòd PIN 4 chif ou an pou konfime tranzaksyon an.</p>
-    <input type="password" id="pin-retre-input" maxlength="4" placeholder="****" class="pin-input">
-    <div class="modal-actions">
-      <button type="button" onclick="closeAllModals()" class="btn-secondary">Anule</button>
-      <button type="button" id="btn-verify-pin-retre" class="btn-primary">Valide PIN</button>
+    <h3>Sécurité - Code PIN</h3>
+    <p>Antre PIN 4 chif ou an pou konfime retrè a.</p>
+
+    <input type="password" id="retre-pin-input" maxlength="4" placeholder="****" class="pin-input-field">
+
+    <div class="modal-actions-row">
+      <button type="button" class="btn-secondary" onclick="closeModal('modal-retre-pin')">Anule</button>
+      <button type="button" class="btn-action-green" onclick="confirmFinalRetre()">Konfime Retrè A</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL ÉTAPE 3 : CONFIRMATION FINALE -->
-<div id="modal-step2" class="modal-echanj hidden">
-  <div class="modal-content">
-    <h3>Èske ou sèten ?</h3>
-    <p>N ap retire <strong id="amount-recap">0 HTG</strong> sou kont ou an.</p>
-    <div class="modal-actions">
-      <button type="button" onclick="closeAllModals()" class="btn-secondary">Non, Anule</button>
-      <button type="button" onclick="finaliseRetre()" class="btn-primary">Oui, Fè Retrè A</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL FINAL : SUCCÈS -->
-<div id="modal-final" class="modal-echanj hidden">
-  <div class="modal-content text-center">
-    <i class="fas fa-check-circle success-icon"></i>
-    <h3>Demann Voye ak Siksè!</h3>
-    <p>Tranzaksyon ou an ap trete e kòb la retire sou kont ou.</p>
-  </div>
-</div>
 
       
 
-      
 
+
+      
     </main>
 
     <!-- NAVIGASYON ANBA (SPA NAV) -->
