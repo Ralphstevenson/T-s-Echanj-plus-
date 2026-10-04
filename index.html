@@ -473,6 +473,119 @@
 
 
 
+
+
+<!-- SEKSYON RETRÈ -->
+<section id="paj-retre" class="app-section">
+  <div class="container">
+    
+    <!-- ENTÈT PAJ LA -->
+    <div class="section-header">
+      <h2>Fè yon Retrè</h2>
+      <p>Retire lajan sou kont Échanj Plus ou rapidman.</p>
+    </div>
+
+    <!-- SÒLD DISPONIB AK ID ARS -->
+    <div class="balance-card">
+      <div>
+        <span>Sòld ki disponib:</span>
+        <h3 id="display-balance">0.00 HTG</h3>
+      </div>
+      <div>
+        <small>ID Kont:</small>
+        <span id="display-ars-id">ARS-000000</span>
+      </div>
+    </div>
+
+    <!-- FÒMILÈ RETRÈ -->
+    <form id="form-retre" onsubmit="event.preventDefault();">
+      
+      <!-- CHWA METÒD / REZO -->
+      <div class="form-group">
+        <label for="retre-method">Chwazi Rezo / Metòd</label>
+        <select id="retre-method" required>
+          <option value="MonCash">MonCash</option>
+          <option value="Natcash">Natcash</option>
+          <option value="Virement">Virement Bancaire</option>
+        </select>
+      </div>
+
+      <!-- NON RESEPTÈ A -->
+      <div class="form-group">
+        <label for="retre-name">Nom complet du destinataire</label>
+        <input type="text" id="retre-name" placeholder="Eg: Jean Baptiste" required>
+      </div>
+
+      <!-- NIMOWO TELEFÒN -->
+      <div class="form-group">
+        <label for="retre-phone">Numéro de téléphone / Compte</label>
+        <input type="text" id="retre-phone" placeholder="Eg: +50931234567" required>
+      </div>
+
+      <!-- MONTAN POU RETIRE -->
+      <div class="form-group">
+        <label for="retre-amount">Montant (HTG)</label>
+        <input type="number" id="retre-amount" placeholder="Minimòm 100 HTG" min="100" step="any" required>
+      </div>
+
+      <!-- BOUTON PRENSIPAL -->
+      <button type="button" id="btn-konfime-retre" class="btn-primary" disabled style="background: #ccc;">
+        Minimòm 100 HTG
+      </button>
+
+    </form>
+
+  </div>
+</section>
+
+<!-- MODAL ÉTAPE 1 : RÉCAPITULATIF -->
+<div id="modal-step1" class="modal-echanj hidden">
+  <div class="modal-content">
+    <h3>Konfime enfòmasyon yo</h3>
+    <div id="info-recap" class="recap-body"></div>
+    <div class="modal-actions">
+      <button type="button" onclick="closeAllModals()" class="btn-secondary">Anule</button>
+      <button type="button" id="next-to-step2" class="btn-primary">Kontinye</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ÉTAPE 2 : VERIFICATION PIN -->
+<div id="modal-pin-retre" class="modal-echanj hidden">
+  <div class="modal-content">
+    <h3>Antre PIN ou</h3>
+    <p>Antre kòd PIN 4 chif ou an pou konfime tranzaksyon an.</p>
+    <input type="password" id="pin-retre-input" maxlength="4" placeholder="****" class="pin-input">
+    <div class="modal-actions">
+      <button type="button" onclick="closeAllModals()" class="btn-secondary">Anule</button>
+      <button type="button" id="btn-verify-pin-retre" class="btn-primary">Valide PIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ÉTAPE 3 : CONFIRMATION FINALE -->
+<div id="modal-step2" class="modal-echanj hidden">
+  <div class="modal-content">
+    <h3>Èske ou sèten ?</h3>
+    <p>N ap retire <strong id="amount-recap">0 HTG</strong> sou kont ou an.</p>
+    <div class="modal-actions">
+      <button type="button" onclick="closeAllModals()" class="btn-secondary">Non, Anule</button>
+      <button type="button" onclick="finaliseRetre()" class="btn-primary">Oui, Fè Retrè A</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FINAL : SUCCÈS -->
+<div id="modal-final" class="modal-echanj hidden">
+  <div class="modal-content text-center">
+    <i class="fas fa-check-circle success-icon"></i>
+    <h3>Demann Voye ak Siksè!</h3>
+    <p>Tranzaksyon ou an ap trete e kòb la retire sou kont ou.</p>
+  </div>
+</div>
+
+      
+
       
 
     </main>
