@@ -1,12 +1,33 @@
 /* ============================================================
-   JS RETRÈ V5.2 - ECHANJ PLUS (Fix Global & Event Delegation)
+   JS RETRÈ V6.0 - INTEGRATED WITH SCRIPT.JS (FIRESTORE EDITION)
    ============================================================ */
-import { auth, db } from './script.js';
-import { ref, serverTimestamp, onValue, update, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { 
+  getAuth, 
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Global Stores
-window.userAppData = window.userAppData || {};
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  setDoc, 
+  updateDoc, 
+  increment, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// Re-itilize entansiyasyon Firebase ki nan script.js oswa kree referans
+const auth = getAuth();
+const db = getFirestore();
+
+// Etazini/Done Lokal pou Retrè
+window.userAppData = window.userAppData || {
+  hasPin: false,
+  correctPin: "",
+  fullname: "",
+  currentBalance: 0
+};
+
 window.retreData = {
   methodKey: '',
   methodName: '',
@@ -17,34 +38,40 @@ window.retreData = {
   holder: ''
 };
 
-// 1. ÉCOUTE DES DONNÉES FIREBASE
-onAuthStateChanged(auth, (user) => {
+// 1. REKIPERE DONE ITILIZATÈ A NAN FIRESTORE
+onAuthStateChanged(auth, async (user) => {
   if (user) {
-    const userRef = ref(db, `users/${user.uid}`);
-    onValue(userRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
+    try {
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists()) {
+        const data = snap.data();
         window.userAppData = {
           hasPin: !!data.pin,
           correctPin: data.pin || "",
-          fullname: data.fullname || "Itilizatè",
+          fullname: data.fullname || data.phone || "Itilizatè",
           currentBalance: Number(data.balance || 0)
         };
       }
-    });
+    } catch (e) {
+      console.error("Erè nan chajman done retre:", e);
+    }
   }
 });
 
-// 2. FONCTIONS DE NAVIGATION (Mete sou window)
+// 2. NAVIGASYON ANT ETAP YO (Sipòte kijan script.js afiche seksyon yo)
 window.goToStep = function(stepId) {
   const steps = ['step-select-method', 'step-enter-amount', 'step-enter-account'];
+  
   steps.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       if (id === stepId) {
         el.classList.remove('hidden');
+        el.style.display = 'block';
       } else {
         el.classList.add('hidden');
+        el.style.display = 'none';
       }
     }
   });
@@ -52,10 +79,13 @@ window.goToStep = function(stepId) {
 
 window.closeModal = function(modalId) {
   const modal = document.getElementById(modalId);
-  if (modal) modal.classList.add('hidden');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
 };
 
-// 3. SÉLECTION DE LA MÉTHODE DE PAIEMENT
+// 3. CHWA METÒD RETRÈ (NatCash / MonCash)
 window.selectRetreMethod = function(key, name, min, max) {
   window.retreData.methodKey = key;
   window.retreData.methodName = name;
@@ -79,28 +109,35 @@ window.selectRetreMethod = function(key, name, min, max) {
   window.goToStep('step-enter-amount');
 };
 
-// 4. VALIDATION DU MONTANT
+// 4. VALIDASYON MONTAN AN
 window.validateAmountStep = function() {
   const amountInput = document.getElementById('retre-amount-input');
   const val = parseFloat(amountInput.value);
 
-  if (isNaN(val)) {
-    alert("🔴 Tanpri antre yon montan valid.");
+  if (isNaN(val) || val <= 0) {
+    if (typeof window.showAlert === 'function') {
+      window.showAlert("Tanpri antre yon montan ki valab.");
+    } else {
+      alert("🔴 Tanpri antre yon montan ki valab.");
+    }
     return;
   }
 
   if (val < window.retreData.minLimit) {
-    alert(`🔴 Montan minimòm pou ${window.retreData.methodName} se ${window.retreData.minLimit} HTG.`);
+    const msg = `Montan minimòm pou ${window.retreData.methodName} se ${window.retreData.minLimit} HTG.`;
+    typeof window.showAlert === 'function' ? window.showAlert(msg) : alert("🔴 " + msg);
     return;
   }
 
   if (val > window.retreData.maxLimit) {
-    alert(`🔴 Montan maksimòm pou ${window.retreData.methodName} se ${window.retreData.maxLimit} HTG.`);
+    const msg = `Montan maksimòm pou ${window.retreData.methodName} se ${window.retreData.maxLimit} HTG.`;
+    typeof window.showAlert === 'function' ? window.showAlert(msg) : alert("🔴 " + msg);
     return;
   }
 
   if (val > window.userAppData.currentBalance) {
-    alert("🔴 Balans ou ensifizan pou fè retrè sa a.");
+    const msg = "Balans ou ensifizan pou fè retrè sa a.";
+    typeof window.showAlert === 'function' ? window.showAlert(msg) : alert("🔴 " + msg);
     return;
   }
 
@@ -108,13 +145,14 @@ window.validateAmountStep = function() {
   window.goToStep('step-enter-account');
 };
 
-// 5. VALIDATION DU COMPTE ET DÉTAILS
+// 5. VALIDASYON ENFÒMASYON KONT LAN
 window.validateAccountStep = function() {
   const phoneInput = document.getElementById('retre-phone-input');
   const holderInput = document.getElementById('retre-holder-input');
 
   if (!phoneInput || !holderInput || !phoneInput.value.trim() || !holderInput.value.trim()) {
-    alert("🔴 Tanpri ranpli nimewo telefòn lan ak non titilè a.");
+    const msg = "Tanpri ranpli nimewo telefòn lan ak non titilè a.";
+    typeof window.showAlert === 'function' ? window.showAlert(msg) : alert("🔴 " + msg);
     return;
   }
 
@@ -122,39 +160,48 @@ window.validateAccountStep = function() {
   window.retreData.holder = holderInput.value.trim();
 
   document.getElementById('dt-method').innerText = window.retreData.methodName;
-  document.getElementById('dt-amount').innerText = window.retreData.amount.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " HTG";
+  document.getElementById('dt-amount').innerText = window.retreData.amount.toFixed(2) + " HTG";
   document.getElementById('dt-phone').innerText = window.retreData.phone;
   document.getElementById('dt-holder').innerText = window.retreData.holder;
   
   const now = new Date();
-  document.getElementById('dt-date').innerText = now.toLocaleDateString('fr-FR') + " à " + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('dt-date').innerText = now.toLocaleDateString('fr-FR') + " " + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
-  document.getElementById('modal-retre-details')?.classList.remove('hidden');
+  const modalDetails = document.getElementById('modal-retre-details');
+  if (modalDetails) {
+    modalDetails.classList.remove('hidden');
+    modalDetails.style.display = 'flex';
+  }
 };
 
-// 6. VÉRIFICATION DU CODE PIN
+// 6. PASAY NAN MODAL PIN
 window.proceedToPinStep = function() {
   window.closeModal('modal-retre-details');
 
   if (!window.userAppData.hasPin) {
-    alert("⚠️ Ou dwe kreye yon kòd PIN anvan pou ou ka fè retrè! N ap dirije w nan Paramètres.");
-    if (typeof window.showPage === 'function') {
-      window.showPage('paj-paramet');
+    alert("⚠️ Ou dwe kreye yon kòd PIN anvan nan atelye Paramètres pou konfime tranzaksyon yo.");
+    if (typeof window.showSection === 'function') {
+      window.showSection('paj-setting');
     }
     return;
   }
 
   const pinInput = document.getElementById('retre-pin-input');
   if (pinInput) pinInput.value = '';
-  document.getElementById('modal-retre-pin')?.classList.remove('hidden');
+  
+  const modalPin = document.getElementById('modal-retre-pin');
+  if (modalPin) {
+    modalPin.classList.remove('hidden');
+    modalPin.style.display = 'flex';
+  }
 };
 
-// 7. CONFIRMATION FINALE ET FIREBASE
+// 7. CONFIRMATION FINALE FIRESTORE TRANSAKTION
 window.confirmFinalRetre = async function() {
   const pinInput = document.getElementById('retre-pin-input');
   
   if (!pinInput || pinInput.value !== String(window.userAppData.correctPin)) {
-    alert("❌ PIN enkòrèk! Tanpri reyeseye.");
+    alert("❌ Kòd PIN sa a pa korèk! Tanpri re-eseye.");
     if (pinInput) pinInput.value = '';
     return;
   }
@@ -165,10 +212,10 @@ window.confirmFinalRetre = async function() {
   window.closeModal('modal-retre-pin');
 
   try {
-    const transID = "RET-" + Math.floor(Math.random() * 1000000);
-    const updates = {};
+    const transID = "RET-" + Date.now().toString().slice(-6);
     
-    updates[`/withdrawals/${transID}`] = {
+    // Anrejistre tranzaksyon nan Firestore
+    await setDoc(doc(db, "withdrawals", transID), {
       id: transID,
       uid: user.uid,
       type: "Retrè",
@@ -177,50 +224,62 @@ window.confirmFinalRetre = async function() {
       phone: window.retreData.phone,
       receiver: window.retreData.holder,
       status: "En attente",
-      timestamp: serverTimestamp()
-    };
+      createdAt: serverTimestamp()
+    });
 
-    updates[`/users/${user.uid}/balance`] = increment(-window.retreData.amount);
+    // Diminye balans itilizatè a nan Firestore
+    const userRef = doc(db, "users", user.uid);
+    await updateDoc(userRef, {
+      balance: increment(-window.retreData.amount)
+    });
 
-    await update(ref(db), updates);
-
-    if (typeof window.voyeGmail === 'function') {
-      window.voyeGmail('retre', { 
-        amount: window.retreData.amount, 
-        method: window.retreData.methodName, 
-        phone: window.retreData.phone, 
-        name: window.retreData.holder 
-      });
+    // Mettre à jour solde nan memwa lokal la
+    window.userAppData.currentBalance -= window.retreData.amount;
+    const balanceText = document.getElementById('user-balance');
+    if (balanceText) {
+      balanceText.innerText = `${window.userAppData.currentBalance.toFixed(2)} HTG`;
     }
 
-    alert("✅ Demann retrè ou an voye ak siksè! Kòb la retire sou kont ou an atandan validasyon admin.");
+    alert("✅ Demann retrè ou an voye avèk siksè! Kòb la dedwi sou balans ou anatandan validasyon admin.");
 
+    // Reset fòm yo
     document.getElementById('retre-amount-input').value = '';
     document.getElementById('retre-phone-input').value = '';
     document.getElementById('retre-holder-input').value = '';
     window.goToStep('step-select-method');
 
   } catch (e) {
-    alert("Erè nan tranzaksyon an: " + e.message);
+    console.error("Erè nan konfimasyon retrè:", e);
+    alert("Erè pandan tranzaksyon an: " + e.message);
   }
 };
 
-// 8. EVENT DELEGATION (Pou asire klic sou HTML la toujou egzekite fonksyon yo)
+// 8. KOUTE-KOUP KLIK YO POU SAK NAN HTML LYO
 document.addEventListener('click', (e) => {
   const target = e.target.closest('[onclick]');
   if (!target) return;
 
-  const onclickAttr = target.getAttribute('onclick');
-  if (!onclickAttr) return;
+  const onclickStr = target.getAttribute('onclick');
+  if (!onclickStr) return;
 
-  // Analize ak egzekite fonksyon an si li sou window
-  try {
-    const fnName = onclickAttr.split('(')[0].trim();
-    if (typeof window[fnName] === 'function') {
-      e.preventDefault();
-      new Function(onclickAttr).call(target);
+  // Si se yon fonksyon ki gen rapò ak retre, asire ekzekisyon li
+  if (
+    onclickStr.includes('selectRetreMethod') || 
+    onclickStr.includes('goToStep') || 
+    onclickStr.includes('validateAmountStep') || 
+    onclickStr.includes('validateAccountStep') ||
+    onclickStr.includes('proceedToPinStep') ||
+    onclickStr.includes('confirmFinalRetre') ||
+    onclickStr.includes('closeModal')
+  ) {
+    try {
+      const fnName = onclickStr.split('(')[0].trim();
+      if (typeof window[fnName] === 'function') {
+        e.preventDefault();
+        new Function(onclickStr).call(target);
+      }
+    } catch (err) {
+      console.error("Erè ekzekisyon click:", err);
     }
-  } catch (err) {
-    console.error("Erè nan egzekisyon onclick:", err);
   }
 });
