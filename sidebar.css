@@ -1,0 +1,183 @@
+/* ============================================================
+   STYLES SIDEBAR ECHANJ PLUS (DARK MODERN DESIGN)
+   ============================================================ */
+
+/* 1. OVERLAY / FOND SOMBRE DERRIÈRE LA SIDEBAR */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 2. LE CONTENEUR PRINCIPAL DE LA SIDEBAR */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -280px; /* Caché à gauche par défaut */
+  width: 280px;
+  height: 100vh;
+  background-color: #1e252b; /* Fond sombre moderne */
+  color: #ffffff;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Classe JS pour ouvrir la sidebar */
+.sidebar.active {
+  left: 0;
+}
+
+/* 3. EN-TÊTE DE LA SIDEBAR */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 18px;
+  background: #151a1e;
+  border-bottom: 1px solid #2a343d;
+}
+
+.sidebar-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.close-sidebar-btn {
+  background: transparent;
+  border: none;
+  color: #a0aec0;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.close-sidebar-btn:hover {
+  color: #ffffff;
+  background: #2a343d;
+}
+
+/* 4. INFORMATIONS DE L'UTILISATEUR */
+.sidebar-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  background: #242c34;
+  border-bottom: 1px solid #2a343d;
+}
+
+.sidebar-user-info .avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #28a745; /* Vert d'accentuation */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.sidebar-user-info p {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+/* 5. MENU DE NAVIGATION */
+.sidebar-menu {
+  list-style: none;
+  padding: 12px 10px;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-menu li {
+  margin-bottom: 6px;
+}
+
+.sidebar-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-menu li a i {
+  font-size: 1.1rem;
+  color: #28a745; /* Couleur icônes */
+  width: 20px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+/* Effets sur les liens du menu au survol / clic */
+.sidebar-menu li a:hover,
+.sidebar-menu li a:active {
+  background: #2a343d;
+  color: #ffffff;
+}
+
+.sidebar-menu li a:hover i {
+  transform: scale(1.15);
+}
+
+/* 6. PIED DE PAGE ET BOUTON DE DÉCONNEXION */
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid #2a343d;
+  background: #151a1e;
+}
+
+.sidebar-logout-btn {
+  width: 100%;
+  padding: 12px;
+  background: rgba(220, 53, 69, 0.1);
+  color: #ff4d4d;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-logout-btn:hover {
+  background: #dc3545;
+  color: #ffffff;
+  border-color: #dc3545;
+}
