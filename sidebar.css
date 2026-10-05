@@ -1,8 +1,8 @@
 /* ============================================================
-   STYLES SIDEBAR ECHANJ PLUS (DARK MODERN DESIGN)
+   SIDEBAR STYLE KAD (CARDS / GRID SYSTEM)
    ============================================================ */
 
-/* 1. OVERLAY / FOND SOMBRE DERRIÈRE LA SIDEBAR */
+/* 1. OVERLAY (FOND SOMBRE) */
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -22,40 +22,39 @@
   visibility: visible;
 }
 
-/* 2. LE CONTENEUR PRINCIPAL DE LA SIDEBAR */
+/* 2. SIDEBAR KONTINÈ */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -280px; /* Caché à gauche par défaut */
-  width: 280px;
+  left: -320px;
+  width: 310px;
   height: 100vh;
-  background-color: #1e252b; /* Fond sombre moderne */
+  background-color: #222a31; /* Fond gris fonse nan foto a */
   color: #ffffff;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
   transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Classe JS pour ouvrir la sidebar */
 .sidebar.active {
   left: 0;
 }
 
-/* 3. EN-TÊTE DE LA SIDEBAR */
+/* 3. SIDEBAR HEADER */
 .sidebar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 18px;
-  background: #151a1e;
-  border-bottom: 1px solid #2a343d;
+  padding: 18px 16px;
+  background: #192026;
+  border-bottom: 1px solid #2d3843;
 }
 
 .sidebar-header h3 {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.5px;
@@ -64,120 +63,132 @@
 .close-sidebar-btn {
   background: transparent;
   border: none;
-  color: #a0aec0;
+  color: #9eaab6;
   font-size: 1.2rem;
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 6px;
-  transition: color 0.2s, background 0.2s;
+  transition: all 0.2s;
 }
 
 .close-sidebar-btn:hover {
   color: #ffffff;
-  background: #2a343d;
+  background: #2d3843;
 }
 
-/* 4. INFORMATIONS DE L'UTILISATEUR */
+/* 4. USER INFO */
 .sidebar-user-info {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 18px;
-  background: #242c34;
-  border-bottom: 1px solid #2a343d;
+  padding: 16px;
+  background: #1c242c;
+  border-bottom: 1px solid #2d3843;
 }
 
 .sidebar-user-info .avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: #28a745; /* Vert d'accentuation */
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #28a745;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   font-size: 1.1rem;
-  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
 }
 
 .sidebar-user-info p {
   margin: 0;
   font-size: 0.95rem;
-  font-weight: 600;
-  color: #e2e8f0;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-/* 5. MENU DE NAVIGATION */
+/* 5. MENU AN KAD (GRID STYLE TANCOU FOTO A) */
 .sidebar-menu {
   list-style: none;
-  padding: 12px 10px;
+  padding: 16px 12px;
   margin: 0;
   flex: 1;
   overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 kolon kad tankou sou imaj la */
+  gap: 12px; /* Espas ant kad yo */
+  align-content: start;
 }
 
 .sidebar-menu li {
-  margin-bottom: 6px;
+  margin: 0;
+  width: 100%;
 }
 
 .sidebar-menu li a {
   display: flex;
+  flex-direction: column; /* Icône anwo, tèks anba */
   align-items: center;
-  gap: 14px;
-  padding: 12px 14px;
-  color: #cbd5e1;
+  justify-content: center;
+  height: 95px;
+  background: #34404b; /* Koulè kad yo nan foto a */
+  border-radius: 14px; /* Ang awondi tankou foto a */
+  color: #ffffff;
   text-decoration: none;
-  font-size: 0.92rem;
-  font-weight: 500;
-  border-radius: 10px;
-  transition: all 0.2s ease;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 10px 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease-in-out;
 }
 
+/* Icône anndan kad la */
 .sidebar-menu li a i {
-  font-size: 1.1rem;
-  color: #28a745; /* Couleur icônes */
-  width: 20px;
-  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+  color: #ffffff;
   transition: transform 0.2s ease;
 }
 
-/* Effets sur les liens du menu au survol / clic */
+/* Efè lè ou klike oswa pase sou yon kad */
 .sidebar-menu li a:hover,
 .sidebar-menu li a:active {
-  background: #2a343d;
+  background: #00c853; /* Koulè vèt fluo ki klere nan premye kad foto a */
   color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 200, 83, 0.3);
 }
 
 .sidebar-menu li a:hover i {
-  transform: scale(1.15);
+  transform: scale(1.1);
 }
 
-/* 6. PIED DE PAGE ET BOUTON DE DÉCONNEXION */
+/* 6. FOOTER DEKONEKTE */
 .sidebar-footer {
-  padding: 16px;
-  border-top: 1px solid #2a343d;
-  background: #151a1e;
+  padding: 16px 12px;
+  border-top: 1px solid #2d3843;
+  background: #192026;
 }
 
 .sidebar-logout-btn {
   width: 100%;
   padding: 12px;
-  background: rgba(220, 53, 69, 0.1);
-  color: #ff4d4d;
+  background: rgba(220, 53, 69, 0.15);
+  color: #ff5252;
   border: 1px solid rgba(220, 53, 69, 0.3);
-  border-radius: 10px;
-  font-size: 0.92rem;
-  font-weight: 600;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  text-transform: uppercase;
   transition: all 0.2s ease;
 }
 
 .sidebar-logout-btn:hover {
-  background: #dc3545;
+  background: #ff5252;
   color: #ffffff;
-  border-color: #dc3545;
 }
