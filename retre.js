@@ -1,5 +1,5 @@
 /* ============================================================
-   JS RETRÈ V5.0 - ECHANJ PLUS
+   JS RETRÈ V5.2 - ECHANJ PLUS (Fix Global & Event Delegation)
    ============================================================ */
 import { auth, db } from './script.js';
 import { ref, serverTimestamp, onValue, update, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -35,7 +35,7 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// 2. FONCTIONS DE NAVIGATION (Attachées à 'window')
+// 2. FONCTIONS DE NAVIGATION (Mete sou window)
 window.goToStep = function(stepId) {
   const steps = ['step-select-method', 'step-enter-amount', 'step-enter-account'];
   steps.forEach(id => {
@@ -204,3 +204,23 @@ window.confirmFinalRetre = async function() {
     alert("Erè nan tranzaksyon an: " + e.message);
   }
 };
+
+// 8. EVENT DELEGATION (Pou asire klic sou HTML la toujou egzekite fonksyon yo)
+document.addEventListener('click', (e) => {
+  const target = e.target.closest('[onclick]');
+  if (!target) return;
+
+  const onclickAttr = target.getAttribute('onclick');
+  if (!onclickAttr) return;
+
+  // Analize ak egzekite fonksyon an si li sou window
+  try {
+    const fnName = onclickAttr.split('(')[0].trim();
+    if (typeof window[fnName] === 'function') {
+      e.preventDefault();
+      new Function(onclickAttr).call(target);
+    }
+  } catch (err) {
+    console.error("Erè nan egzekisyon onclick:", err);
+  }
+});
