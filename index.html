@@ -288,32 +288,232 @@
           </div>
         </section>
 
-        <!-- SANT ÈD / FAQ -->
-        <div class="news-section-pro faq-section">
-          <div class="news-header-pro">
-            <h3><i class="fa-solid fa-circle-question"></i> Sant Èd / FAQ</h3>
-          </div>
-          
-          <div class="faq-item" onclick="window.toggleFaq(this)">
-            <div class="faq-question">
-              <span>Konbyen tan yon echanj pran?</span> 
-              <i class="fas fa-chevron-down faq-arrow"></i>
-            </div>
-            <div class="faq-answer">
-              Echanj yo trete otomatikman. Validasyon an pran ant 3 a 5 minit maksimòm.
-            </div>
-          </div>
 
-          <div class="faq-item" onclick="window.toggleFaq(this)">
-            <div class="faq-question">
-              <span>Ki limit minimòm pou m mande retrè?</span> 
-              <i class="fas fa-chevron-down faq-arrow"></i>
-            </div>
-            <div class="faq-answer">
-              Ou ka mande retrè kòmanse nan 100 HTG sou MonCash oswa NatCash.
-            </div>
-          </div>
+
+<!-- ========================================== -->
+<!-- FOOTER ÉCHANJ PLUS (KOPYE EPI KOLE ANBA PAJ LOU AN) -->
+<!-- ========================================== -->
+
+<style>
+  /* STYLES POU FOOTER */
+  .ep-footer {
+    background-color: #031d38;
+    color: #ffffff;
+    padding: 30px 16px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ep-footer *,
+  .ep-footer *::before,
+  .ep-footer *::after {
+    box-sizing: border-box;
+  }
+
+  .ep-footer-container {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ACCORDION / DETAILS */
+  .ep-footer-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ep-footer-accordion details {
+    background-color: #08284c;
+    border-radius: 8px;
+    text-align: left;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .ep-footer-accordion summary {
+    padding: 14px 16px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #ffffff;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+  }
+
+  .ep-footer-accordion .ep-content {
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #d1d5db;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .ep-footer-accordion .ep-content p {
+    margin: 4px 0;
+  }
+
+  .ep-footer-accordion .ep-content strong {
+    color: #00e676;
+  }
+
+  /* BOUTON TÉLÉCHARGER */
+  .ep-btn-download {
+    display: inline-block;
+    background-color: #00e676;
+    color: #031d38;
+    text-decoration: none;
+    font-weight: 800;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(0, 230, 118, 0.2);
+    transition: transform 0.2s ease;
+  }
+
+  .ep-btn-download:hover {
+    transform: translateY(-2px);
+  }
+
+  /* PARTENAIRES */
+  .ep-partners-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .ep-partners-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .ep-partner-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ep-partner-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .ep-partner-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  /* COPYRIGHT */
+  .ep-copy {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 10px;
+  }
+</style>
+
+<footer class="ep-footer">
+  <div class="ep-footer-container">
+
+    <!-- AKÒDEYON YO -->
+    <div class="ep-footer-accordion">
+
+      <!-- SERVICE CLIENT -->
+      <details>
+        <summary>SERVICE CLIENT</summary>
+        <div class="ep-content">
+          <p><strong>WhatsApp:</strong> +509 3574 9198</p>
+          <p><strong>Email:</strong> echanjplus@gmail.com</p>
         </div>
+      </details>
+
+      <!-- AIDE ET MODE D'EMPLOI -->
+      <details>
+        <summary>AIDE ET MODE D'EMPLOI</summary>
+        <div class="ep-content">
+          <p><strong>Kòman pou fè yon depozit:</strong> Lè ou gen minit sou sim ou (Digicel oswa Natcom), ou monte sou sit la pou fè echanj la. Ou voye minit yo sou nimewo sistèm nan. Apre sistèm nan fin verifye l, admin lan valide tranzaksyon an epi kont ou kredite.</p>
+          <br>
+          <p><strong>Kòman pou fè yon retrè:</strong> Ale nan meni retrè a, chwazi kont lan (MonCash/Natcash), antre montan an ak nimewo a, epi konfime.</p>
+          <br>
+          <p><strong>FAQ:</strong> Tranzaksyon yo pa fèt otomatik pou evite fo enfòmasyon. Admin yo pran kèk minit pou verifye epi valide chak opsyon.</p>
+        </div>
+      </details>
+
+      <!-- INFORMATIONS GÉNÉRALES -->
+      <details>
+        <summary>INFORMATIONS GÉNÉRALES</summary>
+        <div class="ep-content">
+          <p><strong>Konsènan Échanj Plus:</strong> Yon platfòm ki pèmèt ou echanje minit Digicel ak Natcom pou konvèti yo an kòb sou kont MonCash oswa Natcash ou ansekirite.</p>
+          <br>
+          <p><strong>Règleman:</strong> Chak itilizatè dwe itilize pwòp kont li ak pwòp nimewo pa l.</p>
+        </div>
+      </details>
+
+      <!-- NOS SERVICES -->
+      <details>
+        <summary>NOS SERVICES</summary>
+        <div class="ep-content">
+          <p>• Minit Digicel pou MonCash / Natcash</p>
+          <p>• Minit Natcom pou MonCash / Natcash</p>
+        </div>
+      </details>
+
+    </div>
+
+    <!-- BOUTON TELECHAJE -->
+    <div>
+      <a href="#" class="ep-btn-download">Téléchargez sur Android</a>
+    </div>
+
+    <!-- PARTENAIRES -->
+    <div>
+      <div class="ep-partners-title">NOS PARTENAIRES</div>
+      <div class="ep-partners-grid">
+        
+        <!-- DAH -->
+        <div class="ep-partner-item">
+          <svg class="ep-partner-icon" viewBox="0 0 50 50">
+            <rect width="100%" height="100%" rx="10" fill="#08284c"/>
+            <circle cx="25" cy="25" r="13" fill="#00e676"/>
+            <path d="M19 25 L25 18 L31 25 L25 32 Z" fill="#08284c"/>
+          </svg>
+          <span class="ep-partner-label">DAH</span>
+        </div>
+
+        <!-- ARS -->
+        <div class="ep-partner-item">
+          <svg class="ep-partner-icon" viewBox="0 0 50 50">
+            <rect width="100%" height="100%" rx="10" fill="#08284c"/>
+            <path d="M16 34 L25 16 L34 34 M20 28 L30 28" stroke="#00e676" stroke-width="3" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="ep-partner-label">ARS</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- COPYRIGHT -->
+    <div class="ep-copy">
+      &copy; 2026 Échanj Plus. Tout dwa rezève.
+    </div>
+
+  </div>
+</footer>
+
+        
+
+
+        
 
         <!-- KONSÈY AK SEKIRITE -->
         <div class="security-tip-box">
