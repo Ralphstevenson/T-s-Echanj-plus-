@@ -480,7 +480,6 @@
 
 
 
-
 <!-- SECTIONS ETAP RETRÈ -->
 <section id="paj-retre" class="app-section">
   <div class="container">
@@ -495,7 +494,7 @@
       <p class="section-subtitle">Choisissez votre moyen de paiement :</p>
 
       <div class="payment-methods-list">
-        <!-- Natcash (Image 2) -->
+        <!-- Natcash -->
         <div class="method-item" onclick="selectRetreMethod('natcash', 'NatCash - Online', 50, 5000)">
           <div class="method-logo">
             <img src="https://i.postimg.cc/qzXB45nn/images-(2).jpg" alt="NatCash">
@@ -507,7 +506,7 @@
           <i class="fas fa-chevron-right arrow-icon"></i>
         </div>
 
-        <!-- Moncash (Image 1) -->
+        <!-- Moncash -->
         <div class="method-item" onclick="selectRetreMethod('moncash', 'MonCash - Online', 50, 5000)">
           <div class="method-logo">
             <img src="https://i.postimg.cc/fJjWDrXm/images-(1).jpg" alt="MonCash">
@@ -548,7 +547,7 @@
         Maximum : <span id="display-max-limit">5 000</span> HTG
       </p>
 
-      <button type="button" id="btn-validate-amount" class="btn-action-green" onclick="validateAmountStep()">
+      <button type="button" id="btn-validate-amount" class="btn-action-green" onclick="validateAmountStep(event)">
         Valider
       </button>
 
@@ -572,7 +571,7 @@
       <!-- Alèti Enpòtan -->
       <div class="alert-warning-box">
         <i class="fas fa-exclamation-triangle"></i>
-        <p><strong>Atansyon:</strong> Ou dwe antre non egzak ki sou kont lan. Si non an pa koresponn ak titilè kont lan, admin lan ap **rejete** retrè a epi ou riske pèdi kòb la!</p>
+        <p><strong>Atansyon:</strong> Ou dwe antre non egzak ki sou kont lan. Si non an pa koresponn ak titilè kont lan, admin lan ap <strong>rejete</strong> retrè a epi ou riske pèdi kòb la!</p>
       </div>
 
       <div class="form-group-custom">
@@ -585,7 +584,7 @@
         <input type="text" id="retre-holder-input" placeholder="Eg: Jean Baptiste" required>
       </div>
 
-      <button type="button" class="btn-action-green" onclick="validateAccountStep()">
+      <button type="button" class="btn-action-green" onclick="validateAccountStep(event)">
         Kontinye
       </button>
     </div>
