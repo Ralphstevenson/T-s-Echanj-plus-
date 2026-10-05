@@ -1,0 +1,95 @@
+/* ============================================================
+   OVERLAY DE SÉCURITÉ PLEIN ÉCRAN
+   ============================================================ */
+
+/* Fond sombre plein écran (Overlay) */
+.security-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(3, 29, 56, 0.85); /* Ble maren ak transparans */
+  backdrop-filter: blur(4px); /* Efè flou nan fon an */
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Klas pou afiche overlay a */
+.security-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Bwat santral la */
+.security-card {
+  background-color: #08284c;
+  border: 1px solid #00e676;
+  border-top: 5px solid #00e676;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+}
+
+.security-overlay.show .security-card {
+  transform: scale(1);
+}
+
+.security-card .sec-icon-shield {
+  font-size: 3rem;
+  color: #00e676;
+  margin-bottom: 12px;
+}
+
+.security-card h3 {
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  font-size: 1.2rem;
+  font-family: sans-serif;
+}
+
+.security-card p {
+  margin: 0 0 20px 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #d1d5db;
+  font-family: sans-serif;
+}
+
+.security-card p b {
+  color: #ffffff;
+}
+
+/* Bouton OK plein écran */
+.ok-tip-btn {
+  background-color: #00e676;
+  color: #031d38;
+  border: none;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.ok-tip-btn:hover {
+  background-color: #00c853;
+}
+
+.ok-tip-btn:active {
+  transform: scale(0.98);
+}
