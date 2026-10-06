@@ -1,8 +1,6 @@
-// ==========================================
-// ECHANJ MINIT MODULE (echanj.js)
-// ==========================================
 import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { 
   getFirestore, 
   doc, 
@@ -12,24 +10,22 @@ import {
   serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Reperan instans Firebase
 const app = getApp();
 const auth = getAuth(app);
-const db = getFirestore(app);
+const firestore = getFirestore(app);
+const rtdb = getDatabase(app);
 
-// Konfigirasyon Rezo ak Limit yo
 const DIGICEL_NUM = "34132015";
 const NATCOM_NUM = "32160708";
 const NATCOM_PIN = "88888888";
 
-const FEE_DIGICEL = 18.3; // 18.3% pou Digicel
-const FEE_NATCOM = 17.5;  // 17.5% pou Natcom
+const FEE_DIGICEL = 18.3; 
+const FEE_NATCOM = 17.5;  
 
 const MIN_AMOUNT = 100;
 const MAX_DIGICEL = 1000;
 const MAX_NATCOM = 500;
 
-// Objè pou kenbe done tranzaksyon an pandan navigasyon an
 let currentTransaction = {
   rezo: null,
   amount: 0,
@@ -39,9 +35,11 @@ let currentTransaction = {
   ussdCode: ''
 };
 
-// Fonksyon pou kache tout fenèt pop-up (modals) yo
 function closeAllModals() {
-  document.querySelectorAll('.modal-echanj').forEach(m => m.classList.add('hidden'));
+  document.querySelectorAll('.modal-echanj').forEach(m => {
+    m.classList.add('hidden');
+    m.style.display = 'none';
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -55,12 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputAmount = document.getElementById('input-montan-echanj');
   const inputPin = document.getElementById('input-pin-echanj');
 
-  // Fèmen fenèt lè w klike sou bouton X
   document.querySelectorAll('.close-modal').forEach(btn => {
     btn.addEventListener('click', closeAllModals);
   });
 
-  // 1. KLIK SOU BOUTON DIGICEL
   if (btnDigicel) {
     btnDigicel.addEventListener('click', () => {
       currentTransaction.rezo = 'digicel';
@@ -74,11 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (inputAmount) inputAmount.value = '';
       closeAllModals();
-      if (modalAmount) modalAmount.classList.remove('hidden');
+      if (modalAmount) {
+        modalAmount.classList.remove('hidden');
+        modalAmount.style.display = 'flex';
+      }
     });
   }
 
-  // 2. KLIK SOU BOUTON NATCOM
   if (btnNatcom) {
     btnNatcom.addEventListener('click', () => {
       currentTransaction.rezo = 'natcom';
@@ -92,11 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (inputAmount) inputAmount.value = '';
       closeAllModals();
-      if (modalAmount) modalAmount.classList.remove('hidden');
+      if (modalAmount) {
+        modalAmount.classList.remove('hidden');
+        modalAmount.style.display = 'flex';
+      }
     });
   }
 
-  // 3. SOUMÈT MONTAN AN SOU FENÈT DETAY (SUIVANT - ETAP 1)
   const btnToStepSummary = document.getElementById('btn-to-step-summary');
   if (btnToStepSummary) {
     btnToStepSummary.addEventListener('click', () => {
@@ -119,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Kalkil Frè ak Montan Nèt
       const fee = (amountVal * currentTransaction.feePercent) / 100;
       const net = amountVal - fee;
 
@@ -127,14 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
       currentTransaction.feeAmount = fee;
       currentTransaction.netAmount = net;
 
-      // Generasyon kòd USSD
       if (currentTransaction.rezo === 'digicel') {
         currentTransaction.ussdCode = `*128*509${DIGICEL_NUM}*${amountVal}#`;
       } else {
         currentTransaction.ussdCode = `*123*${NATCOM_PIN}*${NATCOM_NUM}*${amountVal}#`;
       }
 
-      // Mete detay yo nan fenèt Rezime a
       const summaryRezo = document.getElementById('summary-rezo');
       const summaryAmount = document.getElementById('summary-amount');
       const summaryFeePercent = document.getElementById('summary-fee-percent');
@@ -148,39 +145,74 @@ document.addEventListener('DOMContentLoaded', () => {
       if (summaryNet) summaryNet.innerText = net.toFixed(2);
 
       closeAllModals();
-      if (modalSummary) modalSummary.classList.remove('hidden');
+      if (modalSummary) {
+        modalSummary.classList.remove('hidden');
+        modalSummary.style.display = 'flex';
+      }
     });
   }
 
-  // 4. RETOUNEN SOU FENÈT MONTAN (RETOUNEN - ETAP 2)
   const btnBackToAmount = document.getElementById('btn-back-to-amount');
   if (btnBackToAmount) {
     btnBackToAmount.addEventListener('click', () => {
       closeAllModals();
-      if (modalAmount) modalAmount.classList.remove('hidden');
+      if (modalAmount) {
+        modalAmount.classList.remove('hidden');
+        modalAmount.style.display = 'flex';
+      }
     });
   }
 
-  // 5. PASE NAN FENÈT PIN (SUIVANT - ETAP 2)
   const btnToStepPin = document.getElementById('btn-to-step-pin');
   if (btnToStepPin) {
-    btnToStepPin.addEventListener('click', () => {
-      if (inputPin) inputPin.value = '';
-      closeAllModals();
-      if (modalPin) modalPin.classList.remove('hidden');
+    btnToStepPin.addEventListener('click', async () => {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        alert("Tanpri konekte nan kont ou anvan.");
+        return;
+      }
+
+      // Verifikasyon si itilizatè a gen yon PIN nan Realtime Database la anvan li ouvri bwat PIN lan[span_2](start_span)[span_2](end_span)
+      try {
+        const userRtdbRef = ref(rtdb, 'users/' + currentUser.uid);
+        const rtdbSnap = await get(userRtdbRef);
+        const rtdbData = rtdbSnap.val();
+
+        if (!rtdbData || !rtdbData.transactionPin) {
+          closeAllModals();
+          if (confirm("⚠️ Ou poko gen yon PIN tranzaksyon. Est-ce que ou vle ale kreye yon PIN kounye a?")) {
+            if (typeof window.openPinModal === 'function') {
+              window.openPinModal('create');
+            }
+          }
+          return;
+        }
+
+        if (inputPin) inputPin.value = '';
+        closeAllModals();
+        if (modalPin) {
+          modalPin.classList.remove('hidden');
+          modalPin.style.display = 'flex';
+        }
+      } catch (err) {
+        console.error("Erè verifikasyon PIN:", err);
+        alert("Erè nan sistèm nan. Tanpri reyezi.");
+      }
     });
   }
 
-  // 6. RETOUNEN SOU REZIME (RETOUNEN - ETAP 3)
   const btnBackToSummary = document.getElementById('btn-back-to-summary');
   if (btnBackToSummary) {
     btnBackToSummary.addEventListener('click', () => {
       closeAllModals();
-      if (modalSummary) modalSummary.classList.remove('hidden');
+      if (modalSummary) {
+        modalSummary.classList.remove('hidden');
+        modalSummary.style.display = 'flex';
+      }
     });
   }
 
-  // 7. VERIFIKASYON PIN, ANREJISTREMAN FIRESTORE AK VOYE CALL
+  // CONFIRMATION TRANSACTION
   const btnFinalConfirm = document.getElementById('btn-final-confirm');
   if (btnFinalConfirm) {
     btnFinalConfirm.addEventListener('click', async () => {
@@ -203,32 +235,37 @@ document.addEventListener('DOMContentLoaded', () => {
         btnFinalConfirm.disabled = true;
         btnFinalConfirm.innerText = "N ap verifye...";
 
-        // Chèche PIN pou verifye
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const userDocSnap = await getDoc(userDocRef);
+        // Chèche PIN nan Realtime Database la[span_3](start_span)[span_3](end_span)
+        const userRtdbRef = ref(rtdb, 'users/' + currentUser.uid);
+        const rtdbSnap = await get(userRtdbRef);
 
-        if (!userDocSnap.exists()) {
+        if (!rtdbSnap.exists()) {
           alert("Erè: Nou pa jwenn enfòmasyon kont ou an.");
           return;
         }
 
-        const userData = userDocSnap.data();
-        const savedPin = userData.pinSecurity || userData.pin;
+        const userData = rtdbSnap.val();
+        const savedPin = userData.transactionPin;
 
         if (!savedPin) {
-          alert("Ou pa gen yon PIN sekirite ki anrejistre nan kont ou. Tanpri kreye youn nan Settings.");
+          closeAllModals();
+          if (confirm("Ou pa gen yon PIN sekirite. Tanpri klike sou OK pou w ale kreye eden kounye a.")) {
+            if (typeof window.openPinModal === 'function') {
+              window.openPinModal('create');
+            }
+          }
           return;
         }
 
-        if (userPinEntered !== String(savedPin)) {
+        if (String(userPinEntered) !== String(savedPin)) {
           alert("PIN sekirite a pa kòrèk!");
           return;
         }
 
         btnFinalConfirm.innerText = "N ap anrejistre...";
 
-        // Anrejistre tranzaksyon an sou Firestore
-        await addDoc(collection(db, "transactions"), {
+        // Anrejistre sou Firestore
+        await addDoc(collection(firestore, "transactions"), {
           userId: currentUser.uid,
           userPhone: userData.phone || null,
           type: "echanj_minit",
@@ -246,7 +283,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inputAmount) inputAmount.value = '';
         if (inputPin) inputPin.value = '';
 
-        // Ouvè Dialer telefòn nan pou voye kòd USSD a otomatikman
         window.location.href = `tel:${encodeURIComponent(currentTransaction.ussdCode)}`;
 
       } catch (error) {
