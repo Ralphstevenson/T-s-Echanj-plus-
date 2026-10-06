@@ -12,33 +12,54 @@ onAuthStateChanged(auth, (user) => {
 
 // Element DOM yo
 const modal = document.getElementById('pin-modal-overlay');
-const openBtn = document.getElementById('open-pin-modal-btn');
+const openBtn = document.getElementById('open-pin-modal-btn'); // Pou bouton nan paramèt yo si w kouri l toujou
+const sidebarPinBtn = document.getElementById('open-pin-sidebar-btn'); // Pou bouton ki nan sidebar la
 const closeBtn = document.getElementById('close-pin-modal');
 const actionsDiv = document.querySelector('.pin-actions');
 const createForm = document.getElementById('create-pin-form');
 const changeForm = document.getElementById('change-pin-form');
 const statusMsg = document.getElementById('modal-pin-status');
 
-// Louvri Modal
-openBtn?.addEventListener('click', () => {
+// Fonksyon pou ouvri modal la
+function openPinModal() {
+  // Si fonksyon toggleSidebar eksiste nan window, nou fèmen sidebar la anvan
+  if (typeof window.toggleSidebar === 'function') {
+    window.toggleSidebar();
+  }
+  
   resetModalViews();
-  modal.classList.add('show');
+  if (modal) {
+    modal.classList.add('show');
+  }
+}
+
+// Louvri Modal anndan sidebar la
+sidebarPinBtn?.addEventListener('click', (e) => {
+  e.preventDefault();
+  openPinModal();
+});
+
+// Louvri Modal anndan paramèt yo (si bouton sa la)
+openBtn?.addEventListener('click', () => {
+  openPinModal();
 });
 
 // Fèmen Modal
 closeBtn?.addEventListener('click', () => {
-  modal.classList.remove('show');
+  if (modal) {
+    modal.classList.remove('show');
+  }
 });
 
 // Bouton Navigasyon nan modal la
 document.getElementById('btn-show-create')?.addEventListener('click', () => {
-  actionsDiv.style.display = 'none';
-  createForm.classList.remove('hidden');
+  if (actionsDiv) actionsDiv.style.display = 'none';
+  createForm?.classList.remove('hidden');
 });
 
 document.getElementById('btn-show-change')?.addEventListener('click', () => {
-  actionsDiv.style.display = 'none';
-  changeForm.classList.remove('hidden');
+  if (actionsDiv) actionsDiv.style.display = 'none';
+  changeForm?.classList.remove('hidden');
 });
 
 document.querySelectorAll('.btn-back').forEach(btn => {
@@ -46,13 +67,15 @@ document.querySelectorAll('.btn-back').forEach(btn => {
 });
 
 function resetModalViews() {
-  actionsDiv.style.display = 'flex';
-  createForm.classList.add('hidden');
-  changeForm.classList.add('hidden');
-  statusMsg.className = 'status-msg';
-  statusMsg.style.display = 'none';
-  createForm.reset();
-  changeForm.reset();
+  if (actionsDiv) actionsDiv.style.display = 'flex';
+  createForm?.classList.add('hidden');
+  changeForm?.classList.add('hidden');
+  if (statusMsg) {
+    statusMsg.className = 'status-msg';
+    statusMsg.style.display = 'none';
+  }
+  createForm?.reset();
+  changeForm?.reset();
 }
 
 // Soumèt Formulaire KREYE PIN
@@ -102,7 +125,9 @@ async function savePinToFirebase(pinValue, successText) {
     showMsg(successText, 'success');
     setTimeout(() => {
       resetModalViews();
-      modal.classList.remove('show');
+      if (modal) {
+        modal.classList.remove('show');
+      }
     }, 1500);
   } catch (err) {
     showMsg('Gen yon erè ki rive, reyezi berèy.', 'error');
@@ -110,7 +135,8 @@ async function savePinToFirebase(pinValue, successText) {
 }
 
 function showMsg(text, type) {
-  statusMsg.textContent = text;
-  statusMsg.className = `status-msg ${type}`;
+  if (statusMsg) {
+    statusMsg.textContent = text;
+    statusMsg.className = `status-msg ${type}`;
+  }
 }
-￼Enter
