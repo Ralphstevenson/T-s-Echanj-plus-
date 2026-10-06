@@ -1,0 +1,168 @@
+/* Bouton nan Paramèt yo */
+.btn-param-pin {
+  background-color: #08284c;
+  color: #ffffff;
+  border: 1px solid #00e676;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background-color 0.2s;
+}
+
+.btn-param-pin:hover {
+  background-color: #0a3360;
+}
+
+/* Modal Overlay (Plein Écran Fon Nwa) */
+.pin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(3, 29, 56, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.pin-modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal Card */
+.pin-modal-card {
+  background-color: #08284c;
+  border: 1px solid #00e676;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 380px;
+  width: 100%;
+  position: relative;
+  color: #ffffff;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.pin-modal-card h3 {
+  color: #00e676;
+  margin-top: 0;
+}
+
+.modal-desc {
+  font-size: 0.85rem;
+  color: #d1d5db;
+  margin-bottom: 20px;
+}
+
+/* Boutons d'actions (Kreye / Chanje) */
+.pin-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-btn {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.create-btn {
+  background-color: #00e676;
+  color: #031d38;
+}
+
+.change-btn {
+  background-color: transparent;
+  border: 1px solid #00e676;
+  color: #ffffff;
+}
+
+/* Formulaires */
+.pin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.pin-form.hidden {
+  display: none;
+}
+
+.pin-form h4 {
+  margin: 0 0 10px 0;
+  color: #00e676;
+}
+
+.pin-form input {
+  width: 100%;
+  background: #031d38;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 10px;
+  color: #fff;
+  text-align: center;
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  box-sizing: border-box;
+}
+
+.btn-submit {
+  background-color: #00e676;
+  color: #031d38;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-back {
+  background: transparent;
+  border: none;
+  color: #d1d5db;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.status-msg {
+  margin-top: 15px;
+  font-size: 0.85rem;
+  display: none;
+}
+.status-msg.error { display: block; color: #ff5252; }
+.status-msg.success { display: block; color: #00e676; }
