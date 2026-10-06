@@ -12,46 +12,55 @@ onAuthStateChanged(auth, (user) => {
 
 // Element DOM yo
 const modal = document.getElementById('pin-modal-overlay');
-const openBtn = document.getElementById('open-pin-modal-btn'); // Pou bouton nan paramèt yo si w kouri l toujou
-const sidebarPinBtn = document.getElementById('open-pin-sidebar-btn'); // Pou bouton ki nan sidebar la
+const openBtn = document.getElementById('open-pin-modal-btn');
+const sidebarPinBtn = document.getElementById('open-pin-sidebar-btn');
 const closeBtn = document.getElementById('close-pin-modal');
 const actionsDiv = document.querySelector('.pin-actions');
 const createForm = document.getElementById('create-pin-form');
 const changeForm = document.getElementById('change-pin-form');
 const statusMsg = document.getElementById('modal-pin-status');
 
-// Fonksyon pou ouvri modal la
-function openPinModal() {
-  // Si fonksyon toggleSidebar eksiste nan window, nou fèmen sidebar la anvan
+// Fonksyon pou ouvri modal la epi chwazi ki View pou afiche
+window.openPinModal = function(defaultMode = 'actions') {
   if (typeof window.toggleSidebar === 'function') {
     window.toggleSidebar();
   }
   
   resetModalViews();
+  
+  if (defaultMode === 'create') {
+    if (actionsDiv) actionsDiv.style.display = 'none';
+    createForm?.classList.remove('hidden');
+  } else if (defaultMode === 'change') {
+    if (actionsDiv) actionsDiv.style.display = 'none';
+    changeForm?.classList.remove('hidden');
+  }
+
   if (modal) {
     modal.classList.add('show');
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
   }
-}
+};
 
-// Louvri Modal anndan sidebar la
+// Listeners
 sidebarPinBtn?.addEventListener('click', (e) => {
   e.preventDefault();
-  openPinModal();
+  window.openPinModal('actions');
 });
 
-// Louvri Modal anndan paramèt yo (si bouton sa la)
 openBtn?.addEventListener('click', () => {
-  openPinModal();
+  window.openPinModal('actions');
 });
 
-// Fèmen Modal
 closeBtn?.addEventListener('click', () => {
   if (modal) {
     modal.classList.remove('show');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
   }
 });
 
-// Bouton Navigasyon nan modal la
 document.getElementById('btn-show-create')?.addEventListener('click', () => {
   if (actionsDiv) actionsDiv.style.display = 'none';
   createForm?.classList.remove('hidden');
@@ -81,11 +90,16 @@ function resetModalViews() {
 // Soumèt Formulaire KREYE PIN
 createForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const pin = document.getElementById('create-pin-input').value;
-  const confirmPin = document.getElementById('confirm-create-pin-input').value;
+  const pin = document.getElementById('create-pin-input').value.trim();
+  const confirmPin = document.getElementById('confirm-create-pin-input').value.trim();
 
   if (pin !== confirmPin) {
     showMsg('2 PIN yo pa menm!', 'error');
+    return;
+  }
+
+  if (pin.length !== 4) {
+    showMsg('PIN lan dwe gen 4 chif!', 'error');
     return;
   }
 
@@ -95,17 +109,16 @@ createForm?.addEventListener('submit', async (e) => {
 // Soumèt Formulaire CHANJE PIN
 changeForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const oldPin = document.getElementById('old-pin-input').value;
-  const newPin = document.getElementById('new-pin-input').value;
+  const oldPin = document.getElementById('old-pin-input').value.trim();
+  const newPin = document.getElementById('new-pin-input').value.trim();
 
   if (!currentUser) return;
 
-  // Verifye si ansyen PIN lan bon nan Firebase anvan
   const userRef = ref(db, 'users/' + currentUser.uid);
   const snapshot = await get(userRef);
   const userData = snapshot.val();
 
-  if (userData && userData.transactionPin && userData.transactionPin !== oldPin) {
+  if (userData && userData.transactionPin && String(userData.transactionPin) !== oldPin) {
     showMsg('Ansyen PIN la pa bon!', 'error');
     return;
   }
@@ -121,16 +134,25 @@ async function savePinToFirebase(pinValue, successText) {
 
   try {
     const userRef = ref(db, 'users/' + currentUser.uid);
-    await update(userRef, { transactionPin: pinValue });
+    await update(userRef, { transactionPin: String(pinValue) });
+    
+    // Mete ajou navigasyon an nan rezo a
+    if (window.userAppData) {
+      window.userAppData.hasPin = true;
+      window.userAppData.correctPin = String(pinValue);
+    }
+
     showMsg(successText, 'success');
     setTimeout(() => {
       resetModalViews();
       if (modal) {
         modal.classList.remove('show');
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
       }
     }, 1500);
   } catch (err) {
-    showMsg('Gen yon erè ki rive, reyezi berèy.', 'error');
+    showMsg('Gen yon erè ki rive, tanpri reyezi.', 'error');
   }
 }
 
@@ -138,5 +160,6 @@ function showMsg(text, type) {
   if (statusMsg) {
     statusMsg.textContent = text;
     statusMsg.className = `status-msg ${type}`;
+    statusMsg.style.display = 'block';
   }
 }
