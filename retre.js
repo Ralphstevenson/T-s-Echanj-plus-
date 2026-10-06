@@ -1,11 +1,5 @@
-/* ============================================================
-   JS RETRÈ V6.0 - INTEGRATED WITH SCRIPT.JS (FIRESTORE EDITION)
-   ============================================================ */
-import { 
-  getAuth, 
-  onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { 
   getFirestore, 
   doc, 
@@ -16,11 +10,10 @@ import {
   serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Initialisation / Références Firebase
 const auth = getAuth();
-const db = getFirestore();
+const firestore = getFirestore();
+const rtdb = getDatabase();
 
-// Données globales utilisateur et transaction
 window.userAppData = window.userAppData || {
   hasPin: false,
   correctPin: "",
@@ -38,20 +31,28 @@ window.retreData = {
   holder: ''
 };
 
-// 1. RECUPERATION DES DONNEES UTILISATEUR DEPUIS FIRESTORE
+// 1. REKIPERASYON DONE UTILIZATÈ DEPI NAN FIRESTORE AK RTDB
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     try {
-      const userRef = doc(db, "users", user.uid);
+      // 1. Firestore pou balans ak non
+      const userRef = doc(firestore, "users", user.uid);
       const snap = await getDoc(userRef);
       if (snap.exists()) {
         const data = snap.data();
-        window.userAppData = {
-          hasPin: !!data.pin,
-          correctPin: data.pin || "",
-          fullname: data.fullname || data.phone || "Itilizatè",
-          currentBalance: Number(data.balance || 0)
-        };
+        window.userAppData.fullname = data.fullname || data.phone || "Itilizatè";
+        window.userAppData.currentBalance = Number(data.balance || 0);
+      }
+
+      // 2. RTDB pou PIN lan[span_4](start_span)[span_4](end_span)
+      const rtdbRef = ref(rtdb, 'users/' + user.uid);
+      const rtdbSnap = await get(rtdbRef);
+      if (rtdbSnap.exists()) {
+        const rData = rtdbSnap.val();
+        if (rData.transactionPin) {
+          window.userAppData.hasPin = true;
+          window.userAppData.correctPin = String(rData.transactionPin);
+        }
       }
     } catch (e) {
       console.error("Erreur de chargement des données utilisateur:", e);
@@ -59,7 +60,6 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// 2. NAVIGATION ENTRE LES ETAPES
 window.goToStep = function(stepId) {
   const steps = ['step-select-method', 'step-enter-amount', 'step-enter-account'];
   
@@ -85,7 +85,6 @@ window.closeModal = function(modalId) {
   }
 };
 
-// 3. SELECTION DU MOYEN DE PAIEMENT (NatCash / MonCash)
 window.selectRetreMethod = function(key, name, min, max) {
   window.retreData.methodKey = key;
   window.retreData.methodName = name;
@@ -109,10 +108,9 @@ window.selectRetreMethod = function(key, name, min, max) {
   window.goToStep('step-enter-amount');
 };
 
-// 4. VALIDATION DU MONTANT (BOUTON VALIDER)
 window.validateAmountStep = function(e) {
   if (e && typeof e.preventDefault === 'function') {
-    e.preventDefault(); // Empêche le rechargement de page si inclus dans un formulaire
+    e.preventDefault();
   }
 
   const amountInput = document.getElementById('retre-amount-input');
@@ -144,7 +142,6 @@ window.validateAmountStep = function(e) {
   window.goToStep('step-enter-account');
 };
 
-// 5. VALIDATION DU COMPTE DESTINATAIRE
 window.validateAccountStep = function(e) {
   if (e && typeof e.preventDefault === 'function') {
     e.preventDefault();
@@ -184,14 +181,15 @@ window.validateAccountStep = function(e) {
   }
 };
 
-// 6. PASSAGE A L'ETAPE PIN
+// PASE NAN ETAP PIN OOSWA ADIRIJE POU KREYE PIN
 window.proceedToPinStep = function() {
   window.closeModal('modal-retre-details');
 
   if (!window.userAppData.hasPin) {
-    alert("⚠️ Ou dwe kreye yon kòd PIN anvan nan atelye Paramètres pou konfime tranzaksyon yo.");
-    if (typeof window.showSection === 'function') {
-      window.showSection('paj-setting');
+    if (confirm("⚠️ Ou dwe kreye yon kòd PIN pou konfime retrè yo. Klike sou OK pou ale nan kreye PIN.")) {
+      if (typeof window.openPinModal === 'function') {
+        window.openPinModal('create');
+      }
     }
     return;
   }
@@ -206,11 +204,11 @@ window.proceedToPinStep = function() {
   }
 };
 
-// 7. CONFIRMATION FINALE TRANSACTION FIRESTORE
+// CONFIRMATION FINALE TRANSACTION RETRÈ FIRESTORE
 window.confirmFinalRetre = async function() {
   const pinInput = document.getElementById('retre-pin-input');
   
-  if (!pinInput || pinInput.value !== String(window.userAppData.correctPin)) {
+  if (!pinInput || String(pinInput.value.trim()) !== String(window.userAppData.correctPin)) {
     alert("❌ Kòd PIN sa a pa korèk! Tanpri re-eseye.");
     if (pinInput) pinInput.value = '';
     return;
@@ -224,7 +222,7 @@ window.confirmFinalRetre = async function() {
   try {
     const transID = "RET-" + Date.now().toString().slice(-6);
     
-    await setDoc(doc(db, "withdrawals", transID), {
+    await setDoc(doc(firestore, "withdrawals", transID), {
       id: transID,
       uid: user.uid,
       type: "Retrè",
@@ -236,7 +234,7 @@ window.confirmFinalRetre = async function() {
       createdAt: serverTimestamp()
     });
 
-    const userRef = doc(db, "users", user.uid);
+    const userRef = doc(firestore, "users", user.uid);
     await updateDoc(userRef, {
       balance: increment(-window.retreData.amount)
     });
@@ -265,7 +263,6 @@ window.confirmFinalRetre = async function() {
   }
 };
 
-// 8. CORRECTION DU DELEGATEUR D'EVENEMENT CLIC
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('[onclick]');
   if (!btn) return;
@@ -273,7 +270,6 @@ document.addEventListener('click', (e) => {
   const onclickAttr = btn.getAttribute('onclick');
   if (!onclickAttr) return;
 
-  // Empeche la soumission du formulaire HTML par défaut si le bouton est dans un <form>
   if (btn.tagName === 'BUTTON' || btn.getAttribute('type') === 'submit') {
     e.preventDefault();
   }
