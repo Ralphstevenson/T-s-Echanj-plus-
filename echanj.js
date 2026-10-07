@@ -1,5 +1,5 @@
 import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { 
   getFirestore, 
@@ -34,6 +34,13 @@ let currentTransaction = {
   netAmount: 0,
   ussdCode: ''
 };
+
+let currentUser = null;
+
+// Tcheke ak kenbe leta koneksyon an
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+});
 
 function closeAllModals() {
   document.querySelectorAll('.modal-echanj').forEach(m => {
@@ -97,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ETAP 1: Pasaj nan Rezime / Detay
   const btnToStepSummary = document.getElementById('btn-to-step-summary');
   if (btnToStepSummary) {
     btnToStepSummary.addEventListener('click', () => {
@@ -163,20 +171,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ETAP 2: Pasaj nan Saisir PIN (SOU BOUTON "SUIVANT" NAN ETAP DETAY)
   const btnToStepPin = document.getElementById('btn-to-step-pin');
   if (btnToStepPin) {
     btnToStepPin.addEventListener('click', async () => {
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
+      const activeUser = auth.currentUser || currentUser;
+      
+      if (!activeUser) {
         alert("Tanpri konekte nan kont ou anvan.");
         return;
       }
 
-      // Verifikasyon si itilizatè a gen yon PIN nan Realtime Database la anvan li ouvri bwat PIN lan[span_2](start_span)[span_2](end_span)
+      btnToStepPin.innerText = "N ap verifye...";
+      btnToStepPin.disabled = true;
+
       try {
-        const userRtdbRef = ref(rtdb, 'users/' + currentUser.uid);
+        const userRtdbRef = ref(rtdb, 'users/' + activeUser.uid);
         const rtdbSnap = await get(userRtdbRef);
-        const rtdbData = rtdbSnap.val();
+        const rtdbData = rtdbSnap.exists() ? rtdbSnap.val() : null;
 
         if (!rtdbData || !rtdbData.transactionPin) {
           closeAllModals();
@@ -196,7 +208,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (err) {
         console.error("Erè verifikasyon PIN:", err);
-        alert("Erè nan sistèm nan. Tanpri reyezi.");
+        // Menm si gen yon erè rezo anvan, kite itilizatè a antre PIN pou l pa bloke
+        if (inputPin) inputPin.value = '';
+        closeAllModals();
+        if (modalPin) {
+          modalPin.classList.remove('hidden');
+          modalPin.style.display = 'flex';
+        }
+      } finally {
+        btnToStepPin.innerText = "Suivant";
+        btnToStepPin.disabled = false;
       }
     });
   }
@@ -212,13 +233,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // CONFIRMATION TRANSACTION
+  // ETAP 3: KONFIMASYON FINALE TRANSACTION
   const btnFinalConfirm = document.getElementById('btn-final-confirm');
   if (btnFinalConfirm) {
     btnFinalConfirm.addEventListener('click', async () => {
-      const currentUser = auth.currentUser;
+      const activeUser = auth.currentUser || currentUser;
 
-      if (!currentUser) {
+      if (!activeUser) {
         alert("Tanpri konekte nan kont ou anvan.");
         return;
       }
@@ -235,8 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnFinalConfirm.disabled = true;
         btnFinalConfirm.innerText = "N ap verifye...";
 
-        // Chèche PIN nan Realtime Database la[span_3](start_span)[span_3](end_span)
-        const userRtdbRef = ref(rtdb, 'users/' + currentUser.uid);
+        const userRtdbRef = ref(rtdb, 'users/' + activeUser.uid);
         const rtdbSnap = await get(userRtdbRef);
 
         if (!rtdbSnap.exists()) {
@@ -266,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Anrejistre sou Firestore
         await addDoc(collection(firestore, "transactions"), {
-          userId: currentUser.uid,
+          userId: activeUser.uid,
           userPhone: userData.phone || null,
           type: "echanj_minit",
           rezo: currentTransaction.rezo,
