@@ -3,8 +3,6 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { 
   getFirestore, 
-  doc, 
-  getDoc, 
   collection, 
   addDoc, 
   serverTimestamp 
@@ -171,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ETAP 2: Pasaj nan Saisir PIN (SOU BOUTON "SUIVANT" NAN ETAP DETAY)
+  // ETAP 2: Pasaj nan Saisir PIN
   const btnToStepPin = document.getElementById('btn-to-step-pin');
   if (btnToStepPin) {
     btnToStepPin.addEventListener('click', async () => {
@@ -208,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (err) {
         console.error("Erè verifikasyon PIN:", err);
-        // Menm si gen yon erè rezo anvan, kite itilizatè a antre PIN pou l pa bloke
         if (inputPin) inputPin.value = '';
         closeAllModals();
         if (modalPin) {
@@ -261,6 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!rtdbSnap.exists()) {
           alert("Erè: Nou pa jwenn enfòmasyon kont ou an.");
+          btnFinalConfirm.disabled = false;
+          btnFinalConfirm.innerText = "Konfime & Voye Call";
           return;
         }
 
@@ -274,40 +273,48 @@ document.addEventListener('DOMContentLoaded', () => {
               window.openPinModal('create');
             }
           }
+          btnFinalConfirm.disabled = false;
+          btnFinalConfirm.innerText = "Konfime & Voye Call";
           return;
         }
 
         if (String(userPinEntered) !== String(savedPin)) {
           alert("PIN sekirite a pa kòrèk!");
+          btnFinalConfirm.disabled = false;
+          btnFinalConfirm.innerText = "Konfime & Voye Call";
           return;
         }
 
         btnFinalConfirm.innerText = "N ap anrejistre...";
 
-        // Anrejistre sou Firestore
-        await addDoc(collection(firestore, "transactions"), {
+        // Nou prepare done yo byen pwòp san 'undefined' pou evite erè Firestore
+        const transactionData = {
           userId: activeUser.uid,
-          userPhone: userData.phone || null,
+          userPhone: userData.phone || activeUser.phoneNumber || "N/A",
           type: "echanj_minit",
-          rezo: currentTransaction.rezo,
-          amount: currentTransaction.amount,
-          feePercent: currentTransaction.feePercent,
-          feeAmount: currentTransaction.feeAmount,
-          netAmount: currentTransaction.netAmount,
-          ussdSent: currentTransaction.ussdCode,
+          rezo: currentTransaction.rezo || "",
+          amount: Number(currentTransaction.amount) || 0,
+          feePercent: Number(currentTransaction.feePercent) || 0,
+          feeAmount: Number(currentTransaction.feeAmount) || 0,
+          netAmount: Number(currentTransaction.netAmount) || 0,
+          ussdSent: currentTransaction.ussdCode || "",
           status: "pending",
           createdAt: serverTimestamp()
-        });
+        };
+
+        // Anrejistre sou Firestore
+        await addDoc(collection(firestore, "transactions"), transactionData);
 
         closeAllModals();
         if (inputAmount) inputAmount.value = '';
         if (inputPin) inputPin.value = '';
 
+        // Lanse apèl USSD la
         window.location.href = `tel:${encodeURIComponent(currentTransaction.ussdCode)}`;
 
       } catch (error) {
         console.error("Erè nan konfimasyon tranzaksyon an:", error);
-        alert("Gen yon erè ki rive pandan anrejistreman an. Tanpri eseye ankò.");
+        alert("Gen yon erè ki rive: " + (error.message || "Tanpri eseye ankò."));
       } finally {
         btnFinalConfirm.disabled = false;
         btnFinalConfirm.innerText = "Konfime & Voye Call";
