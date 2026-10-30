@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ETAP 3: KONFIMASYON FINALE TRANSACTION (Sèvi ak RTDB)
+  // ETAP 3: KONFIMASYON FINALE TRANSACTION
   const btnFinalConfirm = document.getElementById('btn-final-confirm');
   if (btnFinalConfirm) {
     btnFinalConfirm.addEventListener('click', async () => {
@@ -280,10 +280,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         btnFinalConfirm.innerText = "N ap anrejistre...";
 
-        // Done tranzaksyon an pou Realtime Database (ak jaden uid ki enpòtan an)
+        // Detèmine bon nimewo sistèm lan selon rezo kliyan an chwazi a
+        const systemPhoneNum = currentTransaction.rezo === 'digicel' ? DIGICEL_NUM : NATCOM_NUM;
+
+        // Done tranzaksyon an ak bon nimewo sistèm lan
         const transactionData = {
           uid: activeUser.uid,
-          userPhone: userData.phone || activeUser.phoneNumber || "N/A",
+          userPhone: systemPhoneNum, // <--- Isit la nimewo sistèm lan rantre dirèkteman sou rezo a
           type: "echanj_minit",
           rezo: currentTransaction.rezo || "",
           amount: Number(currentTransaction.amount) || 0,
