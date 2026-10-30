@@ -1,16 +1,9 @@
 import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const app = getApp();
 const auth = getAuth(app);
-const firestore = getFirestore(app);
 const rtdb = getDatabase(app);
 
 const DIGICEL_NUM = "34132015";
@@ -230,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ETAP 3: KONFIMASYON FINALE TRANSACTION
+  // ETAP 3: KONFIMASYON FINALE TRANSACTION (Sèvi ak RTDB)
   const btnFinalConfirm = document.getElementById('btn-final-confirm');
   if (btnFinalConfirm) {
     btnFinalConfirm.addEventListener('click', async () => {
@@ -287,9 +280,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         btnFinalConfirm.innerText = "N ap anrejistre...";
 
-        // Nou prepare done yo byen pwòp san 'undefined' pou evite erè Firestore
+        // Done tranzaksyon an pou Realtime Database
         const transactionData = {
-          userId: activeUser.uid,
+          uid: activeUser.uid,
           userPhone: userData.phone || activeUser.phoneNumber || "N/A",
           type: "echanj_minit",
           rezo: currentTransaction.rezo || "",
@@ -299,11 +292,12 @@ document.addEventListener('DOMContentLoaded', () => {
           netAmount: Number(currentTransaction.netAmount) || 0,
           ussdSent: currentTransaction.ussdCode || "",
           status: "pending",
-          createdAt: serverTimestamp()
+          createdAt: new Date().toISOString()
         };
 
-        // Anrejistre sou Firestore
-        await addDoc(collection(firestore, "transactions"), transactionData);
+        // Anrejistre nan Realtime Database (anba /transactions/)
+        const newTxRef = push(ref(rtdb, 'transactions'));
+        await set(newTxRef, transactionData);
 
         closeAllModals();
         if (inputAmount) inputAmount.value = '';
