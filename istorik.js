@@ -1,20 +1,18 @@
 import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getDatabase, ref, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const app = getApp();
 const auth = getAuth(app);
 const rtdb = getDatabase(app);
 
-// Variable globale pou swiv onglet aktif ak itilizatè k ap konekte a
 let activeTab = 'tout';
 let currentUser = null;
 
-// Tcheke leta otantifikasyon an yon fason serye
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   if (user) {
-    renderCurrentView(); // Lè itilizatè a konekte, chaje istorik la otomatikman
+    renderCurrentView();
   } else {
     const targetContainer = document.getElementById(`list-${activeTab}`);
     if (targetContainer) {
@@ -23,19 +21,12 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-/**
- * Fonksyon pou chanje d'onglet epi deplase style aktif
- * @param {string} targetId - L'identifiant de la liste ('tout', 'echanj', 'retre', 'echwe')
- * @param {HTMLElement} [btn] - Le bouton cliqué (optionnel)
- */
 export function switchIstorik(targetId, btn) {
   activeTab = targetId;
 
-  // 1. Retirer la classe 'active' de tous les boutons
   const buttons = document.querySelectorAll('.tab-btn-ist');
   buttons.forEach(b => b.classList.remove('active'));
 
-  // 2. Appliquer la classe 'active' sur le bouton sélectionné
   if (btn) {
     btn.classList.add('active');
   } else {
@@ -43,32 +34,23 @@ export function switchIstorik(targetId, btn) {
     if (defaultBtn) defaultBtn.classList.add('active');
   }
 
-  // 3. Masquer tous les contenus
   document.querySelectorAll('.ist-content').forEach(div => {
     div.classList.add('hidden');
-    div.innerHTML = ''; // Netwaye pou evite doublon
+    div.innerHTML = '';
   });
 
-  // 4. Afficher le contenu de l'onglet sélectionné
   const targetContainer = document.getElementById(`list-${targetId}`);
   if (targetContainer) {
     targetContainer.classList.remove('hidden');
   }
 
-  // 5. Charger et afficher les données
   renderCurrentView();
 }
 
-/**
- * Filtrer les transactions par date
- */
 export function filterByDate() {
   renderCurrentView();
 }
 
-/**
- * Effacer le filtre de date
- */
 export function clearDateFilter() {
   const dateInput = document.getElementById('filter-date-input');
   if (dateInput) {
@@ -77,9 +59,6 @@ export function clearDateFilter() {
   renderCurrentView();
 }
 
-/**
- * Mettre à jour l'affichage selon l'onglet actif et le filtre de date depuis Realtime Database
- */
 async function renderCurrentView() {
   const activeUser = auth.currentUser || currentUser;
   if (!activeUser) return;
@@ -90,13 +69,12 @@ async function renderCurrentView() {
   targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #666;">N ap chache tranzaksyon yo...</p>`;
 
   const dateInput = document.getElementById('filter-date-input');
-  const selectedDate = dateInput ? dateInput.value : ''; // Fòma YYYY-MM-DD
+  const selectedDate = dateInput ? dateInput.value : '';
 
   try {
-    // Nou fè query a sou RTDB anba 'transactions' kote 'uid' egal ak ID itilizatè a
+    // Nou rale tout tranzaksyon yo dirèkteman pou n ka filtre yo san pwoblèm endèks
     const txRef = ref(rtdb, 'transactions');
-    const q = query(txRef, orderByChild('uid'), equalTo(activeUser.uid));
-    const snapshot = await get(q);
+    const snapshot = await get(txRef);
 
     if (!snapshot.exists()) {
       targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #888;">Pa gen okenn tranzaksyon ki anrejistre.</p>`;
@@ -108,7 +86,12 @@ async function renderCurrentView() {
     snapshot.forEach((childSnap) => {
       const tx = childSnap.val();
       tx.firebaseId = childSnap.key;
-      transactions.push(tx);
+      // Nou aksepte tou de 'uid' oswa 'userId' pou evite nenpòt konfli
+      const txUid = tx.uid || tx.userId;
+      
+      if (txUid === activeUser.uid) {
+        transactions.push(tx);
+      }
     });
 
     // Triye pou mete pi resan yo anwo (Descending)
@@ -136,7 +119,6 @@ async function renderCurrentView() {
     }
 
     let html = '';
-    // Konstriksyon HTML pou chak tranzaksyon
     filtered.forEach(tx => {
       const dateFormatted = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---';
       const statusColor = tx.status === 'pending' ? 'orange' : (tx.status === 'success' ? 'green' : 'red');
@@ -157,8 +139,6 @@ async function renderCurrentView() {
     });
 
     targetContainer.innerHTML = html;
-
-    // Mete l disponib globalman pou reçus yo
     window.allUserTransactions = transactions;
 
   } catch (error) {
@@ -167,10 +147,6 @@ async function renderCurrentView() {
   }
 }
 
-/**
- * Afficher la modal du reçu de transaction
- * @param {Object} tx - Les données de la transaction
- */
 export function showReceipt(tx) {
   if (!tx) return;
 
@@ -197,17 +173,11 @@ window.showReceiptFromGlobal = function(txId) {
   }
 };
 
-/**
- * Fermer la modal du reçu
- */
 export function closeReceipt() {
   const modal = document.getElementById('modal-receipt');
   if (modal) modal.classList.add('hidden');
 }
 
-/**
- * Partager le reçu via WhatsApp
- */
 export function shareReceipt() {
   const id = document.getElementById('rec-id')?.textContent || '';
   const amount = document.getElementById('rec-amount')?.textContent || '';
@@ -219,7 +189,6 @@ export function shareReceipt() {
   window.open(url, '_blank');
 }
 
-// Rendre les fonctions accessibles globalement pour les événements inline (onclick)
 window.switchIstorik = switchIstorik;
 window.filterByDate = filterByDate;
 window.clearDateFilter = clearDateFilter;
