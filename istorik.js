@@ -1,16 +1,30 @@
 import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getDatabase, ref, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const app = getApp();
 const auth = getAuth(app);
 const rtdb = getDatabase(app);
 
-// Variable globale pour suivre l'onglet actif
+// Variable globale pou swiv onglet aktif ak itilizatè k ap konekte a
 let activeTab = 'tout';
+let currentUser = null;
+
+// Tcheke leta otantifikasyon an yon fason serye
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  if (user) {
+    renderCurrentView(); // Lè itilizatè a konekte, chaje istorik la otomatikman
+  } else {
+    const targetContainer = document.getElementById(`list-${activeTab}`);
+    if (targetContainer) {
+      targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #888;">Tanpri konekte pou w wè istorik ou an.</p>`;
+    }
+  }
+});
 
 /**
- * Fonction pour changer d'onglet et déplacer le style actif
+ * Fonksyon pou chanje d'onglet epi deplase style aktif
  * @param {string} targetId - L'identifiant de la liste ('tout', 'echanj', 'retre', 'echwe')
  * @param {HTMLElement} [btn] - Le bouton cliqué (optionnel)
  */
@@ -67,8 +81,8 @@ export function clearDateFilter() {
  * Mettre à jour l'affichage selon l'onglet actif et le filtre de date depuis Realtime Database
  */
 async function renderCurrentView() {
-  const currentUser = auth.currentUser;
-  if (!currentUser) return;
+  const activeUser = auth.currentUser || currentUser;
+  if (!activeUser) return;
 
   const targetContainer = document.getElementById(`list-${activeTab}`);
   if (!targetContainer) return;
@@ -79,9 +93,9 @@ async function renderCurrentView() {
   const selectedDate = dateInput ? dateInput.value : ''; // Fòma YYYY-MM-DD
 
   try {
-    // Nou kòmande tranzaksyon yo sou RTDB
+    // Nou fè query a sou RTDB anba 'transactions' kote 'uid' egal ak ID itilizatè a
     const txRef = ref(rtdb, 'transactions');
-    const q = query(txRef, orderByChild('uid'), equalTo(currentUser.uid));
+    const q = query(txRef, orderByChild('uid'), equalTo(activeUser.uid));
     const snapshot = await get(q);
 
     if (!snapshot.exists()) {
@@ -89,7 +103,6 @@ async function renderCurrentView() {
       return;
     }
 
-    let html = '';
     let transactions = [];
 
     snapshot.forEach((childSnap) => {
@@ -122,6 +135,7 @@ async function renderCurrentView() {
       return;
     }
 
+    let html = '';
     // Konstriksyon HTML pou chak tranzaksyon
     filtered.forEach(tx => {
       const dateFormatted = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---';
@@ -144,7 +158,7 @@ async function renderCurrentView() {
 
     targetContainer.innerHTML = html;
 
-    // Fonksyon global pou montre reçus lè w klike sou li a
+    // Mete l disponib globalman pou reçus yo
     window.allUserTransactions = transactions;
 
   } catch (error) {
@@ -211,8 +225,3 @@ window.filterByDate = filterByDate;
 window.clearDateFilter = clearDateFilter;
 window.closeReceipt = closeReceipt;
 window.shareReceipt = shareReceipt;
-
-// Otomatikman chaje istorik la depi paj la ouvè
-document.addEventListener('DOMContentLoaded', () => {
-  renderCurrentView();
-});
