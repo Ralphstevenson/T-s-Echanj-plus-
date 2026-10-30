@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         btnFinalConfirm.innerText = "N ap anrejistre...";
 
-        // Done tranzaksyon an pou Realtime Database
+        // Done tranzaksyon an pou Realtime Database (ak jaden uid ki enpòtan an)
         const transactionData = {
           uid: activeUser.uid,
           userPhone: userData.phone || activeUser.phoneNumber || "N/A",
