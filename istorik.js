@@ -72,7 +72,6 @@ async function renderCurrentView() {
   const selectedDate = dateInput ? dateInput.value : '';
 
   try {
-    // Nou rale tout tranzaksyon yo dirèkteman pou n ka filtre yo san pwoblèm endèks
     const txRef = ref(rtdb, 'transactions');
     const snapshot = await get(txRef);
 
@@ -86,7 +85,6 @@ async function renderCurrentView() {
     snapshot.forEach((childSnap) => {
       const tx = childSnap.val();
       tx.firebaseId = childSnap.key;
-      // Nou aksepte tou de 'uid' oswa 'userId' pou evite nenpòt konfli
       const txUid = tx.uid || tx.userId;
       
       if (txUid === activeUser.uid) {
@@ -94,18 +92,16 @@ async function renderCurrentView() {
       }
     });
 
-    // Triye pou mete pi resan yo anwo (Descending)
+    // Triye pou mete pi resan yo anwo
     transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-    // Filtraj selon tab la (Tout, Echanj, Retrè, Echwe)
     let filtered = transactions.filter(tx => {
       if (activeTab === 'echanj') return tx.type === 'echanj_minit';
       if (activeTab === 'retre') return tx.type === 'retrait' || tx.type === 'retre';
       if (activeTab === 'echwe') return tx.status === 'failed' || tx.status === 'echwe';
-      return true; // 'tout'
+      return true;
     });
 
-    // Filtraj selon dat si itilizatè a chwazi youn
     if (selectedDate) {
       filtered = filtered.filter(tx => {
         if (!tx.createdAt) return false;
@@ -122,11 +118,12 @@ async function renderCurrentView() {
     filtered.forEach(tx => {
       const dateFormatted = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---';
       const statusColor = tx.status === 'pending' ? 'orange' : (tx.status === 'success' ? 'green' : 'red');
+      const titreRezo = tx.rezo ? tx.rezo.toUpperCase() : (tx.type || 'TRANZAKSYON');
       
       html += `
         <div style="background: #fff; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <strong style="text-transform: uppercase; color: #333;">${tx.rezo || tx.type}</strong><br>
+            <strong style="text-transform: uppercase; color: #333;">${titreRezo}</strong><br>
             <small style="color: #666;">Montan: <b>${tx.amount} HTG</b></small><br>
             <small style="color: #999; font-size: 11px;">${dateFormatted}</small>
           </div>
@@ -159,6 +156,7 @@ export function showReceipt(tx) {
   setElText('rec-status', tx.status || '---');
   setElText('rec-amount', tx.amount ? `${tx.amount} HTG` : '---');
   setElText('rec-method', tx.rezo || tx.method || '---');
+  // Isit la l ap afiche nimewo sistèm lan ki te anrejistre nan echanj.js la
   setElText('rec-phone', tx.userPhone || tx.phone || '---');
   setElText('rec-date', tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---');
 
