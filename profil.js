@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectDepatman = document.getElementById('select-depatman');
   const selectKomin = document.getElementById('select-komin');
   const btnSave = document.getElementById('btn-save-profil');
+  const modalProfil = document.getElementById('modal-profil');
 
   // Chanje komin yo otomatikman lè yo chwazi yon depatman
   if (selectDepatman) {
@@ -79,7 +80,19 @@ document.addEventListener('DOMContentLoaded', () => {
         await set(userRef, profilData);
 
         alert("Profil ou an anrejistre avèk siksè!");
-        document.getElementById('modal-profil').style.display = 'none';
+
+        // 1. Kache / Fèmen modal profil la imedyatman
+        if (modalProfil) {
+          modalProfil.style.display = 'none';
+        }
+
+        // 2. Vide fòmilè a pou l pa rete ak ansyen enfòmasyon yo
+        document.getElementById('input-profil-non').value = '';
+        document.getElementById('input-profil-tel').value = '';
+        document.getElementById('input-profil-seks').value = '';
+        document.getElementById('select-depatman').value = '';
+        selectKomin.innerHTML = '<option value="">Premye chwazi yon depatman</option>';
+        document.getElementById('input-profil-zon').value = '';
 
       } catch (error) {
         console.error("Erè:", error);
