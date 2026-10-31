@@ -1,437 +1,210 @@
-// ==========================================
-// 1. ENPÒTASYON SDK FIREBASE (v10+ ES Modules)
-// ==========================================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  onAuthStateChanged, 
-  signOut 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  getDoc, 
-  serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// ==========================================
-// 2. KONFIGIRASYON FIREBASE
-// ==========================================
-const firebaseConfig = {
-  apiKey: "AIzaSyAjK6EPlokkARHnakMaDRjqRzN-yQqlayU",
-  authDomain: "echanj-plus.firebaseapp.com",
-  databaseURL: "https://echanj-plus-default-rtdb.firebaseio.com",
-  projectId: "echanj-plus",
-  storageBucket: "echanj-plus.firebasestorage.app",
-  messagingSenderId: "117332306453",
-  appId: "1:117332306453:web:41d04226aa15ca5c3fbc1c",
-  measurementId: "G-LPGLMCR7HP"
+const rtdb = getDatabase();
+const auth = getAuth();
+
+// Tout komin yo pa depatman an Ayiti
+const komins = {
+  "Lwès": ["Pòtoprens", "Delmas", "Petyonvil", "Kafou", "Kwadèboukè", "Gressier", "Kenscoff", "Cité Soleil", "Tabarre", "Grand-Goâve", "Petit-Goâve"],
+  "Nò": ["Kap Ayisyen", "Akil Nò", "Bansè", "Bò Mòn", "Lenbe", "Lison", "Plèn Nò", "Pò Mago", "Sen Rasyon", "Sen Rapèl", "Don Datos"],
+  "Nòdès": ["Fò Libète", "Baramòt", "Caracol", "Fò Dòf", "Grangou", "Matèn", "Terrier-Rouge", "Trou du Nord", "Vallières"],
+  "Nòdwès": ["Pòdepè", "Ans a Fè", "Bassin-Bleu", "Chansolme", "Mòtpli", "Ba-de-Soleil", "Tòti"],
+  "Latibonit": ["Gonayiv", "Sen Mak", "Desalin", "Ans Wouj", "Basen", "Marmelade", "Lestère", "Pò Mago", "Vèr", "Grande Saline"],
+  "Sant": ["Hinche", "Cerca La Source", "Maïssade", "Savanèt", "Sen Mikal", "Mache Panyòl"],
+  "Grand'Anse": ["Jérémie", "Anse d'Hainault", "Abricots", "Chambellan", "Corail", "Dame-Marie", "Moron", "Pestel", "Les Irois"],
+  "Nip": ["Miragwàn", "Ans Vavo", "Baradè", "Fò Liberasyon", "Pètit Rivyè de Nip", "L'Asile", "Plaisance du Sud"],
+  "Sid": ["Les Cayes", "Aquin", "Chantal", "Maniche", "Port-Salut", "Torbeck", "Camp-Perrin", "Cavaillon", "Arniquet"],
+  "Sidès": ["Jakmèl", "Bèl Anse", "Marigot", "Mayò", "Grand-Gosier", "Thai-Thail"]
 };
 
-// Inisyalizasyon Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+// Fonksyon ki tcheke profil la anvan tout bagay
+async function checkUserProfileFirst(user) {
+  const modalProfil = document.getElementById('modal-profil');
+  if (!modalProfil) return;
 
-// Variables Globales pou UI
-let isBalanceHidden = false;
-let currentBalanceValue = "0.00 HTG";
-let currentSlide = 0;
-let selectedNetwork = '';
-
-// ==========================================
-// 3. FONKSYON GLOBAL POU UI (Attaché sur window)
-// ==========================================
-
-// Navigasyon ant seksyon SPA yo
-window.showSection = function (sectionId, navElement = null) {
-  const sections = document.querySelectorAll('.app-section');
-  sections.forEach(sec => sec.style.display = 'none');
-
-  const targetSection = document.getElementById(sectionId);
-  if (targetSection) {
-    targetSection.style.display = 'block';
+  if (!user) {
+    modalProfil.style.setProperty('display', 'none', 'important');
+    return;
   }
 
-  // Mete klas active sou meni navigasyon anba a
-  if (navElement) {
-    const navItems = document.querySelectorAll('.bottom-nav .nav-item');
-    navItems.forEach(item => item.classList.remove('active'));
-    navElement.classList.add('active');
-  }
-};
+  try {
+    const userRef = ref(rtdb, 'users/' + user.uid);
+    const snapshot = await get(userRef);
 
-// Affichage messages d'alerte
-window.showAlert = function (message, type = 'danger') {
-  const alertBox = document.getElementById('alert-box');
-  if (!alertBox) return;
-  alertBox.className = `alert-msg alert-${type}`;
-  alertBox.innerText = message;
-  alertBox.style.display = 'block';
-  setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
-};
-
-// Afiche / Kache modpas
-window.toggleVisibility = function (fieldId, btnEl) {
-  const input = document.getElementById(fieldId);
-  if (!input) return;
-  const icon = btnEl.querySelector('i');
-  if (input.type === 'password') {
-    input.type = 'text';
-    if (icon) icon.className = 'fa-solid fa-eye';
-  } else {
-    input.type = 'password';
-    if (icon) icon.className = 'fa-solid fa-eye-slash';
-  }
-};
-
-// Basculer ant Connexion ak Inscription
-window.switchToAuthTab = function (tab) {
-  const loginSec = document.getElementById('login-section');
-  const signupSec = document.getElementById('signup-section');
-  if (!loginSec || !signupSec) return;
-
-  if (tab === 'signup') {
-    loginSec.style.display = 'none';
-    signupSec.style.display = 'block';
-  } else {
-    signupSec.style.display = 'none';
-    loginSec.style.display = 'block';
-  }
-};
-
-// Louvri / Fèmen Meni SideBar
-window.toggleSidebar = function () {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
-  if (sidebar && overlay) {
-    sidebar.classList.toggle('active');
-    overlay.classList.toggle('active');
-  }
-};
-
-// Afiche / Maske Solde Itilizatè a
-window.toggleBalanceVisibility = function () {
-  const balanceText = document.getElementById('user-balance');
-  const eyeIcon = document.getElementById('eye-icon');
-  if (!balanceText || !eyeIcon) return;
-
-  if (isBalanceHidden) {
-    balanceText.innerText = currentBalanceValue;
-    eyeIcon.className = 'fa-solid fa-eye';
-    isBalanceHidden = false;
-  } else {
-    balanceText.innerText = '•••••• HTG';
-    eyeIcon.className = 'fa-solid fa-eye-slash';
-    isBalanceHidden = true;
-  }
-};
-
-// Controle Carousel Banner
-window.goToSlide = function (index) {
-  const wrapper = document.getElementById('carousel-wrapper');
-  const dots = document.querySelectorAll('.carousel-dots .dot');
-  if (!wrapper) return;
-
-  currentSlide = index;
-  wrapper.style.transform = `translateX(-${index * 100}%)`;
-
-  dots.forEach((dot, idx) => {
-    dot.classList.toggle('active', idx === index);
-  });
-};
-
-// Accordion pou FAQ
-window.toggleFaq = function (element) {
-  element.classList.toggle('active');
-};
-
-// ==========================================
-// 4. JESTYON MODAL AK SÈVIS ECHANJ (SPA UI)
-// ==========================================
-
-// Louvri modal enfòmasyon/sèvis
-window.openFeatureModal = function (modalId) {
-  const modal = document.getElementById(modalId);
-  if (modal) modal.classList.remove('hidden');
-};
-
-// Fèmen modal enfòmasyon/sèvis
-window.closeFeatureModal = function (modalId) {
-  const modal = document.getElementById(modalId);
-  if (modal) modal.classList.add('hidden');
-};
-
-// Fèmen modal lè w klike sou background
-window.closeFeatureModalOnOverlay = function (event, modalId) {
-  if (event.target.id === modalId) {
-    window.closeFeatureModal(modalId);
-  }
-};
-
-// Fèmen modal echanj espesifik
-window.femenModalEchanj = function () {
-  window.closeFeatureModal('modal-confirm-echanj');
-};
-
-// Ouvri modal echanj pou rezo
-window.openDialer = function (rezo) {
-  selectedNetwork = rezo;
-  const modal = document.getElementById('modal-confirm-echanj');
-  if (modal) {
-    modal.classList.remove('hidden');
-  }
-};
-
-// ==========================================
-// 5. VALIDATION RÈG SEKIRITE MODPAS
-// ==========================================
-function validatePasswordRules() {
-  const phoneVal = document.getElementById('signup-phone')?.value.trim() || '';
-  const pwdVal = document.getElementById('signup-password')?.value || '';
-  const confirmPwdVal = document.getElementById('signup-confirm-password')?.value || '';
-  const signupBtn = document.getElementById('signup-btn');
-
-  const rules = {
-    lowercase: /[a-z]/.test(pwdVal),
-    uppercase: /[A-Z]/.test(pwdVal),
-    number: /[0-9]/.test(pwdVal),
-    special: /[^a-zA-Z0-9]/.test(pwdVal),
-    length: pwdVal.length >= 8,
-    noSeqNum: !/(012|123|234|345|456|567|678|789|890)/.test(pwdVal),
-    noSeqLet: !/(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)/i.test(pwdVal),
-    noLogin: phoneVal ? !pwdVal.includes(phoneVal) : true,
-    noRepeat: !/(.)\1\1/.test(pwdVal)
-  };
-
-  const setRuleUI = (ruleId, isValid) => {
-    const el = document.getElementById(ruleId);
-    if (!el) return;
-    const icon = el.querySelector('.status-icon');
-    if (isValid) {
-      el.classList.add('valid');
-      el.classList.remove('invalid');
-      if (icon) icon.innerText = '✓';
+    if (!snapshot.exists() || !snapshot.val().fullName || !snapshot.val().departman) {
+      modalProfil.style.setProperty('display', 'flex', 'important');
     } else {
-      el.classList.add('invalid');
-      el.classList.remove('valid');
-      if (icon) icon.innerText = '✕';
+      modalProfil.style.setProperty('display', 'none', 'important');
     }
-  };
-
-  setRuleUI('rule-lowercase', rules.lowercase);
-  setRuleUI('rule-uppercase', rules.uppercase);
-  setRuleUI('rule-number', rules.number);
-  setRuleUI('rule-special', rules.special);
-  setRuleUI('rule-length', rules.length);
-  setRuleUI('rule-no-seq-num', rules.noSeqNum);
-  setRuleUI('rule-no-seq-let', rules.noSeqLet);
-  setRuleUI('rule-no-login', rules.noLogin);
-  setRuleUI('rule-no-repeat', rules.noRepeat);
-
-  const allValid = Object.values(rules).every(Boolean) && (pwdVal === confirmPwdVal) && (pwdVal.length > 0);
-  if (signupBtn) signupBtn.disabled = !allValid;
+  } catch (error) {
+    console.error("Erè nan tcheke profil la:", error);
+  }
 }
 
-// ==========================================
-// 6. EVENT LISTENERS & FORM SUBMISSIONS
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Listeners pou fòm modpas
-  const signupPwd = document.getElementById('signup-password');
-  const signupConfirmPwd = document.getElementById('signup-confirm-password');
-  const signupPhone = document.getElementById('signup-phone');
+  const selectDepatman = document.getElementById('select-depatman');
+  const selectKomin = document.getElementById('select-komin');
+  const btnSave = document.getElementById('btn-save-profil');
 
-  if (signupPwd) signupPwd.addEventListener('input', validatePasswordRules);
-  if (signupConfirmPwd) signupConfirmPwd.addEventListener('input', validatePasswordRules);
-  if (signupPhone) signupPhone.addEventListener('input', validatePasswordRules);
+  // Eleman pou sidebar ak modal gade profil
+  const btnOpenProfileView = document.getElementById('open-profile-modal');
+  const modalGadeProfil = document.getElementById('modal-gade-profil');
+  const closeGadeProfil = document.getElementById('close-gade-profil');
+  const btnLouvriModifye = document.getElementById('btn-louvri-modifye');
+  const modalProfil = document.getElementById('modal-profil');
 
-  // Auto-play Carousel chak 4 segonn
-  setInterval(() => {
-    const wrapper = document.getElementById('carousel-wrapper');
-    if (wrapper) {
-      currentSlide = (currentSlide + 1) % 3;
-      window.goToSlide(currentSlide);
-    }
-  }, 4000);
+  // Lè koneksyon an chanje
+  onAuthStateChanged(auth, (user) => {
+    checkUserProfileFirst(user);
+  });
 
-  // 1. FORM KONEKSYON (LOGIN)
-  const loginForm = document.getElementById('login-form');
-  if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const phoneInput = document.getElementById('login-phone').value.trim();
-      const passwordInput = document.getElementById('login-password').value;
-      const submitBtn = document.getElementById('login-btn');
-
-      if (phoneInput.length !== 8) {
-        window.showAlert("Tanpri antre yon nimewo telefòn 8 chif ki valab.");
-        return;
-      }
-
-      // Email entèn pou simule sous telefòn sou Firebase Auth
-      const formattedEmail = `509${phoneInput}@echanjplus.com`;
-
-      try {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="btn-text">Connexion en cours...</span>';
-
-        await signInWithEmailAndPassword(auth, formattedEmail, passwordInput);
-
-      } catch (error) {
-        console.error("Login error:", error);
-        let msg = "Erè: " + error.code;
-        if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-          msg = "Nimewo telefòn oswa modpas la pa korèk.";
-        } else if (error.code === 'auth/invalid-email') {
-          msg = "Fòma nimewo a pa valab pou sistèm nan.";
-        }
-        window.showAlert(msg);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span class="btn-text">Se connecter</span>';
-      }
-    });
-  }
-
-  // 2. FORM ENSKRIPSYON (SIGNUP)
-  const signupForm = document.getElementById('signup-form');
-  if (signupForm) {
-    signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const phone = document.getElementById('signup-phone').value.trim();
-      const password = document.getElementById('signup-password').value;
-      const confirmPassword = document.getElementById('signup-confirm-password').value;
-      const email = document.getElementById('signup-email').value.trim();
-      const referral = document.getElementById('signup-referral').value.trim();
-      const submitBtn = document.getElementById('signup-btn');
-
-      if (phone.length !== 8) {
-        window.showAlert("Nimewo telefòn lan dwe gen 8 chif.");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        window.showAlert("Modpas yo pa sanble.");
-        return;
-      }
-
-      const formattedAuthEmail = `509${phone}@echanjplus.com`;
-
-      try {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="btn-text">Création du compte...</span>';
-
-        // Kreyasyon kont Firebase Auth
-        const userCredential = await createUserWithEmailAndPassword(auth, formattedAuthEmail, password);
-        const user = userCredential.user;
-
-        // Anrejistre pwofil nan Firestore
-        await setDoc(doc(db, "users", user.uid), {
-          phone: phone,
-          email: email || null,
-          referralCode: referral || null,
-          balance: 0.00,
-          createdAt: serverTimestamp(),
-          role: "user"
+  // Jere depatman ak komin yo
+  if (selectDepatman) {
+    selectDepatman.addEventListener('change', (e) => {
+      const dep = e.target.value;
+      selectKomin.innerHTML = '<option value="">Chwazi yon komin</option>';
+      
+      if (komins[dep]) {
+        komins[dep].forEach(komin => {
+          const opt = document.createElement('option');
+          opt.value = komin;
+          opt.textContent = komin;
+          selectKomin.appendChild(opt);
         });
-
-        window.showAlert("Kont ou kreye ak siksè!", "success");
-
-      } catch (error) {
-        console.error("Signup error:", error);
-        let msg = "Erè: " + error.code;
-        if (error.code === 'auth/email-already-in-use') {
-          msg = "Nimewo telefòn sa a gen yon kont ki egziste deja.";
-        } else if (error.code === 'auth/weak-password') {
-          msg = "Modpas la tro fèb.";
-        }
-        window.showAlert(msg);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span class="btn-text">Suivant</span>';
       }
     });
   }
 
-  // 3. BOUTON DEKONEKSYON
-  const logoutBtn = document.getElementById('logout-btn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-      try {
-        await signOut(auth);
-        window.location.reload();
-      } catch (err) {
-        console.error("Logout Error:", err);
-      }
-    });
-  }
-
-  // 4. BOUTON KONFIMASYON FINAL TRANZAKSYON ECHANJ
-  const btnKonfimeFinal = document.getElementById('btn-konfime-final');
-  if (btnKonfimeFinal) {
-    btnKonfimeFinal.addEventListener('click', () => {
-      const pinInput = document.getElementById('input-pin-echanj');
-      if (!pinInput || pinInput.value.length !== 4) {
-        alert("Tanpri antre yon PIN 4 chif ki valab.");
+  // Anrejistreman fòm profil la
+  if (btnSave) {
+    btnSave.addEventListener('click', async () => {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        alert("Tanpri konekte anvan.");
         return;
       }
-      alert(`Tranzaksyon pou rezo ${selectedNetwork.toUpperCase()} anrejistre avèk siksè!`);
-      window.femenModalEchanj();
-      if (pinInput) pinInput.value = '';
+
+      const fullName = document.getElementById('input-profil-non').value.trim();
+      const phone = document.getElementById('input-profil-tel').value.trim();
+      const sex = document.getElementById('input-profil-seks').value;
+      const departman = document.getElementById('select-depatman').value;
+      const komin = document.getElementById('select-komin').value;
+      const zon = document.getElementById('input-profil-zon').value.trim();
+
+      if (!fullName || !phone || !sex || !departman || !komin || !zon) {
+        alert("Tanpri ranpli tout chan yo.");
+        return;
+      }
+
+      btnSave.innerText = "N ap anrejistre...";
+      btnSave.disabled = true;
+
+      try {
+        const profilData = {
+          fullName,
+          phone,
+          sex,
+          departman,
+          komin,
+          zon,
+          createdAt: new Date().toISOString()
+        };
+
+        const userRef = ref(rtdb, 'users/' + currentUser.uid);
+        await set(userRef, profilData);
+
+        alert("Profil ou an anrejistre avèk siksè!");
+        checkUserProfileFirst(currentUser);
+
+      } catch (error) {
+        console.error("Erè:", error);
+        alert("Gen yon erè ki rive: " + error.message);
+      } finally {
+        btnSave.innerText = "Anrejistre Profil";
+        btnSave.disabled = false;
+      }
     });
   }
-});
 
-// ==========================================
-// 7. SUIVI ETAT DE KONEKSYON (STATE OBSERVER)
-// ==========================================
-onAuthStateChanged(auth, async (user) => {
-  const authContainer = document.getElementById('auth-container');
-  const dashContainer = document.getElementById('dashboard-section');
-  const loader = document.getElementById('loading-overlay');
-
-  if (user) {
-    // Si itilizatè a konekte -> Kache auth, Afiche Dashboard
-    if (authContainer) authContainer.style.display = 'none';
-    if (dashContainer) dashContainer.style.display = 'block';
-
-    try {
-      // Reperan done pwofil nan Firestore
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (userDoc.exists()) {
-        const data = userDoc.data();
-        const phoneFormatted = `+509 ${data.phone || ''}`;
-        
-        const sidebarPhone = document.getElementById('sidebar-user-phone');
-        const displayPhone = document.getElementById('user-display-phone');
-        
-        if (sidebarPhone) sidebarPhone.innerText = phoneFormatted;
-        if (displayPhone) displayPhone.innerText = phoneFormatted;
-        
-        currentBalanceValue = `${(data.balance || 0).toFixed(2)} HTG`;
-        const userBalanceEl = document.getElementById('user-balance');
-        if (userBalanceEl && !isBalanceHidden) {
-          userBalanceEl.innerText = currentBalanceValue;
-        }
+  // --- LOJIK POU SIDEBAR LA RALE ENFÒMASYON PROFIL YO ---
+  if (btnOpenProfileView && modalGadeProfil) {
+    btnOpenProfileView.addEventListener('click', async () => {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        alert("Tanpri konekte anvan.");
+        return;
       }
-    } catch (e) {
-      console.error("Erreur chargement profil:", e);
-    }
-  } else {
-    // Si itilizatè a pa konekte -> Afiche auth, Kache Dashboard
-    if (dashContainer) dashContainer.style.display = 'none';
-    if (authContainer) authContainer.style.display = 'block';
+
+      try {
+        const userRef = ref(rtdb, 'users/' + currentUser.uid);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          
+          // Afiche done yo nan modal gade profil la
+          document.getElementById('lbl-profil-non').textContent = data.fullName || '';
+          document.getElementById('lbl-profil-tel').textContent = data.phone || '';
+          document.getElementById('lbl-profil-seks').textContent = data.sex || '';
+          document.getElementById('lbl-profil-depatman').textContent = data.departman || '';
+          document.getElementById('lbl-profil-komin').textContent = data.komin || '';
+          document.getElementById('lbl-profil-zon').textContent = data.zon || '';
+
+          modalGadeProfil.style.setProperty('display', 'flex', 'important');
+        } else {
+          alert("Poko gen done profil anrejistre pou ou.");
+        }
+      } catch (error) {
+        console.error("Erè nan chaje profil la:", error);
+      }
+
+      // Fèmen sidebar la otomatikman
+      if (typeof window.toggleSidebar === 'function') {
+        window.toggleSidebar();
+      }
+    });
   }
 
-  // Retire Loader la
-  if (loader) {
-    loader.style.opacity = '0';
-    setTimeout(() => { loader.style.display = 'none'; }, 300);
+  // Fèmen modal gade profil la
+  if (closeGadeProfil && modalGadeProfil) {
+    closeGadeProfil.addEventListener('click', () => {
+      modalGadeProfil.style.setProperty('display', 'none', 'important');
+    });
+  }
+
+  // Bouton pou pase soti nan gade profil pou ale nan modifye l
+  if (btnLouvriModifye && modalProfil && modalGadeProfil) {
+    btnLouvriModifye.addEventListener('click', async () => {
+      modalGadeProfil.style.setProperty('display', 'none', 'important');
+      
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const userRef = ref(rtdb, 'users/' + currentUser.uid);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          document.getElementById('input-profil-non').value = data.fullName || '';
+          document.getElementById('input-profil-tel').value = data.phone || '';
+          document.getElementById('input-profil-seks').value = data.sex || '';
+          document.getElementById('input-profil-zon').value = data.zon || '';
+          document.getElementById('select-depatman').value = data.departman || '';
+          
+          // Chaje komin yo dapre depatman an si sa nesesè
+          if (data.departman && komins[data.departman]) {
+            selectKomin.innerHTML = '<option value="">Chwazi yon komin</option>';
+            komins[data.departman].forEach(komin => {
+              const opt = document.createElement('option');
+              opt.value = komin;
+              opt.textContent = komin;
+              if (komin === data.komin) opt.selected = true;
+              selectKomin.appendChild(opt);
+            });
+          }
+        }
+      }
+
+      modalProfil.style.setProperty('display', 'flex', 'important');
+    });
   }
 });
