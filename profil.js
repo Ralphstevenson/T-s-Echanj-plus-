@@ -32,11 +32,17 @@ async function checkUserProfileFirst(user) {
     const userRef = ref(rtdb, 'users/' + user.uid);
     const snapshot = await get(userRef);
 
+    // Nou afiche sa l jwenn nan Console la pou nou ka wè egzakteman kisa k ap pase
+    console.log("UID Itilizatè a:", user.uid);
+    console.log("Done itilizatè a nan Firebase:", snapshot.val());
+
     // Si profil la pa egziste oswa li manke enfòmasyon kle, afiche fòm nan
     if (!snapshot.exists() || !snapshot.val().fullName || !snapshot.val().departman) {
       modalProfil.style.display = 'flex';
+      console.log("Fòm nan rete ouvè paske gen done ki manke oswa ki vid.");
     } else {
       modalProfil.style.display = 'none'; // Kache l si itilizatè a gentan gen profil li
+      console.log("Tout done yo la! Fòm nan dwe kache kounye a.");
     }
   } catch (error) {
     console.error("Erè nan tcheke profil la:", error);
