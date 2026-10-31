@@ -1,5 +1,5 @@
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const rtdb = getDatabase();
 const auth = getAuth();
@@ -18,11 +18,40 @@ const komins = {
   "Sidès": ["Jakmèl", "Bèl Anse", "Marigot", "Mayò", "Grand-Gosier", "Thai-Thail"]
 };
 
+// Fonksyon pou tcheke si itilizatè a gen profil deja nan Firebase
+async function checkUserProfile(user) {
+  const modalProfil = document.getElementById('modal-profil');
+  if (!modalProfil) return;
+
+  if (!user) {
+    modalProfil.style.display = 'none';
+    return;
+  }
+
+  try {
+    const userRef = ref(rtdb, 'users/' + user.uid);
+    const snapshot = await get(userRef);
+
+    // Si done yo pa egziste oswa yo manke yon chan kle tankou fullName oswa departman
+    if (!snapshot.exists() || !snapshot.val().fullName || !snapshot.val().departman) {
+      modalProfil.style.display = 'flex'; // Afiche fòm nan fòseman
+    } else {
+      modalProfil.style.display = 'none'; // Kache l si tout bagay an lòd
+    }
+  } catch (error) {
+    console.error("Erè nan tcheke profil la:", error);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const selectDepatman = document.getElementById('select-depatman');
   const selectKomin = document.getElementById('select-komin');
   const btnSave = document.getElementById('btn-save-profil');
-  const modalProfil = document.getElementById('modal-profil');
+
+  // Tcheke estati otantifikasyon an epi valide profil la an tan reyèl
+  onAuthStateChanged(auth, (user) => {
+    checkUserProfile(user);
+  });
 
   // Chanje komin yo otomatikman lè yo chwazi yon depatman
   if (selectDepatman) {
@@ -80,19 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
         await set(userRef, profilData);
 
         alert("Profil ou an anrejistre avèk siksè!");
-
-        // 1. Kache / Fèmen modal profil la imedyatman
-        if (modalProfil) {
-          modalProfil.style.display = 'none';
-        }
-
-        // 2. Vide fòmilè a pou l pa rete ak ansyen enfòmasyon yo
-        document.getElementById('input-profil-non').value = '';
-        document.getElementById('input-profil-tel').value = '';
-        document.getElementById('input-profil-seks').value = '';
-        document.getElementById('select-depatman').value = '';
-        selectKomin.innerHTML = '<option value="">Premye chwazi yon depatman</option>';
-        document.getElementById('input-profil-zon').value = '';
+        
+        // Fèmen modal la imedyatman apre l fin anrejistre baze sou fonksyon tcheke a
+        checkUserProfile(currentUser);
 
       } catch (error) {
         console.error("Erè:", error);
