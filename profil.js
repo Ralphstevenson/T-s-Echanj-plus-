@@ -18,13 +18,13 @@ const komins = {
   "Sidès": ["Jakmèl", "Bèl Anse", "Marigot", "Mayò", "Grand-Gosier", "Thai-Thail"]
 };
 
-// Fonksyon ki fè tcheke nan baz de done a ANVAN tout bagay
+// Fonksyon ki tcheke anvan tout bagay
 async function checkUserProfileFirst(user) {
   const modalProfil = document.getElementById('modal-profil');
   if (!modalProfil) return;
 
   if (!user) {
-    modalProfil.style.display = 'none';
+    modalProfil.style.setProperty('display', 'none', 'important');
     return;
   }
 
@@ -32,17 +32,11 @@ async function checkUserProfileFirst(user) {
     const userRef = ref(rtdb, 'users/' + user.uid);
     const snapshot = await get(userRef);
 
-    // Nou afiche sa l jwenn nan Console la pou nou ka wè egzakteman kisa k ap pase
-    console.log("UID Itilizatè a:", user.uid);
-    console.log("Done itilizatè a nan Firebase:", snapshot.val());
-
-    // Si profil la pa egziste oswa li manke enfòmasyon kle, afiche fòm nan
+    // Si done yo pa egziste oswa yo manke chan esansyèl yo
     if (!snapshot.exists() || !snapshot.val().fullName || !snapshot.val().departman) {
-      modalProfil.style.display = 'flex';
-      console.log("Fòm nan rete ouvè paske gen done ki manke oswa ki vid.");
+      modalProfil.style.setProperty('display', 'flex', 'important'); // Fòse l parèt pou l ranpli fòm nan
     } else {
-      modalProfil.style.display = 'none'; // Kache l si itilizatè a gentan gen profil li
-      console.log("Tout done yo la! Fòm nan dwe kache kounye a.");
+      modalProfil.style.setProperty('display', 'none', 'important'); // Kache l nèt si l gen done deja
     }
   } catch (error) {
     console.error("Erè nan tcheke profil la:", error);
@@ -54,12 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectKomin = document.getElementById('select-komin');
   const btnSave = document.getElementById('btn-save-profil');
 
-  // Lè koneksyon an chanje oswa paj la chaje, fè tcheke anvan tout bagay
+  // Tcheke estati itilizatè a depi nan konmansman
   onAuthStateChanged(auth, (user) => {
     checkUserProfileFirst(user);
   });
 
-  // Chanje komin yo otomatikman lè yo chwazi yon depatman
+  // Jere lis komin yo otomatikman lè yo chwazi depatman an
   if (selectDepatman) {
     selectDepatman.addEventListener('change', (e) => {
       const dep = e.target.value;
@@ -76,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Anrejistre profil la nan Firebase RTDB
+  // Anrejistreman done profil yo nan Firebase RTDB
   if (btnSave) {
     btnSave.addEventListener('click', async () => {
       const currentUser = auth.currentUser;
@@ -93,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const zon = document.getElementById('input-profil-zon').value.trim();
 
       if (!fullName || !phone || !sex || !departman || !komin || !zon) {
-        alert("Tanpri ranpli tout chan yo anvan ou kontinye.");
+        alert("Tanpri ranpli tout chan yo.");
         return;
       }
 
@@ -116,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         alert("Profil ou an anrejistre avèk siksè!");
         
-        // Re-tcheke imedyatman pou fòm nan fèmen otomatikman epi kite itilizatè a kontinye
+        // Apre l anrejistre, nou kache fòm nan imedyatman
         checkUserProfileFirst(currentUser);
 
       } catch (error) {
