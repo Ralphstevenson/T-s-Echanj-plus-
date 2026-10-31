@@ -18,8 +18,8 @@ const komins = {
   "Sidès": ["Jakmèl", "Bèl Anse", "Marigot", "Mayò", "Grand-Gosier", "Thai-Thail"]
 };
 
-// Fonksyon pou tcheke si itilizatè a gen profil deja nan Firebase
-async function checkUserProfile(user) {
+// Fonksyon ki tcheke anvan tout bagay
+async function checkUserProfileFirst(user) {
   const modalProfil = document.getElementById('modal-profil');
   if (!modalProfil) return;
 
@@ -32,11 +32,11 @@ async function checkUserProfile(user) {
     const userRef = ref(rtdb, 'users/' + user.uid);
     const snapshot = await get(userRef);
 
-    // Si done yo pa egziste oswa yo manke yon chan kle tankou fullName oswa departman
+    // Si itilizatè a pa gen done oswa li manke non / depatman
     if (!snapshot.exists() || !snapshot.val().fullName || !snapshot.val().departman) {
-      modalProfil.style.display = 'flex'; // Afiche fòm nan fòseman
+      modalProfil.style.display = 'flex'; // Fòse l wè fòm nan pou l ranpli l
     } else {
-      modalProfil.style.display = 'none'; // Kache l si tout bagay an lòd
+      modalProfil.style.display = 'none'; // Kite l pase sou sit la si l gentan gen l
     }
   } catch (error) {
     console.error("Erè nan tcheke profil la:", error);
@@ -48,12 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectKomin = document.getElementById('select-komin');
   const btnSave = document.getElementById('btn-save-profil');
 
-  // Tcheke estati otantifikasyon an epi valide profil la an tan reyèl
+  // Lè estati otantifikasyon an chanje, fè tcheke a imedyatman
   onAuthStateChanged(auth, (user) => {
-    checkUserProfile(user);
+    checkUserProfileFirst(user);
   });
 
-  // Chanje komin yo otomatikman lè yo chwazi yon depatman
+  // Jere lis komin yo otomatikman
   if (selectDepatman) {
     selectDepatman.addEventListener('change', (e) => {
       const dep = e.target.value;
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Anrejistreman done profil yo nan Firebase RTDB
+  // Lè l klike sou anrejistre
   if (btnSave) {
     btnSave.addEventListener('click', async () => {
       const currentUser = auth.currentUser;
@@ -110,8 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         alert("Profil ou an anrejistre avèk siksè!");
         
-        // Fèmen modal la imedyatman apre l fin anrejistre baze sou fonksyon tcheke a
-        checkUserProfile(currentUser);
+        // Apre l anrejistre, nou re-tcheke pou fòm nan kache epi kite l kontinye
+        checkUserProfileFirst(currentUser);
 
       } catch (error) {
         console.error("Erè:", error);
