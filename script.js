@@ -1,8 +1,22 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-const rtdb = getDatabase();
-const auth = getAuth();
+// Konfigirasyon Firebase pou Echanj Plus
+const firebaseConfig = {
+  apiKey: "AIzaSy...", 
+  authDomain: "echanjpluss.firebaseapp.com",
+  databaseURL: "https://echanjplus-default-rtdb.firebaseio.com",
+  projectId: "echanjplus",
+  storageBucket: "echanjplus.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+
+// 1. INISYALIZE APP A ANVAN TOUT BAGAY (Pou evite erè no-app)
+const app = initializeApp(firebaseConfig);
+const rtdb = getDatabase(app);
+const auth = getAuth(app);
 
 // Tout komin yo pa depatman an Ayiti
 const komins = {
@@ -143,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (snapshot.exists()) {
           const data = snapshot.val();
           
-          // Afiche done yo nan modal gade profil la
           document.getElementById('lbl-profil-non').textContent = data.fullName || '';
           document.getElementById('lbl-profil-tel').textContent = data.phone || '';
           document.getElementById('lbl-profil-seks').textContent = data.sex || '';
@@ -159,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Erè nan chaje profil la:", error);
       }
 
-      // Fèmen sidebar la otomatikman
       if (typeof window.toggleSidebar === 'function') {
         window.toggleSidebar();
       }
@@ -190,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById('input-profil-zon').value = data.zon || '';
           document.getElementById('select-depatman').value = data.departman || '';
           
-          // Chaje komin yo dapre depatman an si sa nesesè
           if (data.departman && komins[data.departman]) {
             selectKomin.innerHTML = '<option value="">Chwazi yon komin</option>';
             komins[data.departman].forEach(komin => {
