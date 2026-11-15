@@ -18,7 +18,7 @@ const komins = {
   "Sidès": ["Jakmèl", "Bèl Anse", "Marigot", "Mayò", "Grand-Gosier", "Thai-Thail"]
 };
 
-// Fonksyon ki tcheke anvan tout bagay
+// Fonksyon ki tcheke anvan tout bagay si itilizatè a gen profil
 async function checkUserProfileFirst(user) {
   const modalProfil = document.getElementById('modal-profil');
   if (!modalProfil) return;
@@ -32,11 +32,11 @@ async function checkUserProfileFirst(user) {
     const userRef = ref(rtdb, 'users/' + user.uid);
     const snapshot = await get(userRef);
 
-    // Si done yo pa egziste oswa yo manke chan esansyèl yo
+    // Si done yo pa egziste oswa yo manke chan esansyèl yo, nou fòse fòm nan parèt
     if (!snapshot.exists() || !snapshot.val().fullName || !snapshot.val().departman) {
-      modalProfil.style.setProperty('display', 'flex', 'important'); // Fòse l parèt pou l ranpli fòm nan
+      modalProfil.style.setProperty('display', 'flex', 'important');
     } else {
-      modalProfil.style.setProperty('display', 'none', 'important'); // Kache l nèt si l gen done deja
+      modalProfil.style.setProperty('display', 'none', 'important'); // Kache l si done yo la deja
     }
   } catch (error) {
     console.error("Erè nan tcheke profil la:", error);
@@ -57,15 +57,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (selectDepatman) {
     selectDepatman.addEventListener('change', (e) => {
       const dep = e.target.value;
-      selectKomin.innerHTML = '<option value="">Chwazi yon komin</option>';
-      
-      if (komins[dep]) {
-        komins[dep].forEach(komin => {
-          const opt = document.createElement('option');
-          opt.value = komin;
-          opt.textContent = komin;
-          selectKomin.appendChild(opt);
-        });
+      if (selectKomin) {
+        selectKomin.innerHTML = '<option value="">Chwazi yon komin</option>';
+        
+        if (komins[dep]) {
+          komins[dep].forEach(komin => {
+            const opt = document.createElement('option');
+            opt.value = komin;
+            opt.textContent = komin;
+            selectKomin.appendChild(opt);
+          });
+        }
       }
     });
   }
