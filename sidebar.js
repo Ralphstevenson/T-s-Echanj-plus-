@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Lè itilizatè a klike sou lyen profil la nan sidebar la
   if (btnOpenProfileView && modalGadeProfil) {
-    btnOpenProfileView.addEventListener('click', async () => {
+    btnOpenProfileView.addEventListener('click', async (e) => {
+      e.preventDefault(); // Anpeche nenpòt efè segondè nan lyen an
       const currentUser = auth.currentUser;
       if (!currentUser) {
         alert("Tanpri konekte anvan.");
@@ -68,7 +69,28 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById('input-profil-tel').value = data.phone || '';
           document.getElementById('input-profil-seks').value = data.sex || '';
           document.getElementById('input-profil-zon').value = data.zon || '';
-          // Depatman ak komin...
+          
+          // Pre-ranpli depatman ak komin yo kòrèkteman
+          const selectDepatman = document.getElementById('select-depatman');
+          const selectKomin = document.getElementById('select-komin');
+          
+          if (selectDepatman && data.departman) {
+            selectDepatman.value = data.departman;
+            
+            // Si tab komins la disponib nan global scope, nou mete l ajou
+            if (typeof komins !== 'undefined' && komins[data.departman] && selectKomin) {
+              selectKomin.innerHTML = '<option value="">Chwazi yon komin</option>';
+              komins[data.departman].forEach(komin => {
+                const opt = document.createElement('option');
+                opt.value = komin;
+                opt.textContent = komin;
+                if (komin === data.komin) {
+                  opt.selected = true;
+                }
+                selectKomin.appendChild(opt);
+              });
+            }
+          }
         }
       }
 
@@ -76,3 +98,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+        
