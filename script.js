@@ -350,7 +350,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalProfil = document.getElementById('modal-profil');
 
   if (btnOpenProfileView && modalGadeProfil) {
-    btnOpenProfileView.addEventListener('click', async () => {
+    btnOpenProfileView.addEventListener('click', async (e) => {
+      e.preventDefault(); // Anpeche nenpòt efè default sou lyen an
       const currentUser = auth.currentUser;
       if (!currentUser) {
         alert("Tanpri konekte anvan.");
