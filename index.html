@@ -36,6 +36,63 @@
     </div>
   </div>
 
+
+
+
+    <!-- KOUVÈT SIDEBAR (OVERLAY) -->
+  <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
+
+  <!-- SIDEBAR LA -->
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h3>Echanj Plus</h3>
+      <button class="close-sidebar-btn" onclick="window.toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="sidebar-user-info">
+      <div class="avatar"><i class="fa-solid fa-user"></i></div>
+      <div>
+        <p id="sidebar-user-phone">+509 --</p>
+      </div>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li>
+        <a href="javascript:void(0)" id="open-profile-modal">
+          <i class="fa-solid fa-id-card"></i>
+          <span>Profil</span>
+        </a>
+      </li>
+      <li>
+        <a href="javascript:void(0)" onclick="window.showSection('paj-echanj'); window.toggleSidebar();">
+          <i class="fa-solid fa-rotate"></i>
+          <span>Echanj</span>
+        </a>
+      </li>
+      <li>
+        <a href="javascript:void(0)" onclick="window.showSection('paj-retre'); window.toggleSidebar();">
+          <i class="fa-solid fa-money-bill-transfer"></i>
+          <span>Retrè</span>
+        </a>
+      </li>
+      <li>
+        <a href="javascript:void(0)" onclick="window.showSection('paj-istorik'); window.toggleSidebar();">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>Istorik</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <button id="logout-btn" class="sidebar-logout-btn">
+        <i class="fa-solid fa-right-from-bracket"></i> Dekonekte
+      </button>
+    </div>
+  </div>
+  
+
+  
+
   <!-- 1. SEKSYON OTANTIFIKASYON (AUTH) -->
   <div class="auth-container" id="auth-container">
     
