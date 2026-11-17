@@ -236,7 +236,7 @@ function validatePasswordRules() {
   if (signupBtn) signupBtn.disabled = !allValid;
 }
 
-// Fonksyon pou tcheke si itilizatè a gen profil ranpli nan RTDB
+// Fonksyon strik pou tcheke si itilizatè a gen profil ranpli
 async function checkUserProfileFirst(user) {
   const modalProfil = document.getElementById('modal-profil');
   if (!modalProfil) return;
@@ -250,9 +250,11 @@ async function checkUserProfileFirst(user) {
     const userRef = ref(rtdb, 'users/' + user.uid);
     const snapshot = await get(userRef);
 
-    if (!snapshot.exists() || !snapshot.val().fullName || !snapshot.val().departman) {
+    if (!snapshot.exists() || !snapshot.val().fullName || !snapshot.val().departman || !snapshot.val().komin) {
+      // Si done yo manke, louvri fòm pou ranpli l
       modalProfil.style.setProperty('display', 'flex', 'important');
     } else {
+      // Si done yo deja la nèt, fòse l fèmen san diskisyon
       modalProfil.style.setProperty('display', 'none', 'important');
     }
   } catch (error) {
@@ -331,7 +333,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         alert("Profil ou an anrejistre avèk siksè!");
-        checkUserProfileFirst(currentUser);
+        const modalProfil = document.getElementById('modal-profil');
+        if (modalProfil) modalProfil.style.setProperty('display', 'none', 'important');
       } catch (error) {
         console.error("Erè anrejistreman profil:", error);
         alert("Gen yon erè ki rive: " + error.message);
@@ -361,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
+        // Rale done yo anvan n louvri fenèt la pou evite wè '--'
         const snapshot = await get(ref(rtdb, 'users/' + currentUser.uid));
         if (snapshot.exists()) {
           const data = snapshot.val();
@@ -377,6 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
           setTxt('lbl-profil-komin', data.komin);
           setTxt('lbl-profil-zon', data.zon);
 
+          // Louvri modal la sèlman lè done yo fin chaje nèt
           modalGadeProfil.style.setProperty('display', 'flex', 'important');
         } else {
           alert("Poko gen done profil anrejistre pou ou.");
@@ -590,7 +595,7 @@ onAuthStateChanged(auth, async (user) => {
     if (authContainer) authContainer.style.display = 'none';
     if (dashContainer) dashContainer.style.display = 'block';
 
-    // Tcheke estati profil la nan RTDB
+    // Tcheke estati profil la nan RTDB yon fwa itilizatè a konekte
     await checkUserProfileFirst(user);
 
     try {
