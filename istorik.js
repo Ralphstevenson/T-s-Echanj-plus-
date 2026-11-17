@@ -75,8 +75,16 @@ async function renderCurrentView() {
     const txRef = ref(rtdb, 'transactions');
     const snapshot = await get(txRef);
 
+    // Mete non mwa aktyèl la nan banèv la
+    const monthsNames = ["JANVYE", "FEVRIYE", "MAS", "AVRI", "ME", "JEN", "JIYÈ", "OUT", "SEPTANM", "OKTÒB", "NOVANM", "DESANM"];
+    const now = new Date();
+    const currentMonthName = `${monthsNames[now.getMonth()]} ${now.getFullYear()}`;
+    const monthLabelEl = document.getElementById('txt-current-month');
+    if (monthLabelEl) monthLabelEl.textContent = currentMonthName;
+
     if (!snapshot.exists()) {
-      targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #888;">Pa gen okenn tranzaksyon ki anrejistre.</p>`;
+      targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #888;">Pa gen okenn tranzaksyon ki anrejistre.</p>";
+      updateSummaryBanner([], 0, 0);
       return;
     }
 
@@ -108,6 +116,24 @@ async function renderCurrentView() {
         return tx.createdAt.startsWith(selectedDate);
       });
     }
+
+    // Kalkile antre ak sòti pou tout tranzaksyon itilizatè a (oswa mwa aktyèl la)
+    let totalEntries = 0;
+    let totalSorties = 0;
+    let monthlySum = 0;
+
+    transactions.forEach(tx => {
+      const amt = parseFloat(tx.amount) || 0;
+      // Pa egzanp, si se depo oswa antre
+      if (tx.type === 'deposit' || tx.type === 'depot' || amt > 0 && tx.type !== 'retrait' && tx.type !== 'retre') {
+        totalEntries += amt;
+      } else {
+        totalSorties += amt;
+      }
+      monthlySum += amt;
+    });
+
+    updateSummaryBanner(transactions, totalEntries, totalSorties, monthlySum);
 
     if (filtered.length === 0) {
       targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #888;">Pa gen tranzaksyon pou kritè sa yo.</p>`;
@@ -144,6 +170,18 @@ async function renderCurrentView() {
   }
 }
 
+function updateSummaryBanner(transactions, entries, sorties, monthlySum) {
+  const totalCountEl = document.getElementById('txt-total-count');
+  const monthlyTotalEl = document.getElementById('txt-monthly-total');
+  const totalEntriesEl = document.getElementById('txt-total-entries');
+  const totalSortiesEl = document.getElementById('txt-total-sorties');
+
+  if (totalCountEl) totalCountEl.textContent = `TOTAL • ${transactions.length} tranzaksyon`;
+  if (monthlyTotalEl) monthlyTotalEl.textContent = `${monthlySum >= 0 ? '+' : ''}${monthlySum.toFixed(2)} HTG`;
+  if (totalEntriesEl) totalEntriesEl.textContent = `${entries.toFixed(2)} HTG`;
+  if (totalSortiesEl) totalSortiesEl.textContent = `${sorties.toFixed(2)} HTG`;
+}
+
 export function showReceipt(tx) {
   if (!tx) return;
 
@@ -156,7 +194,6 @@ export function showReceipt(tx) {
   setElText('rec-status', tx.status || '---');
   setElText('rec-amount', tx.amount ? `${tx.amount} HTG` : '---');
   setElText('rec-method', tx.rezo || tx.method || '---');
-  // Isit la l ap afiche nimewo sistèm lan ki te anrejistre nan echanj.js la
   setElText('rec-phone', tx.userPhone || tx.phone || '---');
   setElText('rec-date', tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---');
 
@@ -186,6 +223,10 @@ export function shareReceipt() {
   
   window.open(url, '_blank');
 }
+
+window.openReleveCompte = function() {
+  alert("Fonksyonalite Relevé de compte la ap disponib anpil byento!");
+};
 
 window.switchIstorik = switchIstorik;
 window.filterByDate = filterByDate;
