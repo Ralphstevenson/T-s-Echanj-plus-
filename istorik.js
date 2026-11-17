@@ -1,7 +1,11 @@
 async function renderCurrentView() {
   const activeUser = auth.currentUser || currentUser;
   if (!activeUser) {
-    console.log("Okenn itilizatè pa konekte kounye a.");
+    console.log("Itilizatè a poko otantifye.");
+    const targetContainer = document.getElementById(`list-${activeTab}`);
+    if (targetContainer) {
+      targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #9eaab6;">Tanpri konekte pou w wè istorik ou an.</p>`;
+    }
     return;
   }
 
@@ -14,10 +18,10 @@ async function renderCurrentView() {
   const selectedDate = dateInput ? dateInput.value : '';
 
   try {
+    // N ap rele chemen 'transactions' la dirèkteman nan baz de done a
     const txRef = ref(rtdb, 'transactions');
     const snapshot = await get(txRef);
 
-    // Mete non mwa aktyèl la nan banèv la
     const monthsNames = ["JANVYE", "FEVRIYE", "MAS", "AVRI", "ME", "JEN", "JIYÈ", "OUT", "SEPTANM", "OKTÒB", "NOVANM", "DESANM"];
     const now = new Date();
     const currentMonthName = `${monthsNames[now.getMonth()]} ${now.getFullYear()}`;
@@ -36,9 +40,9 @@ async function renderCurrentView() {
       const tx = childSnap.val();
       tx.firebaseId = childSnap.key;
       
-      // Nou asire n l ap pran uid a kòrèkteman san diskisyon
       const txUid = tx.uid || tx.userId;
       
+      // Nou tcheke si uid tranzaksyon an matche ak itilizatè k ap gade l la
       if (txUid && txUid.toString().trim() === activeUser.uid.toString().trim()) {
         transactions.push(tx);
       }
