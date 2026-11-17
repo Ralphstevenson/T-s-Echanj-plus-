@@ -36,6 +36,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Fè yo vin global pou lòt fichye separe (tankou sidebar.js) ka wè yo san erè
+window.auth = auth;
+window.db = db;
+
 // Variables Globales pou UI
 let isBalanceHidden = false;
 let currentBalanceValue = "0.00 HTG";
@@ -339,100 +343,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSaveProfil.innerText = "Anrejistre Profil";
         btnSaveProfil.disabled = false;
       }
-    });
-  }
-
-  // Sidebar link pou gade profil
-  const btnOpenProfileView = document.getElementById('open-profile-modal');
-  const modalGadeProfil = document.getElementById('modal-gade-profil');
-  const closeGadeProfil = document.getElementById('close-gade-profil');
-  const btnLouvriModifye = document.getElementById('btn-louvri-modifye');
-  const modalProfil = document.getElementById('modal-profil');
-
-  if (btnOpenProfileView && modalGadeProfil) {
-    btnOpenProfileView.addEventListener('click', async (e) => {
-      e.preventDefault(); // Anpeche nenpòt efè default sou lyen an
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        alert("Tanpri konekte anvan.");
-        return;
-      }
-
-      try {
-        const userSnap = await getDoc(doc(db, "users", currentUser.uid));
-        if (userSnap.exists()) {
-          const data = userSnap.data();
-          
-          const setTxt = (id, val) => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = val || '--';
-          };
-
-          setTxt('lbl-profil-non', data.fullName);
-          setTxt('lbl-profil-tel', data.phone);
-          setTxt('lbl-profil-seks', data.sex);
-          setTxt('lbl-profil-depatman', data.departman);
-          setTxt('lbl-profil-komin', data.komin);
-          setTxt('lbl-profil-zon', data.zon);
-
-          modalGadeProfil.style.setProperty('display', 'flex', 'important');
-        } else {
-          alert("Poko gen done profil anrejistre pou ou.");
-        }
-      } catch (error) {
-        console.error("Erè nan chaje profil la:", error);
-      }
-
-      if (typeof window.toggleSidebar === 'function') {
-        window.toggleSidebar();
-      }
-    });
-  }
-
-  if (closeGadeProfil && modalGadeProfil) {
-    closeGadeProfil.addEventListener('click', () => {
-      modalGadeProfil.style.setProperty('display', 'none', 'important');
-    });
-  }
-
-  if (btnLouvriModifye && modalProfil && modalGadeProfil) {
-    btnLouvriModifye.addEventListener('click', async () => {
-      modalGadeProfil.style.setProperty('display', 'none', 'important');
-      
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        const userSnap = await getDoc(doc(db, "users", currentUser.uid));
-        if (userSnap.exists()) {
-          const data = userSnap.data();
-          
-          const setVal = (id, val) => {
-            const el = document.getElementById(id);
-            if (el) el.value = val || '';
-          };
-
-          setVal('input-profil-non', data.fullName);
-          setVal('input-profil-tel', data.phone);
-          setVal('input-profil-seks', data.sex);
-          setVal('input-profil-zon', data.zon);
-          
-          const depSelect = document.getElementById('select-depatman');
-          if (depSelect) {
-            depSelect.value = data.departman || '';
-            if (data.departman && komins[data.departman] && selectKomin) {
-              selectKomin.innerHTML = '<option value="">Chwazi yon komin</option>';
-              komins[data.departman].forEach(komin => {
-                const opt = document.createElement('option');
-                opt.value = komin;
-                opt.textContent = komin;
-                if (komin === data.komin) opt.selected = true;
-                selectKomin.appendChild(opt);
-              });
-            }
-          }
-        }
-      }
-
-      modalProfil.style.setProperty('display', 'flex', 'important');
     });
   }
 
