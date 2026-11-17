@@ -8,28 +8,143 @@
 }
 
 /* Container principal de la section */
-#paj-historique {
+#paj-istorik {
   padding: 15px;
   max-width: 480px;
   margin: 0 auto;
 }
 
-#paj-historique .section-header {
+#paj-istorik .section-header {
   text-align: left;
   margin-bottom: 15px;
 }
 
-#paj-historique .section-header h2 {
-  color: #1a1a1a;
+#paj-istorik .section-header h2 {
+  color: #ffffff;
   font-size: 22px;
   font-weight: 700;
   margin: 0 0 4px 0;
 }
 
-#paj-historique .section-header p {
-  color: #666666;
+#paj-istorik .section-header p {
+  color: #9eaab6;
   font-size: 13px;
   margin: 0;
+}
+
+/* BANÈV TOTAL MWA A (Monthly Summary Banner) */
+.monthly-summary-banner {
+  background: linear-gradient(135deg, #131a22 0%, #192026 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 18px;
+  border-radius: 14px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.monthly-summary-banner .month-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #9eaab6;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.monthly-summary-banner .monthly-total-amount {
+  font-size: 28px;
+  font-weight: 800;
+  color: #00e676;
+  margin: 6px 0 2px 0;
+}
+
+.monthly-summary-banner p {
+  font-size: 12px;
+  color: #9eaab6;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* BOUTON RELEVÉ DE COMPTE */
+.statement-btn-container {
+  margin-bottom: 15px;
+}
+
+.btn-statement {
+  width: 100%;
+  padding: 14px;
+  background: #192026;
+  color: #00e676;
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-statement:hover {
+  background: rgba(0, 230, 118, 0.08);
+  border-color: #00e676;
+}
+
+/* BWAT ESTATISTIK (Entrées / Sorties) */
+.stats-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.stat-card-box {
+  background: #192026;
+  padding: 12px 14px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-card-box.inflow .stat-icon-circle {
+  background: rgba(0, 230, 118, 0.15);
+  color: #00e676;
+}
+
+.stat-card-box.outflow .stat-icon-circle {
+  background: rgba(255, 82, 82, 0.15);
+  color: #ff5252;
+}
+
+.stat-icon-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-info span {
+  font-size: 11px;
+  color: #9eaab6;
+  font-weight: 500;
+}
+
+.stat-info strong {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 700;
+  margin-top: 2px;
 }
 
 /* Boîte de filtre par date */
@@ -37,16 +152,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #ffffff;
-  padding: 8px 12px;
-  border-radius: 10px;
+  background: #192026;
+  padding: 10px 14px;
+  border-radius: 12px;
   margin-bottom: 15px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .date-filter-box i {
-  color: #007bff;
+  color: #00e676;
   font-size: 16px;
 }
 
@@ -56,24 +170,25 @@
   background: transparent;
   font-size: 13px;
   font-weight: 600;
-  color: #333333;
+  color: #ffffff;
   flex: 1;
 }
 
 .date-filter-box button {
   border: none;
-  background: #f1f5f9;
-  color: #64748b;
+  background: #232d36;
+  color: #9eaab6;
   font-size: 11px;
-  padding: 5px 8px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.2s ease;
 }
 
 .date-filter-box button:hover {
-  background: #e2e8f0;
+  background: #2d3843;
+  color: #ffffff;
 }
 
 /* Structure des onglets (Tabs) */
@@ -81,43 +196,33 @@
   display: flex;
   gap: 4px;
   margin-bottom: 15px;
-  background: #eef2f5;
+  background: #192026;
   padding: 4px;
   border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Boutons inactifs */
 .tab-btn-ist {
   flex: 1;
   padding: 10px 4px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   border: none;
   background: transparent;
   border-radius: 8px;
   cursor: pointer;
-  color: #666666;
+  color: #9eaab6;
   outline: none;
   transition: all 0.2s ease-in-out;
 }
 
-/* STYLE DU BOUTON ACTIF (Fond blanc avec ombre douce) */
+/* STYLE DU BOUTON ACTIF */
 .tab-btn-ist.active {
-  background: #ffffff !important;
-  color: #007bff !important;
+  background: #232d36 !important;
+  color: #00e676 !important;
   font-weight: 700 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-  border-radius: 8px;
-}
-
-/* Groupes chronologiques dans la liste */
-.time-group-header {
-  font-size: 12px;
-  font-weight: 700;
-  color: #007bff;
-  margin: 15px 0 8px 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Elements de transaction */
@@ -127,41 +232,16 @@
   align-items: center;
   padding: 14px;
   margin-bottom: 10px;
-  background: #ffffff;
+  background: #192026;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
 .transaction-item:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-}
-
-/* État vide */
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: #757575;
-}
-
-.empty-state i {
-  font-size: 40px;
-  color: #cccccc;
-  margin-bottom: 10px;
-}
-
-.empty-state p {
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
-  color: #555555;
-}
-
-.empty-state small {
-  font-size: 12px;
-  color: #888888;
+  border-color: rgba(0, 230, 118, 0.3);
 }
 
 /* Modal Reçu de Transaction */
@@ -171,7 +251,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -179,13 +259,14 @@
 }
 
 .modal-content {
-  background: #ffffff;
+  background: #192026;
   width: 90%;
   max-width: 400px;
   padding: 22px;
   border-radius: 16px;
   position: relative;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
 .close-modal {
@@ -194,34 +275,35 @@
   right: 18px;
   font-size: 24px;
   cursor: pointer;
-  color: #888888;
+  color: #9eaab6;
   transition: color 0.2s ease;
 }
 
 .close-modal:hover {
-  color: #333333;
+  color: #ffffff;
 }
 
 .modal-content h3 {
   margin: 0;
-  color: #2c3e50;
+  color: #ffffff;
   font-size: 18px;
   font-weight: 700;
 }
 
 .modal-content p {
-  color: #757575;
+  color: #9eaab6;
   font-size: 12px;
   margin-top: 2px;
 }
 
 .modal-content > div:nth-child(3) {
-  background: #f8f9fa;
+  background: #131a22;
   padding: 14px;
   border-radius: 10px;
   margin-bottom: 18px;
   font-size: 13px;
-  color: #333333;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .modal-content > div:nth-child(3) p {
@@ -238,7 +320,7 @@
 .modal-content > div:nth-child(4) button:nth-child(1) {
   flex: 1;
   padding: 11px;
-  background: #6c757d;
+  background: #2d3843;
   color: #ffffff;
   font-size: 13px;
   font-weight: bold;
