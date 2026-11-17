@@ -10,12 +10,12 @@ import {
   signOut 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  getDoc, 
+  getDatabase, 
+  ref, 
+  set, 
+  get, 
   serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 // ==========================================
 // 2. KONFIGIRASYON FIREBASE
@@ -34,11 +34,7 @@ const firebaseConfig = {
 // Inisyalizasyon Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Fè yo vin global pou lòt fichye separe (tankou sidebar.js) ka wè yo san erè
-window.auth = auth;
-window.db = db;
+const rtdb = getDatabase(app);
 
 // Variables Globales pou UI
 let isBalanceHidden = false;
@@ -240,7 +236,7 @@ function validatePasswordRules() {
   if (signupBtn) signupBtn.disabled = !allValid;
 }
 
-// Fonksyon pou tcheke si itilizatè a gen profil ranpli nan Firestore
+// Fonksyon pou tcheke si itilizatè a gen profil ranpli nan RTDB
 async function checkUserProfileFirst(user) {
   const modalProfil = document.getElementById('modal-profil');
   if (!modalProfil) return;
@@ -251,10 +247,10 @@ async function checkUserProfileFirst(user) {
   }
 
   try {
-    const userDocRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userDocRef);
+    const userRef = ref(rtdb, 'users/' + user.uid);
+    const snapshot = await get(userRef);
 
-    if (!userSnap.exists() || !userSnap.data().fullName || !userSnap.data().departman) {
+    if (!snapshot.exists() || !snapshot.val().fullName || !snapshot.val().departman) {
       modalProfil.style.setProperty('display', 'flex', 'important');
     } else {
       modalProfil.style.setProperty('display', 'none', 'important');
@@ -298,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Anrejistre profil nan Firestore
+  // Anrejistre profil nan RTDB
   if (btnSaveProfil) {
     btnSaveProfil.addEventListener('click', async () => {
       const currentUser = auth.currentUser;
@@ -323,16 +319,16 @@ document.addEventListener('DOMContentLoaded', () => {
       btnSaveProfil.disabled = true;
 
       try {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        await setDoc(userDocRef, {
+        const userRef = ref(rtdb, 'users/' + currentUser.uid);
+        await set(userRef, {
           fullName,
           phone,
           sex,
           departman,
           komin,
           zon,
-          updatedAt: serverTimestamp()
-        }, { merge: true });
+          updatedAt: new Date().toISOString()
+        });
 
         alert("Profil ou an anrejistre avèk siksè!");
         checkUserProfileFirst(currentUser);
@@ -343,6 +339,106 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSaveProfil.innerText = "Anrejistre Profil";
         btnSaveProfil.disabled = false;
       }
+    });
+  }
+
+  // ==========================================
+  // LOJIK SIDEBAR AK MODAL GADE/MODIFYE PROFIL (RTDB)
+  // ==========================================
+  const btnOpenProfileView = document.getElementById('open-profile-modal');
+  const modalGadeProfil = document.getElementById('modal-gade-profil');
+  const closeGadeProfil = document.getElementById('close-gade-profil');
+  const btnLouvriModifye = document.getElementById('btn-louvri-modifye');
+  const modalProfil = document.getElementById('modal-profil');
+
+  if (btnOpenProfileView && modalGadeProfil) {
+    btnOpenProfileView.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        alert("Tanpri konekte anvan.");
+        return;
+      }
+
+      try {
+        const snapshot = await get(ref(rtdb, 'users/' + currentUser.uid));
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          
+          const setTxt = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val || '--';
+          };
+
+          setTxt('lbl-profil-non', data.fullName);
+          setTxt('lbl-profil-tel', data.phone);
+          setTxt('lbl-profil-seks', data.sex);
+          setTxt('lbl-profil-depatman', data.departman);
+          setTxt('lbl-profil-komin', data.komin);
+          setTxt('lbl-profil-zon', data.zon);
+
+          modalGadeProfil.style.setProperty('display', 'flex', 'important');
+        } else {
+          alert("Poko gen done profil anrejistre pou ou.");
+        }
+      } catch (error) {
+        console.error("Erè nan chaje profil la:", error);
+      }
+
+      if (typeof window.toggleSidebar === 'function') {
+        window.toggleSidebar();
+      }
+    });
+  }
+
+  if (closeGadeProfil && modalGadeProfil) {
+    closeGadeProfil.addEventListener('click', () => {
+      modalGadeProfil.style.setProperty('display', 'none', 'important');
+    });
+  }
+
+  if (btnLouvriModifye && modalProfil && modalGadeProfil) {
+    btnLouvriModifye.addEventListener('click', async () => {
+      modalGadeProfil.style.setProperty('display', 'none', 'important');
+      
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        try {
+          const snapshot = await get(ref(rtdb, 'users/' + currentUser.uid));
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            
+            const setVal = (id, val) => {
+              const el = document.getElementById(id);
+              if (el) el.value = val || '';
+            };
+
+            setVal('input-profil-non', data.fullName);
+            setVal('input-profil-tel', data.phone);
+            setVal('input-profil-seks', data.sex);
+            setVal('input-profil-zon', data.zon);
+            
+            const depSelect = document.getElementById('select-depatman');
+            if (depSelect) {
+              depSelect.value = data.departman || '';
+              if (data.departman && komins[data.departman] && selectKomin) {
+                selectKomin.innerHTML = '<option value="">Chwazi yon komin</option>';
+                komins[data.departman].forEach(komin => {
+                  const opt = document.createElement('option');
+                  opt.value = komin;
+                  opt.textContent = komin;
+                  if (komin === data.komin) opt.selected = true;
+                  selectKomin.appendChild(opt);
+                });
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Erè nan chaje modifye profil:", err);
+        }
+      }
+
+      modalProfil.style.setProperty('display', 'flex', 'important');
     });
   }
 
@@ -426,12 +522,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const userCredential = await createUserWithEmailAndPassword(auth, formattedAuthEmail, password);
         const user = userCredential.user;
 
-        await setDoc(doc(db, "users", user.uid), {
+        await set(ref(rtdb, 'users/' + user.uid), {
           phone: phone,
           email: email || null,
           referralCode: referral || null,
           balance: 0.00,
-          createdAt: serverTimestamp(),
+          createdAt: new Date().toISOString(),
           role: "user"
         });
 
@@ -494,13 +590,13 @@ onAuthStateChanged(auth, async (user) => {
     if (authContainer) authContainer.style.display = 'none';
     if (dashContainer) dashContainer.style.display = 'block';
 
-    // Tcheke estati profil la nan Firestore
+    // Tcheke estati profil la nan RTDB
     await checkUserProfileFirst(user);
 
     try {
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (userDoc.exists()) {
-        const data = userDoc.data();
+      const snapshot = await get(ref(rtdb, 'users/' + user.uid));
+      if (snapshot.exists()) {
+        const data = snapshot.val();
         const phoneFormatted = `+509 ${data.phone || ''}`;
         
         const sidebarPhone = document.getElementById('sidebar-user-phone');
