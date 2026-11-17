@@ -682,13 +682,45 @@
 
 
 <!-- SEKSYON ISTORIK TRANZAKSYON -->
-<section id="paj-istorik" class="app-section">
+<section id="paj-istorik" class="app-section" style="display: none;">
   <div class="container">
     
     <!-- ENTÈT PAJ LA -->
     <div class="section-header">
       <h2>Istorik Tranzaksyon</h2>
       <p>Gade tout aktivite ou te fè sou kont ou an.</p>
+    </div>
+
+    <!-- BANÈV TOTAL MWA A -->
+    <div class="monthly-summary-banner">
+      <span class="month-label" id="txt-current-month">NOVANM 2026</span>
+      <h3 id="txt-monthly-total" class="monthly-total-amount">+0.00 HTG</h3>
+      <p id="txt-total-count">TOTAL • 0 tranzaksyon</p>
+    </div>
+
+    <!-- BOUTON RELEVÉ DE COMPTE -->
+    <div class="statement-btn-container" style="margin-bottom: 16px;">
+      <button type="button" class="btn-statement" onclick="window.openReleveCompte()" style="width: 100%; padding: 12px; background: #192026; color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3); border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <i class="fa-solid fa-file-lines"></i> Relevé de compte
+      </button>
+    </div>
+
+    <!-- BWAT ESTATISTIK (ENTRÉES / SORTIES) -->
+    <div class="stats-cards-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+      <div class="stat-card-box inflow" style="background: #192026; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; border: 1px solid #2d3843;">
+        <div class="stat-icon-circle" style="width: 36px; height: 36px; background: rgba(0, 230, 118, 0.15); color: #00e676; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="stat-info" style="display: flex; flex-direction: column;">
+          <span style="font-size: 0.75rem; color: #9eaab6;">Entre</span>
+          <strong id="txt-total-entries" style="font-size: 0.9rem; color: #ffffff;">0.00 HTG</strong>
+        </div>
+      </div>
+      <div class="stat-card-box outflow" style="background: #192026; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; border: 1px solid #2d3843;">
+        <div class="stat-icon-circle" style="width: 36px; height: 36px; background: rgba(255, 82, 82, 0.15); color: #ff5252; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-up"></i></div>
+        <div class="stat-info" style="display: flex; flex-direction: column;">
+          <span style="font-size: 0.75rem; color: #9eaab6;">Sòti</span>
+          <strong id="txt-total-sorties" style="font-size: 0.9rem; color: #ffffff;">0.00 HTG</strong>
+        </div>
+      </div>
     </div>
 
     <!-- SEKSYON FILTÈ PA DAT -->
