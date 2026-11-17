@@ -9,26 +9,28 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnOpenProfileView && modalGadeProfil) {
     btnOpenProfileView.addEventListener('click', async (e) => {
       e.preventDefault(); // Anpeche nenpòt efè segondè nan lyen an
-      const currentUser = auth.currentUser;
+      
+      const currentUser = window.auth?.currentUser;
       if (!currentUser) {
         alert("Tanpri konekte anvan.");
         return;
       }
 
       try {
-        const userRef = ref(rtdb, 'users/' + currentUser.uid);
-        const snapshot = await get(userRef);
+        // Nou itilize Firestore pou chache enfòmasyon itilizatè a
+        const userDocRef = window.doc(window.db, "users", currentUser.uid);
+        const userSnap = await window.getDoc(userDocRef);
 
-        if (snapshot.exists()) {
-          const data = snapshot.val();
+        if (userSnap.exists()) {
+          const data = userSnap.data();
           
           // Afiche done yo nan modal la
-          document.getElementById('lbl-profil-non').textContent = data.fullName || '';
-          document.getElementById('lbl-profil-tel').textContent = data.phone || '';
-          document.getElementById('lbl-profil-seks').textContent = data.sex || '';
-          document.getElementById('lbl-profil-depatman').textContent = data.departman || '';
-          document.getElementById('lbl-profil-komin').textContent = data.komin || '';
-          document.getElementById('lbl-profil-zon').textContent = data.zon || '';
+          document.getElementById('lbl-profil-non').textContent = data.fullName || '--';
+          document.getElementById('lbl-profil-tel').textContent = data.phone || '--';
+          document.getElementById('lbl-profil-seks').textContent = data.sex || '--';
+          document.getElementById('lbl-profil-depatman').textContent = data.departman || '--';
+          document.getElementById('lbl-profil-komin').textContent = data.komin || '--';
+          document.getElementById('lbl-profil-zon').textContent = data.zon || '--';
 
           // Louvri fenèt modal kote l ap wè enfòmasyon l yo
           modalGadeProfil.style.setProperty('display', 'flex', 'important');
@@ -58,39 +60,43 @@ document.addEventListener('DOMContentLoaded', () => {
     btnLouvriModifye.addEventListener('click', async () => {
       modalGadeProfil.style.setProperty('display', 'none', 'important');
       
-      // Chaje done yo nan fòm nan pou l ka modifye yo
-      const currentUser = auth.currentUser;
+      const currentUser = window.auth?.currentUser;
       if (currentUser) {
-        const userRef = ref(rtdb, 'users/' + currentUser.uid);
-        const snapshot = await get(userRef);
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          document.getElementById('input-profil-non').value = data.fullName || '';
-          document.getElementById('input-profil-tel').value = data.phone || '';
-          document.getElementById('input-profil-seks').value = data.sex || '';
-          document.getElementById('input-profil-zon').value = data.zon || '';
+        try {
+          const userDocRef = window.doc(window.db, "users", currentUser.uid);
+          const userSnap = await window.getDoc(userDocRef);
           
-          // Pre-ranpli depatman ak komin yo kòrèkteman
-          const selectDepatman = document.getElementById('select-depatman');
-          const selectKomin = document.getElementById('select-komin');
-          
-          if (selectDepatman && data.departman) {
-            selectDepatman.value = data.departman;
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            document.getElementById('input-profil-non').value = data.fullName || '';
+            document.getElementById('input-profil-tel').value = data.phone || '';
+            document.getElementById('input-profil-seks').value = data.sex || '';
+            document.getElementById('input-profil-zon').value = data.zon || '';
             
-            // Si tab komins la disponib nan global scope, nou mete l ajou
-            if (typeof komins !== 'undefined' && komins[data.departman] && selectKomin) {
-              selectKomin.innerHTML = '<option value="">Chwazi yon komin</option>';
-              komins[data.departman].forEach(komin => {
-                const opt = document.createElement('option');
-                opt.value = komin;
-                opt.textContent = komin;
-                if (komin === data.komin) {
-                  opt.selected = true;
-                }
-                selectKomin.appendChild(opt);
-              });
+            // Pre-ranpli depatman ak komin yo kòrèkteman
+            const selectDepatman = document.getElementById('select-depatman');
+            const selectKomin = document.getElementById('select-komin');
+            
+            if (selectDepatman && data.departman) {
+              selectDepatman.value = data.departman;
+              
+              // Si tab komins la disponib nan global scope, nou mete l ajou
+              if (typeof komins !== 'undefined' && komins[data.departman] && selectKomin) {
+                selectKomin.innerHTML = '<option value="">Chwazi yon komin</option>';
+                komins[data.departman].forEach(komin => {
+                  const opt = document.createElement('option');
+                  opt.value = komin;
+                  opt.textContent = komin;
+                  if (komin === data.komin) {
+                    opt.selected = true;
+                  }
+                  selectKomin.appendChild(opt);
+                });
+              }
             }
           }
+        } catch (err) {
+          console.error("Erè nan chaje done modifye yo:", err);
         }
       }
 
@@ -98,4 +104,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-        
