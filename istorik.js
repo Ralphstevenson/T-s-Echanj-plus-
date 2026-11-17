@@ -1,11 +1,68 @@
-async function renderCurrentView() {
-  const activeUser = auth.currentUser || currentUser;
-  if (!activeUser) {
-    console.log("Itilizatè a poko otantifye.");
+import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const app = getApp();
+const auth = getAuth(app);
+const rtdb = getDatabase(app);
+
+let activeTab = 'tout';
+let currentUser = null;
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  if (user) {
+    renderCurrentView();
+  } else {
     const targetContainer = document.getElementById(`list-${activeTab}`);
     if (targetContainer) {
       targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #9eaab6;">Tanpri konekte pou w wè istorik ou an.</p>`;
     }
+  }
+});
+
+export function switchIstorik(targetId, btn) {
+  activeTab = targetId;
+
+  const buttons = document.querySelectorAll('.tab-btn-ist');
+  buttons.forEach(b => b.classList.remove('active'));
+
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const defaultBtn = document.querySelector(`.tab-btn-ist[onclick*="'${targetId}'"]`);
+    if (defaultBtn) defaultBtn.classList.add('active');
+  }
+
+  document.querySelectorAll('.ist-content').forEach(div => {
+    div.classList.add('hidden');
+    div.innerHTML = '';
+  });
+
+  const targetContainer = document.getElementById(`list-${targetId}`);
+  if (targetContainer) {
+    targetContainer.classList.remove('hidden');
+  }
+
+  renderCurrentView();
+}
+
+export function filterByDate() {
+  renderCurrentView();
+}
+
+export function clearDateFilter() {
+  const dateInput = document.getElementById('filter-date-input');
+  if (dateInput) {
+    dateInput.value = '';
+  }
+  renderCurrentView();
+}
+
+async function renderCurrentView() {
+  const activeUser = auth.currentUser || currentUser;
+  if (!activeUser) {
+    console.log("Itilizatè a poko otantifye.");
     return;
   }
 
@@ -18,10 +75,10 @@ async function renderCurrentView() {
   const selectedDate = dateInput ? dateInput.value : '';
 
   try {
-    // N ap rele chemen 'transactions' la dirèkteman nan baz de done a
     const txRef = ref(rtdb, 'transactions');
     const snapshot = await get(txRef);
 
+    // Mete non mwa aktyèl la nan banèv la
     const monthsNames = ["JANVYE", "FEVRIYE", "MAS", "AVRI", "ME", "JEN", "JIYÈ", "OUT", "SEPTANM", "OKTÒB", "NOVANM", "DESANM"];
     const now = new Date();
     const currentMonthName = `${monthsNames[now.getMonth()]} ${now.getFullYear()}`;
@@ -42,7 +99,7 @@ async function renderCurrentView() {
       
       const txUid = tx.uid || tx.userId;
       
-      // Nou tcheke si uid tranzaksyon an matche ak itilizatè k ap gade l la
+      // Nou tcheke si uid a matche oswa nou aksepte l si l egal a id itilizatè k ap kouri a
       if (txUid && txUid.toString().trim() === activeUser.uid.toString().trim()) {
         transactions.push(tx);
       }
@@ -115,3 +172,67 @@ async function renderCurrentView() {
     targetContainer.innerHTML = `<p style="text-align:center; color: #ff5252; padding: 20px;">Erè nan chajman done yo.</p>`;
   }
 }
+
+function updateSummaryBanner(transactions, entries, sorties, monthlySum) {
+  const totalCountEl = document.getElementById('txt-total-count');
+  const monthlyTotalEl = document.getElementById('txt-monthly-total');
+  const totalEntriesEl = document.getElementById('txt-total-entries');
+  const totalSortiesEl = document.getElementById('txt-total-sorties');
+
+  if (totalCountEl) totalCountEl.textContent = `TOTAL • ${transactions.length} tranzaksyon`;
+  if (monthlyTotalEl) monthlyTotalEl.textContent = `${monthlySum >= 0 ? '+' : ''}${monthlySum.toFixed(2)} HTG`;
+  if (totalEntriesEl) totalEntriesEl.textContent = `${entries.toFixed(2)} HTG`;
+  if (totalSortiesEl) totalSortiesEl.textContent = `${sorties.toFixed(2)} HTG`;
+}
+
+export function showReceipt(tx) {
+  if (!tx) return;
+
+  const setElText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
+  setElText('rec-id', tx.firebaseId || tx.id || '---');
+  setElText('rec-status', tx.status || '---');
+  setElText('rec-amount', tx.amount ? `${tx.amount} HTG` : '---');
+  setElText('rec-method', tx.rezo || tx.method || '---');
+  setElText('rec-phone', tx.userPhone || tx.phone || '---');
+  setElText('rec-date', tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---');
+
+  const modal = document.getElementById('modal-receipt');
+  if (modal) modal.classList.remove('hidden');
+}
+
+window.showReceiptFromGlobal = function(txId) {
+  if (window.allUserTransactions) {
+    const found = window.allUserTransactions.find(t => t.firebaseId === txId);
+    if (found) showReceipt(found);
+  }
+};
+
+export function closeReceipt() {
+  const modal = document.getElementById('modal-receipt');
+  if (modal) modal.classList.add('hidden');
+}
+
+export function shareReceipt() {
+  const id = document.getElementById('rec-id')?.textContent || '';
+  const amount = document.getElementById('rec-amount')?.textContent || '';
+  const status = document.getElementById('rec-status')?.textContent || '';
+
+  const text = `Reçu Echanj Plus\nID: ${id}\nMontant: ${amount}\nStatut: ${status}`;
+  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  
+  window.open(url, '_blank');
+}
+
+window.openReleveCompte = function() {
+  alert("Fonksyonalite Relevé de compte la ap disponib anpil byento!");
+};
+
+window.switchIstorik = switchIstorik;
+window.filterByDate = filterByDate;
+window.clearDateFilter = clearDateFilter;
+window.closeReceipt = closeReceipt;
+window.shareReceipt = shareReceipt;
