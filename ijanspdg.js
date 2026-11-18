@@ -1,10 +1,12 @@
-window.inspectTransactionDetails = async function() {
+window.inspectTransactionDetails = async function(event) {
+  if (event) event.preventDefault(); // Sa anpeche paj la retounen monte anwo
+
   const inputEl = document.getElementById('delayed-trx-id');
   const errorEl = document.getElementById('trx-error-msg');
   const cardEl = document.getElementById('trx-details-card');
 
   if (!inputEl) return;
-  const rawId = inputEl.value.trim(); // Pa mete .toUpperCase() la a pou l pa kraze ti lèt yo
+  const rawId = inputEl.value.trim();
 
   errorEl.style.display = 'none';
   errorEl.textContent = '';
@@ -25,7 +27,6 @@ window.inspectTransactionDetails = async function() {
   }
 
   try {
-    // N ap rale tout tranzaksyon yo oswa n ap chache l dirèkteman
     const txRef = ref(rtdb, `transactions`);
     const snapshot = await get(txRef);
 
@@ -38,10 +39,9 @@ window.inspectTransactionDetails = async function() {
     let foundTx = null;
     snapshot.forEach((childSnap) => {
       const key = childSnap.key;
-      // N ap konpare san n pa gade sou gwo osinon ti lèt (case-insensitive)
       if (key.toLowerCase() === rawId.toLowerCase()) {
         foundTx = childSnap.val();
-        foundTx.id = key; // Nou pran egzakteman bon kle ki nan Firebase la
+        foundTx.id = key;
       }
     });
 
@@ -80,6 +80,9 @@ window.inspectTransactionDetails = async function() {
     document.getElementById('det-date').textContent = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---';
 
     cardEl.style.display = 'block';
+
+    // Fè paj la desann yon ti kras pou moun nan wè kat rezilta a parèt klè
+    cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   } catch (err) {
     console.error("Erè nan verifikasyon ID a:", err);
