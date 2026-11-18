@@ -331,6 +331,8 @@
 
 
 
+
+
 <!-- SANT KALKIL AK SUIVI TRANZAKSYON (24H) -->
 <div class="exchange-hub-section" style="background: #131a22; margin: 0 16px 16px; padding: 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.06);">
   
@@ -344,10 +346,10 @@
     </span>
   </div>
 
-  <!-- PATI 1: KALKILATÈ ECHANJ -->
+  <!-- PATI 1: KALKILATÈ ECHANJ (Sèlman kalkil, pa gen bouton WhatsApp dirèk ankò) -->
   <div style="background: #0b0f19; padding: 12px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 14px;">
     <span style="font-size: 11px; color: #00e676; font-weight: 700; display: block; margin-bottom: 8px;">
-      1. Kalkile & Fè yon Nouvo Echanj (Frè 16.5%)
+      1. Kalkile Kantite Minit (Frè 16.5%)
     </span>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
@@ -370,14 +372,13 @@
         <span style="font-size: 10px; color: #9eaab6; display: block;">W ap resevwa:</span>
         <strong id="calc-result" style="font-size: 15px; color: #00e676;">0.00 HTG</strong>
       </div>
-      
-      <button onclick="window.sendExchangeToWhatsApp()" style="background: #00e676; color: #0b0f19; border: none; padding: 9px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-        <i class="fa-brands fa-whatsapp" style="font-size: 13px;"></i> Tranzakte
-      </button>
+      <div style="font-size: 10px; color: #9eaab6; font-style: italic;">
+        * Kalkil otomatik
+      </div>
     </div>
   </div>
 
-  <!-- PATI 2: RECHÈCH & SUIVI PWOFON TRANZAKSYON (SEKIRIZE) -->
+  <!-- PATI 2: RECHÈCH & SUIVI PWOFON TRANZAKSYON (Règ 12è tan) -->
   <div style="background: rgba(255, 193, 7, 0.05); padding: 12px; border-radius: 14px; border: 1px solid rgba(255, 193, 7, 0.25);">
     <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
       <i class="fa-solid fa-magnifying-glass-dollar" style="color: #fbbf24; font-size: 13px;"></i>
@@ -385,18 +386,18 @@
     </div>
     
     <p style="font-size: 10px; color: #cbd5e1; line-height: 1.4; margin: 0 0 10px 0;">
-      Antre <b>ID Tranzaksyon</b> ou a pou w wè tout enfòmasyon ak estati l an dirèk sou kont ou a:
+      Antre <b>ID Tranzaksyon</b> ou a pou w wè estati l. (Remak: Suivi a ouvri sèlman si tranzaksyon an gen plis pase 12 èdtan depi l poko valide).
     </p>
 
-    <!-- Ba Rechèch ID ak Egzanp sèlman -->
+    <!-- Ba Rechèch ID -->
     <div style="display: flex; gap: 8px;">
-      <input type="text" id="delayed-trx-id" placeholder="Egzanp: TRX-1045" style="flex: 1; background: #0b0f19; border: 1px solid rgba(255, 193, 7, 0.3); color: #ffffff; padding: 9px 12px; border-radius: 10px; font-size: 12px; outline: none; text-transform: uppercase;">
+      <input type="text" id="delayed-trx-id" placeholder="Eg: -P5AZFan..." style="flex: 1; background: #0b0f19; border: 1px solid rgba(255, 193, 7, 0.3); color: #ffffff; padding: 9px 12px; border-radius: 10px; font-size: 12px; outline: none; text-transform: uppercase;">
       
       <button id="btn-search-trx" onclick="window.inspectTransactionDetails()" style="background: #fbbf24; color: #0b0f19; border: none; padding: 0 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">
         Verifye ID
       </button>
     </div>
-    <span id="trx-error-msg" style="display: none; font-size: 10px; color: #ff5252; margin-top: 6px;">Tanpri antre yon ID tranzaksyon ki valid.</span>
+    <span id="trx-error-msg" style="display: none; font-size: 10px; color: #ff5252; margin-top: 6px; display: block;"></span>
 
     <!-- REZILTA DETAYE TRANZAKSYON AN (Kache pa defo) -->
     <div id="trx-details-card" style="display: none; margin-top: 12px; background: #0b0f19; border: 1px solid rgba(0, 230, 118, 0.3); border-radius: 12px; padding: 12px;">
@@ -407,36 +408,33 @@
 
       <div style="font-size: 11px; color: #cbd5e1; line-height: 1.7;">
         <div style="display: flex; justify-content: space-between;">
-          <span style="color: #9eaab6;">Sèvis / Rezo:</span>
+          <span style="color: #9eaab6;">Rezo:</span>
           <strong id="det-network" style="color: #ffffff;">--</strong>
         </div>
         <div style="display: flex; justify-content: space-between;">
-          <span style="color: #9eaab6;">Montan Voye:</span>
+          <span style="color: #9eaab6;">Montan Minit:</span>
           <strong id="det-amount" style="color: #ffffff;">--</strong>
         </div>
         <div style="display: flex; justify-content: space-between;">
-          <span style="color: #9eaab6;">Montan pou Resevwa:</span>
+          <span style="color: #9eaab6;">Pou Resevwa:</span>
           <strong id="det-receive" style="color: #00e676;">--</strong>
         </div>
         <div style="display: flex; justify-content: space-between;">
-          <span style="color: #9eaab6;">Nimewo Reseptè:</span>
-          <strong id="det-phone" style="color: #ffffff;">--</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span style="color: #9eaab6;">Dat & Lè:</span>
+          <span style="color: #9eaab6;">Dat Kreye:</span>
           <span id="det-date" style="color: #9eaab6; font-size: 10px;">--</span>
         </div>
       </div>
 
-      <!-- Bouton pou voye fich konplè sa a bay Admin nan sou WhatsApp -->
+      <!-- Bouton Asistans Rapid (WhatsApp ak enfòmasyon yo) -->
       <button onclick="window.sendFullClaimToWhatsApp()" style="width: 100%; margin-top: 10px; background: #00e676; color: #0b0f19; border: none; padding: 9px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px;">
-        <i class="fa-brands fa-whatsapp" style="font-size: 13px;"></i> Voye Fich sa bay Admin (+509 3413-215)
+        <i class="fa-brands fa-whatsapp" style="font-size: 13px;"></i> Asistans Rapid (Voye bay Admin)
       </button>
     </div>
   </div>
 
 </div>
 
+        
         
 
         <!-- DÈNYE TRANZAKSYON YO -->
