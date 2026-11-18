@@ -329,29 +329,39 @@
           </div>
         </div>
 
-        <!-- NOUVÈL AK SÈVIS YO -->
-        <div class="news-section-pro">
-          <div class="news-header-pro">
-            <h3>Latest News & Analytics</h3>
-            <i class="fa-solid fa-chevron-right"></i>
+      <!-- KÈK KALKILATÈ ECHANJ RAPID -->
+        <div class="quick-calc-section" style="background: #131a22; margin: 0 16px 16px; padding: 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.06);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 14px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-calculator" style="color: #00e676;"></i> Kalkilatè Echanj Rapid
+            </h3>
+            <span style="font-size: 10px; color: #00e676; background: rgba(0, 230, 118, 0.1); padding: 3px 8px; border-radius: 8px;">16.5% Frè</span>
           </div>
 
-          <div class="news-list-pro">
-            <div class="news-card-pro">
-              <img src="https://i.postimg.cc/1V5TGWk0/23403511-3d46-4460-a669-ccf2a18d8ec3.png" alt="Digicel">
-              <div class="news-info-pro">
-                <h4>Echanj Plus | Digicel Gateway</h4>
-                <p>Frè: <b>16.5%</b> | Limit Minimòm: 100 HTG. Tretman an dirèk san pèdi tan.</p>
-              </div>
-            </div>
+          <!-- Seleksyon Rezo -->
+          <div style="margin-bottom: 10px;">
+            <label style="font-size: 11px; color: #9eaab6; display: block; margin-bottom: 4px;">Chwazi Rezo a:</label>
+            <select id="calc-network" style="width: 100%; background: #0b0f19; border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 10px; border-radius: 12px; font-size: 12px; outline: none;">
+              <option value="digicel">Digicel Minit ➔ MonCash</option>
+              <option value="natcom">Natcom Minit ➔ NatCash</option>
+            </select>
+          </div>
 
-            <div class="news-card-pro">
-              <img src="https://i.postimg.cc/Jt19CnsV/recharge-com-natcom-product-card.png" alt="Natcom">
-              <div class="news-info-pro">
-                <h4>Echanj Plus | Natcom Gateway</h4>
-                <p>Frè: <b>16.5%</b> | Limit Minimòm: 100 HTG. Validasyon otomatik.</p>
-              </div>
+          <!-- Antre Minit -->
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 11px; color: #9eaab6; display: block; margin-bottom: 4px;">Kantite Minit w ap voye:</label>
+            <input type="number" id="calc-amount" placeholder="Eg: 500" style="width: 100%; background: #0b0f19; border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 10px; border-radius: 12px; font-size: 13px; outline: none; box-sizing: border-box;" oninput="calculateExchange()">
+          </div>
+
+          <!-- Rezilta Kalkil la -->
+          <div style="background: #0b0f19; padding: 12px; border-radius: 12px; border: 1px dashed rgba(0, 230, 118, 0.3); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="font-size: 10px; color: #9eaab6; display: block;">Montan w ap resevwa:</span>
+              <strong id="calc-result" style="font-size: 16px; color: #00e676;">0.00 HTG</strong>
             </div>
+            <button onclick="alert('Pou konplete tranzaksyon sa a, kontakte admin lan oswa ale nan seksyon transfè a!')" style="background: #00e676; color: #0b0f19; border: none; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;">
+              Tranzakte
+            </button>
           </div>
         </div>
 
