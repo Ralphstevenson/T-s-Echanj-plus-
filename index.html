@@ -215,10 +215,16 @@
 </div>
     
 
-    <!-- HEADER -->
+<!-- HEADER -->
     <header class="dash-header">
       <div class="header-left">
         <button class="menu-toggle-btn" onclick="window.toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+        
+        <!-- Isit la nou ajoute logo a -->
+        <div class="header-logo-container" style="display: flex; align-items: center; gap: 8px;">
+          <img src="chemen-logo-ou-a.jpg" alt="Echanj Plus Logo" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(0, 230, 118, 0.4);">
+        </div>
+
         <div class="head-user">
           <span class="welcome-label">Byenveni,</span>
           <h4 id="user-display-phone" class="user-phone">+509 --</h4>
@@ -231,7 +237,8 @@
         <strong id="user-balance" class="balance-text">0.00 HTG</strong>
         <button class="eye-btn" onclick="window.toggleBalanceVisibility()"><i class="fa-solid fa-eye" id="eye-icon"></i></button>
       </div>
-    </header>
+    </header>  
+   
 
     <!-- KONTNI AKÈY LA -->
     <main class="dash-content">
