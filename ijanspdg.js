@@ -1,28 +1,16 @@
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-const app = getApp();
-const rtdb = getDatabase(app);
-const auth = getAuth(app); // Nou pote l pou otantifikasyon an
-
-let currentInspectedTx = null;
-
 window.inspectTransactionDetails = async function() {
   const inputEl = document.getElementById('delayed-trx-id');
   const errorEl = document.getElementById('trx-error-msg');
   const cardEl = document.getElementById('trx-details-card');
 
   if (!inputEl) return;
-  const rawId = inputEl.value.trim();
+  const rawId = inputEl.value.trim(); // Pa mete .toUpperCase() la a pou l pa kraze ti lèt yo
 
-  // Reset koòdone yo
   errorEl.style.display = 'none';
   errorEl.textContent = '';
   cardEl.style.display = 'none';
   currentInspectedTx = null;
 
-  // --- RÈG 1: TCHEKE SI ITILIZATÈ A KONEKTE REELMAN (SEKIRITE ANPLIS) ---
   const currentUser = auth.currentUser;
   if (!currentUser) {
     errorEl.textContent = "Tanpri konekte ankò pou w ka fè verifye tranzaksyon sa a.";
@@ -37,18 +25,33 @@ window.inspectTransactionDetails = async function() {
   }
 
   try {
-    // N ap ale chache tranzaksyon an dirèkteman ak ID l anba rasin 'transactions' la nan Firebase
-    const txRef = ref(rtdb, `transactions/${rawId}`);
+    // N ap rale tout tranzaksyon yo oswa n ap chache l dirèkteman
+    const txRef = ref(rtdb, `transactions`);
     const snapshot = await get(txRef);
 
     if (!snapshot.exists()) {
+      errorEl.textContent = "Pa gen okenn tranzaksyon nan sistèm nan.";
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    let foundTx = null;
+    snapshot.forEach((childSnap) => {
+      const key = childSnap.key;
+      // N ap konpare san n pa gade sou gwo osinon ti lèt (case-insensitive)
+      if (key.toLowerCase() === rawId.toLowerCase()) {
+        foundTx = childSnap.val();
+        foundTx.id = key; // Nou pran egzakteman bon kle ki nan Firebase la
+      }
+    });
+
+    if (!foundTx) {
       errorEl.textContent = "ID tranzaksyon sa a pa egziste nan sistèm nan.";
       errorEl.style.display = 'block';
       return;
     }
 
-    const tx = snapshot.val();
-    tx.id = snapshot.key;
+    const tx = foundTx;
     currentInspectedTx = tx;
 
     // --- RÈG 12 ÈDTAN AN ---
@@ -57,7 +60,6 @@ window.inspectTransactionDetails = async function() {
       const now = new Date().getTime();
       const diffHours = (now - txTime) / (1000 * 60 * 60);
 
-      // Si tranzaksyon an poko gen 12 èdtan epi estati l poko siksè
       if (diffHours < 12 && tx.status !== 'success') {
         errorEl.textContent = `Tranzaksyon sa a poko gen 12 èdtan (l gen anviwon ${Math.floor(diffHours)}è tan). Suivi ak asistans rapid disponib sèlman si 12 èdtan pase epi li toujou poko valide.`;
         errorEl.style.display = 'block';
@@ -65,7 +67,7 @@ window.inspectTransactionDetails = async function() {
       }
     }
 
-    // Si l pase tout kondisyon yo, n ap afiche detay yo nan kat la
+    // Afiche detay yo
     document.getElementById('det-id').textContent = tx.id;
     
     const statusEl = document.getElementById('det-status');
@@ -84,36 +86,4 @@ window.inspectTransactionDetails = async function() {
     errorEl.textContent = "Gen yon ti pwoblèm teknik. Eseye ankò.";
     errorEl.style.display = 'block';
   }
-};
-
-// --- RÈG 2: VOYE TOUT ENFÒMASYON YO AK MESAJ LA SOU WHATSAPP ADMIN NAN ---
-window.sendFullClaimToWhatsApp = function() {
-  if (!currentInspectedTx) return;
-
-  const tx = currentInspectedTx;
-  const adminPhone = "+50934132015"; // Nimewo WhatsApp ofisyèl ou kòm Admin
-  const userMsgInput = document.getElementById('client-claim-msg');
-  const customMsg = userMsgInput ? userMsgInput.value.trim() : '';
-
-  // N ap rale tou UID itilizatè k ap fè reklamasyon an pou sekirite
-  const currentUser = auth.currentUser;
-  const userEmail = currentUser ? currentUser.email : 'N/A';
-
-  let message = `*REKLAMASYON / SUIVI TRANZAKSYON*\n\n` +
-    `🆔 *ID Tranzaksyon:* ${tx.id}\n` +
-    `👤 *ID Itilizatè:* ${tx.uid || currentUser.uid}\n` +
-    `📧 *Imèl Itilizatè:* ${userEmail}\n` +
-    `📶 *Rezo:* ${tx.rezo || 'N/A'}\n` +
-    `💰 *Montan:* ${tx.amount} HTG\n` +
-    `📌 *Estati:* ${tx.status}\n` +
-    `📅 *Dat Tranzaksyon:* ${tx.createdAt || 'N/A'}\n`;
-
-  if (customMsg) {
-    message += `\n💬 *Mesaj Kliyan:* ${customMsg}\n`;
-  }
-
-  message += `\n_M ap mande asistans rapid sou tranzaksyon sa a ki depase delè a._`;
-
-  const url = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
-  window.open(url, '_blank');
 };
