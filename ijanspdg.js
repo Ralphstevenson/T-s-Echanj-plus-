@@ -8,21 +8,49 @@ const auth = getAuth(app);
 
 let currentInspectedTx = null;
 
+function renderTransactionCard(tx) {
+  currentInspectedTx = tx;
+
+  document.getElementById('det-id').textContent = tx.id;
+  
+  const statusEl = document.getElementById('det-status');
+  statusEl.textContent = tx.status === 'success' ? 'Validé' : (tx.status === 'pending' ? 'An atant' : tx.status);
+  statusEl.style.background = tx.status === 'success' ? 'rgba(0, 230, 118, 0.15)' : 'rgba(251, 191, 36, 0.15)';
+  statusEl.style.color = tx.status === 'success' ? '#00e676' : '#fbbf24';
+
+  document.getElementById('det-network').textContent = (tx.rezo || tx.type || 'N/A').toUpperCase();
+  document.getElementById('det-amount').textContent = `${tx.amount || 0} HTG`;
+  document.getElementById('det-date').textContent = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---';
+}
+
+// Retabli dènye chèk la si l te egziste deja nan memwa navigatè a
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTx = localStorage.getItem('echanj_last_inspected_tx');
+  if (savedTx) {
+    try {
+      const tx = JSON.parse(savedTx);
+      renderTransactionCard(tx);
+      const inputEl = document.getElementById('delayed-trx-id');
+      if (inputEl) inputEl.value = tx.id;
+    } catch (e) {
+      console.error("Erè nan chaj localStorage:", e);
+    }
+  }
+});
+
 window.inspectTransactionDetails = async function(event) {
   if (event) event.preventDefault();
 
   const inputEl = document.getElementById('delayed-trx-id');
   const errorEl = document.getElementById('trx-error-msg');
-  const cardEl = document.getElementById('trx-details-card');
 
   if (!inputEl) return;
   const rawId = inputEl.value.trim();
 
-  // Reset UI
   errorEl.style.display = 'none';
   errorEl.textContent = '';
-  cardEl.style.display = 'none';
   currentInspectedTx = null;
+  localStorage.removeItem('echanj_last_inspected_tx');
 
   const currentUser = auth.currentUser;
   if (!currentUser) {
@@ -68,7 +96,6 @@ window.inspectTransactionDetails = async function(event) {
     }
 
     tx.id = finalId;
-    currentInspectedTx = tx;
 
     // --- RÈG 12 ÈDTAN AN ---
     if (tx.createdAt) {
@@ -83,24 +110,12 @@ window.inspectTransactionDetails = async function(event) {
       }
     }
 
-    // Afiche detay yo nan kat la
-    document.getElementById('det-id').textContent = tx.id;
-    
-    const statusEl = document.getElementById('det-status');
-    statusEl.textContent = tx.status === 'success' ? 'Validé' : (tx.status === 'pending' ? 'An atant' : tx.status);
-    statusEl.style.background = tx.status === 'success' ? 'rgba(0, 230, 118, 0.15)' : 'rgba(251, 191, 36, 0.15)';
-    statusEl.style.color = tx.status === 'success' ? '#00e676' : '#fbbf24';
-
-    document.getElementById('det-network').textContent = (tx.rezo || tx.type || 'N/A').toUpperCase();
-    document.getElementById('det-amount').textContent = `${tx.amount || 0} HTG`;
-    document.getElementById('det-date').textContent = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---';
-
-    cardEl.style.display = 'block';
-    cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    localStorage.setItem('echanj_last_inspected_tx', JSON.stringify(tx));
+    renderTransactionCard(tx);
 
   } catch (err) {
     console.error("Erè nan verifikasyon ID a:", err);
-    errorEl.textContent = "Gen yon ti pwoblèm pèmisyon oswa teknik nan Firebase. Tcheke règ baz de done w yo.";
+    errorEl.textContent = "Gen yon ti pwoblèm pèmisyon oswa teknik nan Firebase.";
     errorEl.style.display = 'block';
   }
 };
