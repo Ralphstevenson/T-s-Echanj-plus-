@@ -149,3 +149,31 @@ window.sendFullClaimToWhatsApp = function() {
   const url = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
 };
+
+
+
+// Fonksyon pou siveye chak fwa itilizatè a retounen sou akey la pou fòse kat la rete vizib
+function ensureTransactionCardPersistence() {
+  const savedTx = localStorage.getItem('echanj_last_inspected_tx');
+  const cardEl = document.getElementById('trx-details-card');
+  
+  // Si nou gen yon tranzaksyon anrejistre men kat la vin kache (display none)
+  if (savedTx && cardEl && (cardEl.style.display === 'none' || window.getComputedStyle(cardEl).display === 'none')) {
+    try {
+      const tx = JSON.parse(savedTx);
+      renderTransactionCard(tx);
+      const inputEl = document.getElementById('delayed-trx-id');
+      if (inputEl && !inputEl.value) inputEl.value = tx.id;
+    } catch (e) {
+      console.error("Erè nan pèsistans kat la:", e);
+    }
+  }
+}
+
+// N ap mete yon obsèvatè sou tout klik ki fèt nan paj la pou rann li entelijan
+document.addEventListener('click', () => {
+  setTimeout(ensureTransactionCardPersistence, 100);
+});
+
+// N ap verifye l tou lè paj la chaje nèt
+window.addEventListener('DOMContentLoaded', ensureTransactionCardPersistence);
