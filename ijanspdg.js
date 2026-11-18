@@ -1,5 +1,15 @@
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const app = getApp();
+const rtdb = getDatabase(app);
+const auth = getAuth(app);
+
+let currentInspectedTx = null;
+
 window.inspectTransactionDetails = async function(event) {
-  if (event) event.preventDefault(); // Sa anpeche paj la retounen monte anwo
+  if (event) event.preventDefault();
 
   const inputEl = document.getElementById('delayed-trx-id');
   const errorEl = document.getElementById('trx-error-msg');
@@ -8,6 +18,7 @@ window.inspectTransactionDetails = async function(event) {
   if (!inputEl) return;
   const rawId = inputEl.value.trim();
 
+  // Reset UI
   errorEl.style.display = 'none';
   errorEl.textContent = '';
   cardEl.style.display = 'none';
@@ -15,7 +26,7 @@ window.inspectTransactionDetails = async function(event) {
 
   const currentUser = auth.currentUser;
   if (!currentUser) {
-    errorEl.textContent = "Tanpri konekte ankò pou w ka fè verifye tranzaksyon sa a.";
+    errorEl.textContent = "Tanpri konekte ankò pou w ka fè verifikasyon an.";
     errorEl.style.display = 'block';
     return;
   }
@@ -67,7 +78,7 @@ window.inspectTransactionDetails = async function(event) {
       }
     }
 
-    // Afiche detay yo
+    // Afiche detay yo nan kat la
     document.getElementById('det-id').textContent = tx.id;
     
     const statusEl = document.getElementById('det-status');
@@ -80,8 +91,6 @@ window.inspectTransactionDetails = async function(event) {
     document.getElementById('det-date').textContent = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---';
 
     cardEl.style.display = 'block';
-
-    // Fè paj la desann yon ti kras pou moun nan wè kat rezilta a parèt klè
     cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   } catch (err) {
@@ -89,4 +98,35 @@ window.inspectTransactionDetails = async function(event) {
     errorEl.textContent = "Gen yon ti pwoblèm teknik. Eseye ankò.";
     errorEl.style.display = 'block';
   }
+};
+
+// Fonksyon pou voye tout detay yo sou WhatsApp Admin
+window.sendFullClaimToWhatsApp = function() {
+  if (!currentInspectedTx) return;
+
+  const tx = currentInspectedTx;
+  const adminPhone = "+50934132015"; // Nimewo WhatsApp ofisyèl ou
+  const userMsgInput = document.getElementById('client-claim-msg');
+  const customMsg = userMsgInput ? userMsgInput.value.trim() : '';
+
+  const currentUser = auth.currentUser;
+  const userEmail = currentUser ? currentUser.email : 'N/A';
+
+  let message = `*REKLAMASYON / SUIVI TRANZAKSYON*\n\n` +
+    `🆔 *ID Tranzaksyon:* ${tx.id}\n` +
+    `👤 *ID Itilizatè:* ${tx.uid || currentUser.uid}\n` +
+    `📧 *Imèl Itilizatè:* ${userEmail}\n` +
+    `📶 *Rezo:* ${tx.rezo || 'N/A'}\n` +
+    `💰 *Montan:* ${tx.amount} HTG\n` +
+    `📌 *Estati:* ${tx.status}\n` +
+    `📅 *Dat Tranzaksyon:* ${tx.createdAt || 'N/A'}\n`;
+
+  if (customMsg) {
+    message += `\n💬 *Mesaj Kliyan:* ${customMsg}\n`;
+  }
+
+  message += `\n_M ap mande asistans rapid sou tranzaksyon sa a ki depase delè a._`;
+
+  const url = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank');
 };
