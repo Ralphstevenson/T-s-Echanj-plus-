@@ -1,146 +1,115 @@
-// ==========================================
-// 1. KALKILATÈ ECHANJ RAPID (16.5% Frè)
-// ==========================================
+import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const app = getApp();
+const rtdb = getDatabase(app);
+
+// Global variable pou estoke tranzaksyon ki jwenn nan chèk la
+let currentInspectedTx = null;
+
+// 1. Fonksyon Kalkilatè Minit ak Frè 16.5%
 window.calculateExchange = function() {
-  const amountInput = document.getElementById('calc-amount').value;
-  const resultDisplay = document.getElementById('calc-result');
+  const amountInput = document.getElementById('calc-amount');
+  const resultEl = document.getElementById('calc-result');
   
-  let minutes = parseFloat(amountInput);
-  if (isNaN(minutes) || minutes <= 0) {
-    resultDisplay.innerText = "0.00 HTG";
-    return;
-  }
-  
-  // Ap aplike frè 16.5% (retire 16.5%, kidonk miltipliye pa 0.835)
-  let totalHTG = minutes * 0.835; 
-  resultDisplay.innerText = totalHTG.toFixed(2) + " HTG";
+  if (!amountInput || !resultEl) return;
+
+  const val = parseFloat(amountInput.value) || 0;
+  // Kalkil: valè minit - 16.5% frè (oswa jan ou konn kalkile l la)
+  const fee = val * 0.165;
+  const netReceive = val - fee;
+
+  resultEl.textContent = `${netReceive.toFixed(2)} HTG`;
 };
 
-
-// ==========================================
-// 2. VOYE NOUVO TRANZAKSYON SOU WHATSAPP ADMIN LAN
-// ==========================================
-window.sendExchangeToWhatsApp = function() {
-  const network = document.getElementById('calc-network').value;
-  const minutes = document.getElementById('calc-amount').value;
-  const result = document.getElementById('calc-result').innerText;
-
-  if (!minutes || parseFloat(minutes) <= 0) {
-    alert("Tanpri antre kantite minit w ap voye a anvan.");
-    return;
-  }
-
-  const message = `Bonjou Echanj Plus 👋,\nMwen vle fè yon tranzaksyon:\n• Sèvis: ${network}\n• Minit: ${minutes}\n• Montan pou m resevwa: ${result}\n\nMwen pare pou m voye minit yo.`;
-  const whatsappUrl = `https://wa.me/5093413215?text=${encodeURIComponent(message)}`;
-  window.open(whatsappUrl, '_blank');
-};
-
-
-// ==========================================
-// 3. VERIFIKASYON ID TRANZAKSYON AK SEKIRITE KONT
-// ==========================================
-let currentInspectedTrx = null;
-
+// 2. Fonksyon Verifikasyon ID ak Règ 12 Èdtan an
 window.inspectTransactionDetails = async function() {
-  const trxInput = document.getElementById('delayed-trx-id');
+  const idInput = document.getElementById('delayed-trx-id');
   const errorMsg = document.getElementById('trx-error-msg');
   const detailsCard = document.getElementById('trx-details-card');
-  const btnSearch = document.getElementById('btn-search-trx');
-  
-  const trxId = trxInput.value.trim().toUpperCase();
 
-  if (trxId === "") {
-    errorMsg.innerText = "Tanpri antre yon ID tranzaksyon anvan.";
-    errorMsg.style.display = "block";
-    detailsCard.style.display = "none";
+  if (!idInput) return;
+
+  const searchId = idInput.value.trim();
+  
+  if (errorMsg) errorMsg.style.display = 'none';
+  if (detailsCard) detailsCard.style.display = 'none';
+
+  if (!searchId) {
+    if (errorMsg) {
+      errorMsg.textContent = "Tanpri antre yon ID tranzaksyon ki valid.";
+      errorMsg.style.display = 'block';
+    }
     return;
   }
 
-  // Rekipere nimewo telefòn itilizatè ki konekte a
-  const loggedInUserPhone = localStorage.getItem("userPhone") || document.getElementById('user-display-phone')?.innerText.trim();
-
-  errorMsg.style.display = "none";
-  btnSearch.innerText = "Ap verifye...";
-  btnSearch.disabled = true;
-
   try {
-    // Chèche nan Firebase Firestore (Koleksyon 'transactions')
-    const docSnap = await firebase.firestore().collection("transactions").doc(trxId).get();
+    const txRef = ref(rtdb, `transactions/${searchId}`);
+    const snapshot = await get(txRef);
 
-    if (docSnap.exists) {
-      const data = docSnap.data();
-      const trxOwnerPhone = data.phone || data.receiverPhone || data.userPhone;
+    if (!snapshot.exists()) {
+      if (errorMsg) {
+        errorMsg.textContent = "ID tranzaksyon sa a pa egziste nan sistèm nan.";
+        errorMsg.style.display = 'block';
+      }
+      return;
+    }
 
-      // 🔒 RESTRIKSYON SEKIRITE: Anpeche lòt moun wè tranzaksyon ki pa pou yo
-      if (loggedInUserPhone && trxOwnerPhone && loggedInUserPhone !== trxOwnerPhone && loggedInUserPhone !== "+509 --") {
-        detailsCard.style.display = "none";
-        errorMsg.innerText = "❌ Aksè refize! Tranzaksyon sa a pa fèt sou kont sa a.";
-        errorMsg.style.display = "block";
-        btnSearch.innerText = "Verifye ID";
-        btnSearch.disabled = false;
+    const tx = snapshot.val();
+    tx.firebaseId = snapshot.key;
+    currentInspectedTx = tx;
+
+    // Tcheke dat kreye a pou règ 12 èdtan an
+    if (tx.createdAt) {
+      const txTime = new Date(tx.createdAt).getTime();
+      const nowTime = new Date().getTime();
+      const diffHours = (nowTime - txTime) / (1000 * 60 * 60);
+
+      // Si tranzaksyon an poko gen 12 èdtan epi estati l an atant (pending)
+      if (diffHours < 12 && tx.status === 'pending') {
+        if (errorMsg) {
+          errorMsg.textContent = "Tan an poko rive! Sistèm nan kite yon delè 12 èdtan pou tranzaksyon an valide natirèlman. Se sèlman si tan sa a pase san l pa valide ke ou ka fè suivi a pou jwenn asistans.";
+          errorMsg.style.display = 'block';
+        }
         return;
       }
-
-      // Si tout bagay an lòd, nou afiche tout detay tranzaksyon an
-      currentInspectedTrx = { id: trxId, ...data };
-
-      document.getElementById('det-id').innerText = trxId;
-      document.getElementById('det-network').innerText = data.network || data.type || "Echanj Minit";
-      document.getElementById('det-amount').innerText = (data.amount || 0) + " Minit/HTG";
-      document.getElementById('det-receive').innerText = (data.receiveAmount || 0) + " HTG";
-      document.getElementById('det-phone').innerText = trxOwnerPhone || "--";
-      document.getElementById('det-date').innerText = data.date || new Date().toLocaleDateString();
-
-      const statusBadge = document.getElementById('det-status');
-      const status = (data.status || "Pending").toLowerCase();
-      
-      if (status === "approved" || status === "valide" || status === "completed") {
-        statusBadge.innerText = "Valide ✅";
-        statusBadge.style.background = "rgba(0, 230, 118, 0.15)";
-        statusBadge.style.color = "#00e676";
-      } else if (status === "rejected" || status === "refize") {
-        statusBadge.innerText = "Refize ❌";
-        statusBadge.style.background = "rgba(255, 82, 82, 0.15)";
-        statusBadge.style.color = "#ff5252";
-      } else {
-        statusBadge.innerText = "An atant Admin ⏳";
-        statusBadge.style.background = "rgba(251, 191, 36, 0.15)";
-        statusBadge.style.color = "#fbbf24";
-      }
-
-      detailsCard.style.display = "block";
-    } else {
-      detailsCard.style.display = "none";
-      errorMsg.innerText = "❌ Okenn tranzaksyon pa jwenn ak ID sa a nan sistèm nan.";
-      errorMsg.style.display = "block";
     }
+
+    // Si l pase 12h oswa l pa 'pending', nou afiche detay yo
+    document.getElementById('det-id').textContent = tx.firebaseId;
+    document.getElementById('det-status').textContent = tx.status ? tx.status.toUpperCase() : 'AN ATANT';
+    document.getElementById('det-network').textContent = tx.rezo || '---';
+    document.getElementById('det-amount').textContent = `${tx.amount || 0} Minit`;
+    document.getElementById('det-receive').textContent = `${tx.netAmount || tx.amount || 0} HTG`;
+    document.getElementById('det-date').textContent = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---';
+
+    if (detailsCard) detailsCard.style.display = 'block';
+
   } catch (error) {
-    console.error("Erè sekirite rechèch:", error);
-    errorMsg.innerText = "Gen yon ti pwoblèm teknik. Eseye ankò.";
-    errorMsg.style.display = "block";
-  } finally {
-    btnSearch.innerText = "Verifye ID";
-    btnSearch.disabled = false;
+    console.error("Erè pandan verifikasyon ID a:", error);
+    if (errorMsg) {
+      errorMsg.textContent = "Gen yon ti pwoblèm teknik. Eseye ankò.";
+      errorMsg.style.display = 'block';
+    }
   }
 };
 
-
-// ==========================================
-// 4. VOYE FICH REKLAMASYON AN SOU WHATSAPP ADMIN LAN
-// ==========================================
+// 3. Fonksyon Asistans Rapid (Voye bay WhatsApp Admin ak enfòmasyon yo)
 window.sendFullClaimToWhatsApp = function() {
-  if (!currentInspectedTrx) return;
+  if (!currentInspectedTx) return;
 
-  const t = currentInspectedTrx;
-  const message = `📋 *REKLAMASYON TRANZAKSYON (24H+)*\n\n` +
-                  `🆔 *ID Tranzaksyon:* ${t.id}\n` +
-                  `📡 *Rezo:* ${t.network || t.type || 'N/A'}\n` +
-                  `💰 *Montan:* ${t.amount || 0} -> *${t.receiveAmount || 0} HTG*\n` +
-                  `📱 *Nimewo:* ${t.phone || t.receiverPhone || 'N/A'}\n` +
-                  `📌 *Estati aktyèl:* ${t.status || 'An atant'}\n` +
-                  `📅 *Dat:* ${t.date || 'N/A'}\n\n` +
-                  `Bonjou Admin, tranzaksyon sa a ap tann depi plis pase 24h. Tanpri verifye l pou mwen.`;
+  const tx = currentInspectedTx;
+  const text = `*REKLAMASYON / SUIVI TRANZAKSYON* - Echanj Plus\n\n` +
+               `🆔 ID: ${tx.firebaseId}\n` +
+               `📊 Estati: ${tx.status || 'pending'}\n` +
+               `🌐 Rezo: ${tx.rezo || '---'}\n` +
+               `💰 Montan: ${tx.amount || 0} Minit\n` +
+               `📅 Dat: ${tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---'}\n\n` +
+               `Mwen ta renmen jwen asistans sou tranzaksyon sa a ki depase 12è tan.`;
 
-  const whatsappUrl = `https://wa.me/5093413215?text=${encodeURIComponent(message)}`;
-  window.open(whatsappUrl, '_blank');
+  // Nimewo WhatsApp Admin (ou ka mete bon nimewo ou a la)
+  const adminPhone = "509341332015"; 
+  const url = `https://wa.me/${adminPhone}?text=${encodeURIComponent(text)}`;
+  
+  window.open(url, '_blank');
 };
