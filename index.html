@@ -333,71 +333,71 @@
 
 
 
-<!-- SEKSYON SUIVI RAPID & VERIFIKASYON TRANZAKSYON -->
-<div class="app-section" style="padding: 15px; max-width: 480px; margin: 0 auto;">
+<div class="app-section">
   
   <div class="section-header" style="margin-bottom: 15px;">
-    <h2 style="color: #ffffff; font-size: 20px; font-weight: 700; margin: 0 0 4px 0;">Suivi Tranzaksyon</h2>
-    <p style="color: #9eaab6; font-size: 12px; margin: 0;">Verifye estati tranzaksyon w yo an tout sekirite.</p>
+    <h2>Suivi Tranzaksyon</h2>
+    <p>Verifye estati tranzaksyon w yo an tout sekirite.</p>
   </div>
 
-  <!-- PATI SUIVI & VERIFIKASYON TRANZAKSYON (Règ 12è tan) -->
-  <div style="background: rgba(255, 193, 7, 0.05); padding: 14px; border-radius: 14px; border: 1px solid rgba(255, 193, 7, 0.25);">
-    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+  <div class="suivi-card-box">
+    <div class="suivi-title">
       <i class="fa-solid fa-magnifying-glass-dollar" style="color: #fbbf24; font-size: 13px;"></i>
-      <span style="font-size: 12px; color: #fbbf24; font-weight: 700;">Suivi & Verifikasyon Tranzaksyon (24h)</span>
+      <span>Suivi & Verifikasyon Tranzaksyon (24h)</span>
     </div>
     
-    <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin: 0 0 10px 0;">
+    <p class="suivi-desc">
       Antre <b>ID Tranzaksyon</b> ou a pou w wè estati l. (Remak: Suivi a ouvri sèlman si tranzaksyon an gen plis pase 12 èdtan depi l poko valide).
     </p>
 
     <!-- Ba Rechèch ID -->
-    <div style="display: flex; gap: 8px;">
-      <input type="text" id="delayed-trx-id" placeholder="Eg: -P5AZFan..." style="flex: 1; background: #0b0f19; border: 1px solid rgba(255, 193, 7, 0.3); color: #ffffff; padding: 10px 12px; border-radius: 10px; font-size: 12px; outline: none; text-transform: uppercase;">
-      
-      <button type="button" onclick="window.inspectTransactionDetails()" style="background: #fbbf24; color: #0b0f19; border: none; padding: 0 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">
+    <div class="search-group">
+      <input type="text" id="delayed-trx-id" placeholder="Eg: -P5AZFan..." class="search-input">
+      <button type="button" onclick="window.inspectTransactionDetails(event)" class="search-btn">
         Verifye ID
       </button>
     </div>
-    <span id="trx-error-msg" style="display: none; font-size: 11px; color: #ff5252; margin-top: 6px;"></span>
+    <span id="trx-error-msg" class="trx-error-msg"></span>
 
-    <!-- REZILTA DETAYE TRANZAKSYON AN (Kache pa defo) -->
-    <div id="trx-details-card" style="display: none; margin-top: 12px; background: #0b0f19; border: 1px solid rgba(0, 230, 118, 0.3); border-radius: 12px; padding: 12px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; margin-bottom: 8px;">
+    <!-- REZILTA DETAYE TRANZAKSYON AN -->
+    <div id="trx-details-card" class="trx-details-card">
+      <div class="trx-details-header">
         <span style="font-size: 11px; font-weight: 700; color: #ffffff;">🆔 <span id="det-id">--</span></span>
-        <span id="det-status" style="font-size: 10px; padding: 2px 8px; border-radius: 6px; font-weight: 700; background: rgba(251, 191, 36, 0.15); color: #fbbf24;">An atant</span>
+        <span id="det-status" class="trx-status-badge">An atant</span>
       </div>
 
-      <div style="font-size: 11px; color: #cbd5e1; line-height: 1.7; margin-bottom: 10px;">
-        <div style="display: flex; justify-content: space-between;">
+      <div style="margin-bottom: 10px;">
+        <div class="trx-info-row">
           <span style="color: #9eaab6;">Rezo:</span>
           <strong id="det-network" style="color: #ffffff;">--</strong>
         </div>
-        <div style="display: flex; justify-content: space-between;">
+        <div class="trx-info-row">
           <span style="color: #9eaab6;">Montan:</span>
           <strong id="det-amount" style="color: #ffffff;">--</strong>
         </div>
-        <div style="display: flex; justify-content: space-between;">
+        <div class="trx-info-row">
           <span style="color: #9eaab6;">Dat Kreye:</span>
           <span id="det-date" style="color: #9eaab6; font-size: 10px;">--</span>
         </div>
       </div>
 
-      <!-- Bwat Mesaj pou Kliyan an ka ekri reklamasyon l -->
+      <!-- Bwat Mesaj Reklamasyon -->
       <div style="margin-bottom: 10px;">
         <label style="font-size: 11px; color: #9eaab6; display: block; margin-bottom: 4px;">Mesaj ou / Reklamasyon (Opsyonèl):</label>
-        <textarea id="client-claim-msg" placeholder="Ekri yon ti nòt si w vle..." style="width: 100%; background: #131a22; border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 8px 10px; border-radius: 8px; font-size: 11px; outline: none; resize: none; height: 50px;"></textarea>
+        <textarea id="client-claim-msg" placeholder="Ekri yon ti nòt si w vle..." class="claim-textarea"></textarea>
       </div>
 
-      <!-- Bouton Asistans Rapid (WhatsApp ak enfòmasyon yo ak mesaj la) -->
-      <button type="button" onclick="window.sendFullClaimToWhatsApp()" style="width: 100%; background: #00e676; color: #0b0f19; border: none; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px;">
+      <!-- Bouton Asistans Rapid WhatsApp -->
+      <button type="button" onclick="window.sendFullClaimToWhatsApp()" class="whatsapp-claim-btn">
         <i class="fa-brands fa-whatsapp" style="font-size: 13px;"></i> Asistans Rapid (Voye bay Admin)
       </button>
     </div>
   </div>
 
 </div>
+
+
+        
         
         
 
