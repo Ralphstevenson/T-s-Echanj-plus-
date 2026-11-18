@@ -329,41 +329,116 @@
           </div>
         </div>
 
-      <!-- KÈK KALKILATÈ ECHANJ RAPID -->
-        <div class="quick-calc-section" style="background: #131a22; margin: 0 16px 16px; padding: 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.06);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <h3 style="font-size: 14px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
-              <i class="fa-solid fa-calculator" style="color: #00e676;"></i> Kalkilatè Echanj Rapid
-            </h3>
-            <span style="font-size: 10px; color: #00e676; background: rgba(0, 230, 118, 0.1); padding: 3px 8px; border-radius: 8px;">16.5% Frè</span>
-          </div>
 
-          <!-- Seleksyon Rezo -->
-          <div style="margin-bottom: 10px;">
-            <label style="font-size: 11px; color: #9eaab6; display: block; margin-bottom: 4px;">Chwazi Rezo a:</label>
-            <select id="calc-network" style="width: 100%; background: #0b0f19; border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 10px; border-radius: 12px; font-size: 12px; outline: none;">
-              <option value="digicel">Digicel Minit ➔ MonCash</option>
-              <option value="natcom">Natcom Minit ➔ NatCash</option>
-            </select>
-          </div>
 
-          <!-- Antre Minit -->
-          <div style="margin-bottom: 12px;">
-            <label style="font-size: 11px; color: #9eaab6; display: block; margin-bottom: 4px;">Kantite Minit w ap voye:</label>
-            <input type="number" id="calc-amount" placeholder="Eg: 500" style="width: 100%; background: #0b0f19; border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 10px; border-radius: 12px; font-size: 13px; outline: none; box-sizing: border-box;" oninput="calculateExchange()">
-          </div>
+<!-- SANT KALKIL AK SUIVI TRANZAKSYON (24H) -->
+<div class="exchange-hub-section" style="background: #131a22; margin: 0 16px 16px; padding: 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.06);">
+  
+  <!-- Antèt ak Estati Sistèm nan -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+    <h3 style="font-size: 14px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px; margin: 0;">
+      <i class="fa-solid fa-bolt" style="color: #00e676;"></i> Echanj & Suivi Rapid
+    </h3>
+    <span style="font-size: 10px; color: #00e676; background: rgba(0, 230, 118, 0.1); padding: 3px 8px; border-radius: 8px; font-weight: 600;">
+      ● Admin Aktif
+    </span>
+  </div>
 
-          <!-- Rezilta Kalkil la -->
-          <div style="background: #0b0f19; padding: 12px; border-radius: 12px; border: 1px dashed rgba(0, 230, 118, 0.3); display: flex; justify-content: space-between; align-items: center;">
-            <div>
-              <span style="font-size: 10px; color: #9eaab6; display: block;">Montan w ap resevwa:</span>
-              <strong id="calc-result" style="font-size: 16px; color: #00e676;">0.00 HTG</strong>
-            </div>
-            <button onclick="alert('Pou konplete tranzaksyon sa a, kontakte admin lan oswa ale nan seksyon transfè a!')" style="background: #00e676; color: #0b0f19; border: none; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;">
-              Tranzakte
-            </button>
-          </div>
+  <!-- PATI 1: KALKILATÈ ECHANJ -->
+  <div style="background: #0b0f19; padding: 12px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 14px;">
+    <span style="font-size: 11px; color: #00e676; font-weight: 700; display: block; margin-bottom: 8px;">
+      1. Kalkile & Fè yon Nouvo Echanj (Frè 16.5%)
+    </span>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+      <div>
+        <label style="font-size: 10px; color: #9eaab6; display: block; margin-bottom: 4px;">Rezo:</label>
+        <select id="calc-network" onchange="window.calculateExchange()" style="width: 100%; background: #131a22; border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 9px; border-radius: 10px; font-size: 11px; outline: none;">
+          <option value="Digicel ➔ MonCash">Digicel ➔ MonCash</option>
+          <option value="Natcom ➔ NatCash">Natcom ➔ NatCash</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="font-size: 10px; color: #9eaab6; display: block; margin-bottom: 4px;">Kantite Minit:</label>
+        <input type="number" id="calc-amount" placeholder="Eg: 500" oninput="window.calculateExchange()" style="width: 100%; background: #131a22; border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 9px; border-radius: 10px; font-size: 12px; outline: none; box-sizing: border-box;">
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.08);">
+      <div>
+        <span style="font-size: 10px; color: #9eaab6; display: block;">W ap resevwa:</span>
+        <strong id="calc-result" style="font-size: 15px; color: #00e676;">0.00 HTG</strong>
+      </div>
+      
+      <button onclick="window.sendExchangeToWhatsApp()" style="background: #00e676; color: #0b0f19; border: none; padding: 9px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-whatsapp" style="font-size: 13px;"></i> Tranzakte
+      </button>
+    </div>
+  </div>
+
+  <!-- PATI 2: RECHÈCH & SUIVI PWOFON TRANZAKSYON (SEKIRIZE) -->
+  <div style="background: rgba(255, 193, 7, 0.05); padding: 12px; border-radius: 14px; border: 1px solid rgba(255, 193, 7, 0.25);">
+    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+      <i class="fa-solid fa-magnifying-glass-dollar" style="color: #fbbf24; font-size: 13px;"></i>
+      <span style="font-size: 11px; color: #fbbf24; font-weight: 700;">Suivi & Verifikasyon Tranzaksyon (24h)</span>
+    </div>
+    
+    <p style="font-size: 10px; color: #cbd5e1; line-height: 1.4; margin: 0 0 10px 0;">
+      Antre <b>ID Tranzaksyon</b> ou a pou w wè tout enfòmasyon ak estati l an dirèk sou kont ou a:
+    </p>
+
+    <!-- Ba Rechèch ID -->
+    <div style="display: flex; gap: 8px;">
+      <input type="text" id="delayed-trx-id" placeholder="Antre ID a (eg: TRX-1045)" style="flex: 1; background: #0b0f19; border: 1px solid rgba(255, 193, 7, 0.3); color: #ffffff; padding: 9px 12px; border-radius: 10px; font-size: 12px; outline: none; text-transform: uppercase;">
+      
+      <button id="btn-search-trx" onclick="window.inspectTransactionDetails()" style="background: #fbbf24; color: #0b0f19; border: none; padding: 0 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;">
+        Verifye ID
+      </button>
+    </div>
+    <span id="trx-error-msg" style="display: none; font-size: 10px; color: #ff5252; margin-top: 6px;">Tanpri antre yon ID tranzaksyon ki valid.</span>
+
+    <!-- REZILTA DETAYE TRANZAKSYON AN (Kache pa defo) -->
+    <div id="trx-details-card" style="display: none; margin-top: 12px; background: #0b0f19; border: 1px solid rgba(0, 230, 118, 0.3); border-radius: 12px; padding: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; margin-bottom: 8px;">
+        <span style="font-size: 11px; font-weight: 700; color: #ffffff;">🆔 <span id="det-id">--</span></span>
+        <span id="det-status" style="font-size: 10px; padding: 2px 8px; border-radius: 6px; font-weight: 700; background: rgba(251, 191, 36, 0.15); color: #fbbf24;">An atant</span>
+      </div>
+
+      <div style="font-size: 11px; color: #cbd5e1; line-height: 1.7;">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: #9eaab6;">Sèvis / Rezo:</span>
+          <strong id="det-network" style="color: #ffffff;">--</strong>
         </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: #9eaab6;">Montan Voye:</span>
+          <strong id="det-amount" style="color: #ffffff;">--</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: #9eaab6;">Montan pou Resevwa:</span>
+          <strong id="det-receive" style="color: #00e676;">--</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: #9eaab6;">Nimewo Reseptè:</span>
+          <strong id="det-phone" style="color: #ffffff;">--</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: #9eaab6;">Dat & Lè:</span>
+          <span id="det-date" style="color: #9eaab6; font-size: 10px;">--</span>
+        </div>
+      </div>
+
+      <!-- Bouton pou voye fich konplè sa a bay Admin nan sou WhatsApp -->
+      <button onclick="window.sendFullClaimToWhatsApp()" style="width: 100%; margin-top: 10px; background: #00e676; color: #0b0f19; border: none; padding: 9px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px;">
+        <i class="fa-brands fa-whatsapp" style="font-size: 13px;"></i> Voye Fich sa bay Admin (+509 3413-215)
+      </button>
+    </div>
+  </div>
+
+</div>
+
+
+        
 
         <!-- DÈNYE TRANZAKSYON YO -->
         <section class="recent-transactions">
