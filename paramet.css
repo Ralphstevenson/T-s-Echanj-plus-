@@ -1,0 +1,178 @@
+.param-section {
+  padding: 15px;
+  max-width: 480px;
+  margin: 0 auto 80px auto;
+}
+
+.param-header {
+  margin-bottom: 16px;
+}
+
+.param-header h2 {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.param-header p {
+  color: #9eaab6;
+  font-size: 12px;
+  margin: 0;
+}
+
+.param-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.param-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fbbf24;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.param-desc {
+  color: #cbd5e1;
+  font-size: 11px;
+  line-height: 1.45;
+  margin: 0 0 12px 0;
+}
+
+.param-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+}
+
+.param-row:last-child {
+  border-bottom: none;
+}
+
+.param-label {
+  color: #9eaab6;
+}
+
+.param-value {
+  color: #ffffff;
+}
+
+.param-mono {
+  color: #cbd5e1;
+  font-family: monospace;
+  font-size: 11px;
+  word-break: break-all;
+  max-width: 65%;
+  text-align: right;
+}
+
+.param-badge-active {
+  background: rgba(0, 230, 118, 0.15);
+  color: #00e676;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.param-field {
+  margin-bottom: 10px;
+}
+
+.param-field label {
+  display: block;
+  color: #9eaab6;
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.param-input {
+  width: 100%;
+  background: #0b0f19;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.param-input:focus {
+  border-color: #fbbf24;
+}
+
+.param-btn-primary {
+  width: 100%;
+  background: #fbbf24;
+  color: #0b0f19;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.param-btn-secondary {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.param-btn-whatsapp {
+  width: 100%;
+  background: #00e676;
+  color: #0b0f19;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+.param-btn-danger {
+  width: 100%;
+  background: rgba(255, 82, 82, 0.14);
+  color: #ff5252;
+  border: 1px solid rgba(255, 82, 82, 0.35);
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.param-feedback {
+  display: none;
+  font-size: 11px;
+  margin-top: 8px;
+  color: #00e676;
+}
