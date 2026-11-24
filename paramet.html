@@ -1,4 +1,3 @@
-
 <section id="paj-setting" class="app-section">
   <div id="section-paramet" class="param-section">
     <div class="param-header">
@@ -6,13 +5,11 @@
       <p>Jere kont ou, nimewo resepsyon w, ak preferans Echanj Plus ou.</p>
     </div>
 
-    <!-- 1. ENFÒMASYON KONT -->
     <div class="param-card">
       <div class="param-card-title">
         <i class="fa-solid fa-user-shield"></i>
         <span>Enfòmasyon Kont</span>
       </div>
-
       <div class="param-row">
         <span class="param-label">Imèl</span>
         <strong id="param-user-email" class="param-value">Chajman...</strong>
@@ -27,7 +24,6 @@
       </div>
     </div>
 
-    <!-- 2. NIMEWO RESEPSYON PA DEFO -->
     <div class="param-card">
       <div class="param-card-title">
         <i class="fa-solid fa-wallet"></i>
@@ -36,7 +32,6 @@
       <p class="param-desc">
         Anrejistre nimewo w abitye resevwa lajan sou li pou konvèsyon minit Digicel ak Natcom yo.
       </p>
-
       <div class="param-field">
         <label for="param-default-wallet">Sèvis</label>
         <select id="param-default-wallet" class="param-input">
@@ -44,19 +39,16 @@
           <option value="NatCash">NatCash</option>
         </select>
       </div>
-
       <div class="param-field">
         <label for="param-default-phone">Nimewo Telefòn</label>
         <input type="tel" id="param-default-phone" placeholder="Eg: 34132015" class="param-input">
       </div>
-
       <button type="button" onclick="window.saveDefaultPayoutInfo(event)" class="param-btn-primary">
         Anrejistre Nimewo a
       </button>
       <span id="param-save-msg" class="param-feedback"></span>
     </div>
 
-    <!-- 3. SISTÈM & KACH LOKAL -->
     <div class="param-card">
       <div class="param-card-title">
         <i class="fa-solid fa-sliders"></i>
@@ -65,18 +57,15 @@
       <p class="param-desc">
         Si koòdone a oswa rechèch tranzaksyon an blokis, ou ka netwaye done lokal navigatè a.
       </p>
-
       <div class="param-row">
         <span class="param-label">Vèsyon Aplikasyon</span>
         <strong class="param-value">Echanj Plus v1.0</strong>
       </div>
-
       <button type="button" onclick="window.clearLocalCache(event)" class="param-btn-secondary">
         Efase Kach Lokal (localStorage)
       </button>
     </div>
 
-    <!-- 4. RÈG SÈVIS & SIPÒ -->
     <div class="param-card">
       <div class="param-card-title">
         <i class="fa-solid fa-headset"></i>
@@ -85,11 +74,9 @@
       <p class="param-desc">
         Suivi ak reklamasyon pou tranzaksyon ki poko valide ouvri apre yon delè 12 èdtan. Pou asistans dirèk, kontakte admin lan.
       </p>
-
       <a href="https://wa.me/50934132015?text=Bonjou%20Admin%20Echanj%20Plus%2C%20m%20bezwen%20asistans." target="_blank" rel="noopener noreferrer" class="param-btn-whatsapp">
         <i class="fa-brands fa-whatsapp"></i> Kontakte Admin sou WhatsApp
       </a>
-
       <button type="button" onclick="window.logoutEchanjUser(event)" class="param-btn-danger">
         <i class="fa-solid fa-right-from-bracket"></i> Dekonekte Kont lan
       </button>
