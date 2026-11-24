@@ -1,7 +1,14 @@
+/* ==========================================
+   SEKSYON PARAMÈT (#paj-setting / #section-paramet)
+   ========================================== */
+#paj-setting.app-section {
+  width: 100%;
+}
+
 .param-section {
   padding: 15px;
   max-width: 480px;
-  margin: 0 auto 80px auto;
+  margin: 0 auto 85px auto;
 }
 
 .param-header {
@@ -50,7 +57,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
+  padding: 7px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   font-size: 12px;
 }
