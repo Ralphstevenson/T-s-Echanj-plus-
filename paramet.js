@@ -29,14 +29,6 @@ function showParamMessage(text, color = "#00e676") {
   msgEl.style.display = "block";
 }
 
-function applySavedPayoutToRetre(parsed) {
-  if (!parsed || !parsed.phone) return;
-  const retrePhoneEl = document.getElementById("retre-phone-input");
-  if (retrePhoneEl && !retrePhoneEl.value.trim()) {
-    retrePhoneEl.value = parsed.phone;
-  }
-}
-
 function loadUserAndSavedSettings(user = null) {
   const currentAuth = getAuthInstance();
   const activeUser = user || (currentAuth ? currentAuth.currentUser : null);
@@ -59,7 +51,6 @@ function loadUserAndSavedSettings(user = null) {
       const parsed = JSON.parse(saved);
       if (walletEl && parsed.wallet) walletEl.value = parsed.wallet;
       if (phoneEl && parsed.phone && !phoneEl.value) phoneEl.value = parsed.phone;
-      applySavedPayoutToRetre(parsed);
     } catch (err) {
       console.error("Erè lekti nimewo resepsyon an:", err);
     }
@@ -99,9 +90,7 @@ window.saveDefaultPayoutInfo = function (event) {
   }
 
   if (phoneEl) phoneEl.value = cleanPhone;
-  const payload = { wallet, phone: cleanPhone };
-  localStorage.setItem(PAYOUT_STORAGE_KEY, JSON.stringify(payload));
-  applySavedPayoutToRetre(payload);
+  localStorage.setItem(PAYOUT_STORAGE_KEY, JSON.stringify({ wallet, phone: cleanPhone }));
   showParamMessage(`Anrejistre: ${wallet} (+509 ${cleanPhone}).`, "#00e676");
 };
 
