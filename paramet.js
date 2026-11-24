@@ -42,6 +42,10 @@ function loadUserAndSavedSettings(user = null) {
   }
 }
 
+window.refreshParametSection = function() {
+  loadUserAndSavedSettings(auth ? auth.currentUser : null);
+};
+
 if (auth) {
   onAuthStateChanged(auth, (user) => {
     loadUserAndSavedSettings(user);
@@ -52,7 +56,6 @@ window.addEventListener("DOMContentLoaded", () => {
   loadUserAndSavedSettings();
 });
 
-// Re-afiche enfòmasyon yo chak fwa itilizatè a ouvri seksyon Paramèt la
 document.addEventListener("click", (e) => {
   const settingTrigger = e.target.closest('[onclick*="paj-setting"]');
   if (settingTrigger) {
