@@ -3,9 +3,12 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 
 const PAYOUT_STORAGE_KEY = "echanj_default_payout";
 const LAST_TX_STORAGE_KEY = "echanj_last_inspected_tx";
+const PARAMET_HTML_URL = "paramet.html";
 
 let authInstance = null;
 let authListenerAttached = false;
+let parametLoaded = false;
+let parametLoadingPromise = null;
 
 function getAuthInstance() {
   if (authInstance) return authInstance;
@@ -57,21 +60,65 @@ function loadUserAndSavedSettings(user = null) {
   }
 }
 
-window.refreshParametSection = function () {
+async function ensureParametHtmlLoaded() {
+  const mountEl = document.getElementById("paramet-mount");
+  if (!mountEl) return false;
+
+  if (parametLoaded && mountEl.children.length > 0) {
+    return true;
+  }
+
+  if (parametLoadingPromise) {
+    return parametLoadingPromise;
+  }
+
+  parametLoadingPromise = (async () => {
+    try {
+      const response = await fetch(PARAMET_HTML_URL, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const html = await response.text();
+      mountEl.innerHTML = html;
+      parametLoaded = true;
+      return true;
+    } catch (err) {
+      console.error("Erè chajman paramet.html:", err);
+      mountEl.innerHTML = `
+        <div class="param-section">
+          <div class="param-card">
+            <p class="param-desc" style="color:#ff5252;margin:0;">
+              Enposib chaje seksyon Paramèt la. Verifye fichye <strong>paramet.html</strong> la oswa kouri paj la sou yon sèvè.
+            </p>
+          </div>
+        </div>
+      `;
+      return false;
+    } finally {
+      parametLoadingPromise = null;
+    }
+  })();
+
+  return parametLoadingPromise;
+}
+
+window.refreshParametSection = async function () {
+  await ensureParametHtmlLoaded();
   const currentAuth = getAuthInstance();
   loadUserAndSavedSettings(currentAuth ? currentAuth.currentUser : null);
 };
 
 getAuthInstance();
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
+  await ensureParametHtmlLoaded();
   loadUserAndSavedSettings();
 });
 
-document.addEventListener("click", (e) => {
+document.addEventListener("click", async (e) => {
   const settingTrigger = e.target.closest('[onclick*="paj-setting"]');
   if (settingTrigger) {
-    setTimeout(() => window.refreshParametSection(), 60);
+    await window.refreshParametSection();
   }
 });
 
