@@ -333,28 +333,11 @@
 
 
 
-<!-- SEKSYON PARAMÈT -->
 <section id="paj-setting" class="app-section">
   <div id="section-paramet" class="param-section">
     <div class="param-header">
       <h2>Paramèt</h2>
       <p>Jere kont ou, nimewo resepsyon w, ak preferans Echanj Plus ou.</p>
-    </div>
-
-    <!-- BOUTON PIN TRANZAKSYON -->
-    <div class="param-card">
-      <div class="param-card-title">
-        <i class="fa-solid fa-key"></i>
-        <span>Sekirite PIN</span>
-      </div>
-      <p class="param-desc">
-        Kreye oswa modifye PIN 4 chif ou itilize pou konfime echanj ak retrè yo.
-      </p>
-      <div class="settings-option">
-        <button type="button" id="open-pin-modal-btn" class="btn-param-pin">
-          <i class="fa-solid fa-key"></i> PIN Tranzaksyon
-        </button>
-      </div>
     </div>
 
     <!-- 1. ENFÒMASYON KONT -->
@@ -398,7 +381,7 @@
 
       <div class="param-field">
         <label for="param-default-phone">Nimewo Telefòn</label>
-        <input type="tel" id="param-default-phone" placeholder="Eg: 34132015" maxlength="8" inputmode="numeric" class="param-input">
+        <input type="tel" id="param-default-phone" placeholder="Eg: 34132015" class="param-input">
       </div>
 
       <button type="button" onclick="window.saveDefaultPayoutInfo(event)" class="param-btn-primary">
