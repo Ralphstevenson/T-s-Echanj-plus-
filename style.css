@@ -252,14 +252,12 @@ form {
   text-decoration: underline;
 }
 
-
 /* ==========================================
    3. TABLEAU DE BORD (DASHBOARD - DARK & MINT)
    ========================================== */
 .dashboard-container {
   width: 100%;
   max-width: 480px;
-  /* Nou mete imaj background ou a ak yon gradyan nwa pou tèks yo ka parèt klè sou li */
   background: linear-gradient(rgba(11, 15, 25, 0.88), rgba(11, 15, 25, 0.94)), url('https://i.postimg.cc/ZCQQftKW/Gemini-Generated-Image-gci4idgci4idgci4.jpg');
   background-size: cover;
   background-position: center;
@@ -269,7 +267,6 @@ form {
   color: #ffffff;
   padding-bottom: 90px;
 }
-
 
 /* Header */
 .dash-header {
@@ -708,4 +705,18 @@ form {
   color: #00e676;
   font-weight: 700;
 }
+
+/* ==========================================
+   4. KONTWÒL SEKSYON SPA (APP-SECTION)
+   ========================================== */
+.app-section {
+  display: none;
+}
+
+.app-section.active {
+  display: block;
+}
+
+.hidden {
+  display: none !important;
 }
