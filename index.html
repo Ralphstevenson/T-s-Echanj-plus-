@@ -3,33 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Echanj Plus - Otantifikasyon & Akèy</title>
-  
+  <title>Echanj Plus - Otantifikasyon &amp; Akèy</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="echanj.css">
   <link rel="stylesheet" href="istorik.css">
   <link rel="stylesheet" href="retre.css">
-<link rel="stylesheet" href="sidebar.css">
+  <link rel="stylesheet" href="sidebar.css">
   <link rel="stylesheet" href="pin.css">
   <link rel="stylesheet" href="pin-sekirite.css">
-<link rel="stylesheet" href="profil.css">
-<link rel="stylesheet" href="ijanspdg.css">
+  <link rel="stylesheet" href="profil.css">
+  <link rel="stylesheet" href="ijanspdg.css">
   <link rel="stylesheet" href="paramet.css">
+
   <script>
-    setTimeout(function() {
+    setTimeout(function () {
       var loader = document.getElementById('loading-overlay');
       if (loader && loader.style.display !== 'none') {
         loader.style.opacity = '0';
-        setTimeout(function() { loader.style.display = 'none'; }, 300);
+        setTimeout(function () { loader.style.display = 'none'; }, 300);
       }
     }, 500);
   </script>
 </head>
 <body>
 
-  <!-- LOADING OVERLAY -->
+  <!-- 0. LOADING OVERLAY -->
   <div id="loading-overlay" class="loader-backdrop">
     <div class="loader-content">
       <div class="spinner"></div>
@@ -37,17 +39,15 @@
     </div>
   </div>
 
-
-
-
-    <!-- KOUVÈT SIDEBAR (OVERLAY) -->
+  <!-- SIDEBAR & OVERLAY -->
   <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
 
-  <!-- SIDEBAR LA -->
-  <div id="sidebar" class="sidebar">
+  <aside id="sidebar" class="sidebar" aria-label="Meni lateral">
     <div class="sidebar-header">
       <h3>Echanj Plus</h3>
-      <button class="close-sidebar-btn" onclick="window.toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+      <button type="button" class="close-sidebar-btn" onclick="window.toggleSidebar()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
 
     <div class="sidebar-user-info">
@@ -85,25 +85,20 @@
     </ul>
 
     <div class="sidebar-footer">
-      <button id="logout-btn" class="sidebar-logout-btn">
+      <button type="button" id="logout-btn" class="sidebar-logout-btn">
         <i class="fa-solid fa-right-from-bracket"></i> Dekonekte
       </button>
     </div>
-  </div>
-  
-
-  
+  </aside>
 
   <!-- 1. SEKSYON OTANTIFIKASYON (AUTH) -->
   <div class="auth-container" id="auth-container">
-    
-    <!-- Bwat Alèt -->
     <div id="alert-box" class="alert-msg"></div>
 
-    <!-- 1. FÒMILÈ KONEKSYON (CONNEXION) -->
+    <!-- 1A. FÒMILÈ KONEKSYON -->
     <div class="form-section active" id="login-section">
       <div class="auth-header-banner">CONNEXION</div>
-      
+
       <form id="login-form">
         <div class="input-group">
           <span class="prefix">🇭🇹 +509</span>
@@ -113,7 +108,9 @@
         <div class="input-group">
           <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
           <input type="password" id="login-password" placeholder="Mot de passe" required autocomplete="current-password">
-          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('login-password', this)"><i class="fa-solid fa-eye-slash"></i></button>
+          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('login-password', this)">
+            <i class="fa-solid fa-eye-slash"></i>
+          </button>
         </div>
 
         <button type="submit" class="submit-btn btn-primary-green" id="login-btn">
@@ -125,16 +122,15 @@
         </div>
       </form>
 
-      <!-- Pivot pou chanje ale nan Enskripsyon -->
       <div class="switch-auth-text">
         Nouveau ? <a href="javascript:void(0)" onclick="window.switchToAuthTab('signup')">Crée-toi un compte en quelques minutes !</a>
       </div>
     </div>
 
-    <!-- 2. FÒMILÈ ENSKRIPSYON (INSCRIPTION) -->
+    <!-- 1B. FÒMILÈ ENSKRIPSYON -->
     <div class="form-section" id="signup-section" style="display: none;">
       <div class="auth-header-banner">INSCRIPTION</div>
-      
+
       <form id="signup-form">
         <div class="input-group">
           <span class="prefix">🇭🇹 +509</span>
@@ -144,10 +140,11 @@
         <div class="input-group">
           <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
           <input type="password" id="signup-password" placeholder="Mot de passe" required autocomplete="new-password">
-          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-password', this)"><i class="fa-solid fa-eye-slash"></i></button>
+          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-password', this)">
+            <i class="fa-solid fa-eye-slash"></i>
+          </button>
         </div>
 
-        <!-- Règ sekirite modpas ak ikon dinamik -->
         <ul class="rules-list">
           <li id="rule-lowercase"><span class="status-icon">✕</span> Utiliser au moins une minuscule</li>
           <li id="rule-uppercase"><span class="status-icon">✕</span> Utiliser au moins une majuscule</li>
@@ -163,7 +160,9 @@
         <div class="input-group">
           <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
           <input type="password" id="signup-confirm-password" placeholder="Confirmer votre mot de passe" required autocomplete="new-password">
-          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-confirm-password', this)"><i class="fa-solid fa-eye-slash"></i></button>
+          <button type="button" class="toggle-pwd" onclick="window.toggleVisibility('signup-confirm-password', this)">
+            <i class="fa-solid fa-eye-slash"></i>
+          </button>
         </div>
 
         <div class="input-group">
@@ -181,48 +180,30 @@
         </button>
       </form>
 
-      <!-- Pivot pou tounen nan Koneksyon -->
       <div class="switch-auth-text">
         Déjà un compte ? <a href="javascript:void(0)" onclick="window.switchToAuthTab('login')">Se connecter</a>
       </div>
     </div>
-
   </div>
+
+
+
+
+
+
+
+
 
   <!-- 2. SEKSYON AKÈY (DASHBOARD SPA) -->
   <div class="dashboard-container" id="dashboard-section" style="display: none;">
-    
 
-<!-- MODAL POU WÈ ENFÒMASYON PROFIL YO -->
-<div id="modal-gade-profil" class="modal-echanj" style="display: none;">
-  <div class="profil-card">
-    <div class="profil-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-      <h3 style="margin: 0;">Detay Profil Mwen</h3>
-      <button id="close-gade-profil" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #64748b;">✕</button>
-    </div>
-    <p class="profil-desc">Men enfòmasyon ou te anrejistre sou <strong>Echanj Plus</strong>:</p>
-    
-    <div class="profil-info-list" style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #cbd5e1;">
-      <p style="margin-bottom: 8px; font-size: 13.5px;"><strong>Non ak Prenon:</strong> <span id="lbl-profil-non" style="color: #0f172a;">--</span></p>
-      <p style="margin-bottom: 8px; font-size: 13.5px;"><strong>Nimewo Telefòn:</strong> <span id="lbl-profil-tel" style="color: #0f172a;">--</span></p>
-      <p style="margin-bottom: 8px; font-size: 13.5px;"><strong>Sèks:</strong> <span id="lbl-profil-seks" style="color: #0f172a;">--</span></p>
-      <p style="margin-bottom: 8px; font-size: 13.5px;"><strong>Depatman:</strong> <span id="lbl-profil-depatman" style="color: #0f172a;">--</span></p>
-      <p style="margin-bottom: 8px; font-size: 13.5px;"><strong>Komin:</strong> <span id="lbl-profil-komin" style="color: #0f172a;">--</span></p>
-      <p style="margin-bottom: 0px; font-size: 13.5px;"><strong>Zòn / Katye:</strong> <span id="lbl-profil-zon" style="color: #0f172a;">--</span></p>
-    </div>
-
-    <button id="btn-louvri-modifye" style="width: 100%; background: #0ea5e9; color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: 600; cursor: pointer;">Modifye Enfòmasyon yo</button>
-  </div>
-</div>
-
-
-    
-
-<!-- HEADER -->
+    <!-- HEADER DASHBÒD -->
     <header class="dash-header">
       <div class="header-left">
-        <button class="menu-toggle-btn" onclick="window.toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-        
+        <button type="button" class="menu-toggle-btn" onclick="window.toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
         <!-- Logo Echanj Plus (Klike pou wè enfòmasyon CEO a) -->
         <div class="header-logo-container" onclick="window.showCEOInfo()" style="display: flex; align-items: center; cursor: pointer;" title="Klike pou w wè enfòmasyon sou CEO a">
           <img src="https://i.postimg.cc/D8bzphdx/530920446-122106871802966385-5212985514265651524-n-removebg-preview.png" alt="Echanj Plus Logo" style="height: 38px; width: auto; object-fit: contain;">
@@ -233,12 +214,14 @@
           <h4 id="user-display-phone" class="user-phone">+509 --</h4>
         </div>
       </div>
-      
+
       <!-- Balans -->
       <div class="head-balance-box">
         <span class="balance-title">Solde:</span>
         <strong id="user-balance" class="balance-text">0.00 HTG</strong>
-        <button class="eye-btn" onclick="window.toggleBalanceVisibility()"><i class="fa-solid fa-eye" id="eye-icon"></i></button>
+        <button type="button" class="eye-btn" onclick="window.toggleBalanceVisibility()">
+          <i class="fa-solid fa-eye" id="eye-icon"></i>
+        </button>
       </div>
     </header>
 
@@ -246,30 +229,26 @@
     <div id="ceo-floating-card" style="display: none; position: fixed; top: 75px; left: 16px; right: 16px; max-width: 440px; margin: 0 auto; background: #131a22; border: 1px solid #00e676; border-radius: 16px; padding: 16px; z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.6); color: #ffffff; opacity: 0; transition: opacity 0.3s ease;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
         <strong style="color: #00e676; font-size: 13px; display: flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-crown"></i> Echanj Plus - CEO & Fondatè
+          <i class="fa-solid fa-crown"></i> Echanj Plus - CEO &amp; Fondatè
         </strong>
-        <button onclick="document.getElementById('ceo-floating-card').style.display='none'" style="background: none; border: none; color: #9eaab6; cursor: pointer; font-size: 14px;">
+        <button type="button" onclick="document.getElementById('ceo-floating-card').style.display='none'" style="background: none; border: none; color: #9eaab6; cursor: pointer; font-size: 14px;">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <p style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">
+      <p style="font-size: 12px; color: #cbd5e1; line-height: 1.5; margin: 0;">
         <strong>Non:</strong> Ralph-Stevenson Aristor (ARS)<br>
-        <strong>Wòl:</strong> Fondatè & PDG Echanj Plus<br>
+        <strong>Wòl:</strong> Fondatè &amp; PDG Echanj Plus<br>
         <strong>Misyon:</strong> Bay sèvis echanj minit ak lajan mobil ki pi rapid, sekirize, epi sèye nan peyi a!
       </p>
     </div>
 
-    
-
-    <!-- KONTNI AKÈY LA -->
+    <!-- KONTNI SEKSYON YO (SPA) -->
     <main class="dash-content">
-      
-      <!-- 1. PAJ AKÈY -->
-      <section id="paj-akey" class="app-section">
-        
-        <div id="header-flash-info" class="flash-info-bar"></div>
 
-       
+      <!-- 2A. PAJ AKÈY -->
+      <section id="paj-akey" class="app-section">
+
+        <div id="header-flash-info" class="flash-info-bar"></div>
 
         <!-- CAROUSEL BANNER -->
         <section class="carousel-container">
@@ -330,975 +309,827 @@
           </div>
         </div>
 
+        <!-- FOOTER ÉCHANJ PLUS -->
+        <style>
+          .ep-footer {
+            background-color: #031d38;
+            color: #ffffff;
+            padding: 30px 16px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+          }
 
+          .ep-footer *,
+          .ep-footer *::before,
+          .ep-footer *::after {
+            box-sizing: border-box;
+          }
 
+          .ep-footer-container {
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+          }
 
-        
-        
+          .ep-footer-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          }
 
+          .ep-footer-accordion details {
+            background-color: #08284c;
+            border-radius: 8px;
+            text-align: left;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+          }
 
-<!-- ========================================== -->
-<!-- FOOTER ÉCHANJ PLUS (KOPYE EPI KOLE ANBA PAJ LOU AN) -->
-<!-- ========================================== -->
+          .ep-footer-accordion summary {
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #ffffff;
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+          }
 
-<style>
-  /* STYLES POU FOOTER */
-  .ep-footer {
-    background-color: #031d38;
-    color: #ffffff;
-    padding: 30px 16px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    text-align: center;
-    width: 100%;
-    box-sizing: border-box;
-  }
+          .ep-footer-accordion .ep-content {
+            padding: 14px 16px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #d1d5db;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+          }
 
-  .ep-footer *,
-  .ep-footer *::before,
-  .ep-footer *::after {
-    box-sizing: border-box;
-  }
+          .ep-footer-accordion .ep-content p {
+            margin: 4px 0;
+          }
 
-  .ep-footer-container {
-    max-width: 480px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+          .ep-footer-accordion .ep-content strong {
+            color: #00e676;
+          }
 
-  /* ACCORDION / DETAILS */
-  .ep-footer-accordion {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+          .ep-btn-download {
+            display: inline-block;
+            background-color: #00e676;
+            color: #031d38;
+            text-decoration: none;
+            font-weight: 800;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0, 230, 118, 0.2);
+            transition: transform 0.2s ease;
+          }
 
-  .ep-footer-accordion details {
-    background-color: #08284c;
-    border-radius: 8px;
-    text-align: left;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
+          .ep-btn-download:hover {
+            transform: translateY(-2px);
+          }
 
-  .ep-footer-accordion summary {
-    padding: 14px 16px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: #ffffff;
-    cursor: pointer;
-    outline: none;
-    user-select: none;
-  }
+          .ep-partners-title {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+          }
 
-  .ep-footer-accordion .ep-content {
-    padding: 14px 16px;
-    font-size: 0.85rem;
-    line-height: 1.5;
-    color: #d1d5db;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
+          .ep-partners-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 28px;
+          }
 
-  .ep-footer-accordion .ep-content p {
-    margin: 4px 0;
-  }
+          .ep-partner-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+          }
 
-  .ep-footer-accordion .ep-content strong {
-    color: #00e676;
-  }
+          .ep-partner-icon {
+            width: 44px;
+            height: 44px;
+          }
 
-  /* BOUTON TÉLÉCHARGER */
-  .ep-btn-download {
-    display: inline-block;
-    background-color: #00e676;
-    color: #031d38;
-    text-decoration: none;
-    font-weight: 800;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    box-shadow: 0 4px 12px rgba(0, 230, 118, 0.2);
-    transition: transform 0.2s ease;
-  }
+          .ep-partner-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ffffff;
+          }
 
-  .ep-btn-download:hover {
-    transform: translateY(-2px);
-  }
+          .ep-copy {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 10px;
+          }
+        </style>
 
-  /* PARTENAIRES */
-  .ep-partners-title {
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: #ffffff;
-    margin-bottom: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
+        <footer class="ep-footer">
+          <div class="ep-footer-container">
 
-  .ep-partners-grid {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 28px;
-  }
+            <div class="ep-footer-accordion">
+              <details>
+                <summary>SERVICE CLIENT</summary>
+                <div class="ep-content">
+                  <p><strong>WhatsApp:</strong> +509 3574 9198</p>
+                  <p><strong>Email:</strong> echanjplus@gmail.com</p>
+                </div>
+              </details>
 
-  .ep-partner-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
+              <details>
+                <summary>AIDE ET MODE D'EMPLOI</summary>
+                <div class="ep-content">
+                  <p><strong>Kòman pou fè yon depozit:</strong> Lè ou gen minit sou sim ou (Digicel oswa Natcom), ou monte sou sit la pou fè echanj la. Ou voye minit yo sou nimewo sistèm nan. Apre sistèm nan fin verifye l, admin lan valide tranzaksyon an epi kont ou kredite.</p>
+                  <br>
+                  <p><strong>Kòman pou fè yon retrè:</strong> Ale nan meni retrè a, chwazi kont lan (MonCash/Natcash), antre montan an ak nimewo a, epi konfime.</p>
+                  <br>
+                  <p><strong>FAQ:</strong> Tranzaksyon yo pa fèt otomatik pou evite fo enfòmasyon. Admin yo pran kèk minit pou verifye epi valide chak opsyon.</p>
+                </div>
+              </details>
 
-  .ep-partner-icon {
-    width: 44px;
-    height: 44px;
-  }
+              <details>
+                <summary>INFORMATIONS GÉNÉRALES</summary>
+                <div class="ep-content">
+                  <p><strong>Konsènan Échanj Plus:</strong> Yon platfòm ki pèmèt ou echanje minit Digicel ak Natcom pou konvèti yo an kòb sou kont MonCash oswa Natcash ou ansekirite.</p>
+                  <br>
+                  <p><strong>Règleman:</strong> Chak itilizatè dwe itilize pwòp kont li ak pwòp nimewo pa l.</p>
+                </div>
+              </details>
 
-  .ep-partner-label {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #ffffff;
-  }
+              <details>
+                <summary>NOS SERVICES</summary>
+                <div class="ep-content">
+                  <p>• Minit Digicel pou MonCash / Natcash</p>
+                  <p>• Minit Natcom pou MonCash / Natcash</p>
+                </div>
+              </details>
+            </div>
 
-  /* COPYRIGHT */
-  .ep-copy {
-    font-size: 0.75rem;
-    color: #9ca3af;
-    margin-top: 10px;
-  }
-</style>
+            <div>
+              <a href="#" class="ep-btn-download">Téléchargez sur Android</a>
+            </div>
 
-<footer class="ep-footer">
-  <div class="ep-footer-container">
+            <div>
+              <div class="ep-partners-title">NOS PARTENAIRES</div>
+              <div class="ep-partners-grid">
+                <div class="ep-partner-item">
+                  <svg class="ep-partner-icon" viewBox="0 0 50 50">
+                    <rect width="100%" height="100%" rx="10" fill="#08284c"/>
+                    <circle cx="25" cy="25" r="13" fill="#00e676"/>
+                    <path d="M19 25 L25 18 L31 25 L25 32 Z" fill="#08284c"/>
+                  </svg>
+                  <span class="ep-partner-label">DAH</span>
+                </div>
 
-    <!-- AKÒDEYON YO -->
-    <div class="ep-footer-accordion">
+                <div class="ep-partner-item">
+                  <svg class="ep-partner-icon" viewBox="0 0 50 50">
+                    <rect width="100%" height="100%" rx="10" fill="#08284c"/>
+                    <path d="M16 34 L25 16 L34 34 M20 28 L30 28" stroke="#00e676" stroke-width="3" fill="none" stroke-linecap="round"/>
+                  </svg>
+                  <span class="ep-partner-label">ARS</span>
+                </div>
+              </div>
+            </div>
 
-      <!-- SERVICE CLIENT -->
-      <details>
-        <summary>SERVICE CLIENT</summary>
-        <div class="ep-content">
-          <p><strong>WhatsApp:</strong> +509 3574 9198</p>
-          <p><strong>Email:</strong> echanjplus@gmail.com</p>
-        </div>
-      </details>
+            <div class="ep-copy">
+              &copy; 2026 Échanj Plus. Tout dwa rezève.
+            </div>
 
-      <!-- AIDE ET MODE D'EMPLOI -->
-      <details>
-        <summary>AIDE ET MODE D'EMPLOI</summary>
-        <div class="ep-content">
-          <p><strong>Kòman pou fè yon depozit:</strong> Lè ou gen minit sou sim ou (Digicel oswa Natcom), ou monte sou sit la pou fè echanj la. Ou voye minit yo sou nimewo sistèm nan. Apre sistèm nan fin verifye l, admin lan valide tranzaksyon an epi kont ou kredite.</p>
-          <br>
-          <p><strong>Kòman pou fè yon retrè:</strong> Ale nan meni retrè a, chwazi kont lan (MonCash/Natcash), antre montan an ak nimewo a, epi konfime.</p>
-          <br>
-          <p><strong>FAQ:</strong> Tranzaksyon yo pa fèt otomatik pou evite fo enfòmasyon. Admin yo pran kèk minit pou verifye epi valide chak opsyon.</p>
-        </div>
-      </details>
-
-      <!-- INFORMATIONS GÉNÉRALES -->
-      <details>
-        <summary>INFORMATIONS GÉNÉRALES</summary>
-        <div class="ep-content">
-          <p><strong>Konsènan Échanj Plus:</strong> Yon platfòm ki pèmèt ou echanje minit Digicel ak Natcom pou konvèti yo an kòb sou kont MonCash oswa Natcash ou ansekirite.</p>
-          <br>
-          <p><strong>Règleman:</strong> Chak itilizatè dwe itilize pwòp kont li ak pwòp nimewo pa l.</p>
-        </div>
-      </details>
-
-      <!-- NOS SERVICES -->
-      <details>
-        <summary>NOS SERVICES</summary>
-        <div class="ep-content">
-          <p>• Minit Digicel pou MonCash / Natcash</p>
-          <p>• Minit Natcom pou MonCash / Natcash</p>
-        </div>
-      </details>
-
-    </div>
-
-    <!-- BOUTON TELECHAJE -->
-    <div>
-      <a href="#" class="ep-btn-download">Téléchargez sur Android</a>
-    </div>
-
-    <!-- PARTENAIRES -->
-    <div>
-      <div class="ep-partners-title">NOS PARTENAIRES</div>
-      <div class="ep-partners-grid">
-        
-        <!-- DAH -->
-        <div class="ep-partner-item">
-          <svg class="ep-partner-icon" viewBox="0 0 50 50">
-            <rect width="100%" height="100%" rx="10" fill="#08284c"/>
-            <circle cx="25" cy="25" r="13" fill="#00e676"/>
-            <path d="M19 25 L25 18 L31 25 L25 32 Z" fill="#08284c"/>
-          </svg>
-          <span class="ep-partner-label">DAH</span>
-        </div>
-
-        <!-- ARS -->
-        <div class="ep-partner-item">
-          <svg class="ep-partner-icon" viewBox="0 0 50 50">
-            <rect width="100%" height="100%" rx="10" fill="#08284c"/>
-            <path d="M16 34 L25 16 L34 34 M20 28 L30 28" stroke="#00e676" stroke-width="3" fill="none" stroke-linecap="round"/>
-          </svg>
-          <span class="ep-partner-label">ARS</span>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- COPYRIGHT -->
-    <div class="ep-copy">
-      &copy; 2026 Échanj Plus. Tout dwa rezève.
-    </div>
-
-  </div>
-</footer>
-
-        
-
-
+          </div>
+        </footer>
 
         <!-- MODAL SEKIRITE PLEIN ÉCRAN (OVERLAY) -->
-<div id="floating-security-tip" class="security-overlay">
-  <div class="security-card">
-    <div class="sec-icon-shield">
-      <i class="fa-solid fa-shield-halved"></i>
-    </div>
-    <h3>Règles de Sécurité</h3>
-    <p><b>🔐 Konsèy ARS:</b> Pa janm pataje PIN tranzaksyon ou oswa modpas ou ak pèsonn, menm ak yon administratè Echanj Plus.</p>
-    <button class="ok-tip-btn" onclick="closeSecurityTip()">D'accord (OK)</button>
-  </div>
-</div>
+        <div id="floating-security-tip" class="security-overlay">
+          <div class="security-card">
+            <div class="sec-icon-shield">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3>Règles de Sécurité</h3>
+            <p><b>🔐 Konsèy ARS:</b> Pa janm pataje PIN tranzaksyon ou oswa modpas ou ak pèsonn, menm ak yon administratè Echanj Plus.</p>
+            <button type="button" class="ok-tip-btn" onclick="closeSecurityTip()">D'accord (OK)</button>
+          </div>
+        </div>
 
-
-        
-
-        
       </section>
 
 
 
-      <!-- PAJ ECHANJ (SÈVIS PRENSIPAL SENPYE) -->
-<section id="paj-echanj" class="app-section">
-  <div>
-    
-    <!-- ENTÈT -->
-    <div>
-      <h2>Sèvis Echanj Minit</h2>
-      <p>Chwazi rezo a pou w ka vann minit ou yo.</p>
-    </div>
 
-    <!-- BOUTON REZO YO (AK FOTO) -->
-    <div>
-      <button id="btn-digi">
-        <img src="https://i.postimg.cc/YvBbkLrW/Digicel-Logo.png" alt="Digicel">
-      </button>
-      <button id="btn-nat">
-        <img src="https://i.postimg.cc/k2Pf9RJB/The-Natcom-Logo.png" alt="Natcom">
-      </button>
-    </div>
 
-  </div>
-</section>
 
-<!-- ========================================== -->
-<!-- MODALS / POP-UPS ETAP PA ETAP -->
-<!-- ========================================== -->
 
-<!-- ETAP 1: FENÈT ANTRE MONTAN -->
-<div id="modal-step-amount" class="modal-echanj hidden">
-  <div>
-    <span class="close-modal">&times;</span>
-    <h3>Montan Echanj (<span id="txt-selected-rezo"></span>)</h3>
-    <p id="txt-limit-info"></p>
-    
-    <div>
-      <label for="input-montan-echanj">Kantite Minit (HTG):</label>
-      <input type="number" id="input-montan-echanj" placeholder="Eg: 100">
-    </div>
-    
-    <button id="btn-to-step-summary">Suivant</button>
-  </div>
-</div>
 
-<!-- ETAP 2: FENÈT REZIME AK DETAY TRANZAKSYON AN -->
-<div id="modal-step-summary" class="modal-echanj hidden">
-  <div>
-    <span class="close-modal">&times;</span>
-    <h3>Detay Tranzaksyon an</h3>
-    
-    <div>
-      <p><span>Rezo:</span> <strong id="summary-rezo"></strong></p>
-      <p><span>Montan w ap vann:</span> <strong><span id="summary-amount"></span> HTG</strong></p>
-      <p><span>Frè Sistèm (<span id="summary-fee-percent"></span>%):</span> <strong>-<span id="summary-fee"></span> HTG</strong></p>
-      <hr>
-      <p><span>W ap resevwa:</span> <strong><span id="summary-net"></span> HTG</strong></p>
-    </div>
 
-    <div>
-      <button id="btn-back-to-amount">Retounen</button>
-      <button id="btn-to-step-pin">Suivant</button>
-    </div>
-  </div>
-</div>
 
-<!-- ETAP 3: FENÈT ANTRE PIN SEKIRITE -->
-<div id="modal-step-pin" class="modal-echanj hidden">
-  <div>
-    <span class="close-modal">&times;</span>
-    <h3>PIN Sekirite</h3>
-    <p>Antre PIN 4 chif ou an pou konfime epi ale sou dialer la:</p>
-    
-    <div>
-      <input type="password" id="input-pin-echanj" maxlength="4" placeholder="••••">
-    </div>
+      <!-- 2B. PAJ ECHANJ -->
+      <section id="paj-echanj" class="app-section">
+        <div>
 
-    <div>
-      <button id="btn-back-to-summary">Retounen</button>
-      <button id="btn-final-confirm">Konfime & Voye Call</button>
-    </div>
-  </div>
-</div>
+          <!-- ENTÈT -->
+          <div>
+            <h2>Sèvis Echanj Minit</h2>
+            <p>Chwazi rezo a pou w ka vann minit ou yo.</p>
+          </div>
+
+          <!-- BOUTON REZO YO (AK FOTO) -->
+          <div>
+            <button type="button" id="btn-digi">
+              <img src="https://i.postimg.cc/YvBbkLrW/Digicel-Logo.png" alt="Digicel">
+            </button>
+            <button type="button" id="btn-nat">
+              <img src="https://i.postimg.cc/k2Pf9RJB/The-Natcom-Logo.png" alt="Natcom">
+            </button>
+          </div>
+
+        </div>
+
+        <!-- ETAP 1: FENÈT ANTRE MONTAN -->
+        <div id="modal-step-amount" class="modal-echanj hidden">
+          <div>
+            <span class="close-modal">&times;</span>
+            <h3>Montan Echanj (<span id="txt-selected-rezo"></span>)</h3>
+            <p id="txt-limit-info"></p>
+
+            <div>
+              <label for="input-montan-echanj">Kantite Minit (HTG):</label>
+              <input type="number" id="input-montan-echanj" placeholder="Eg: 100">
+            </div>
+
+            <button type="button" id="btn-to-step-summary">Suivant</button>
+          </div>
+        </div>
+
+        <!-- ETAP 2: FENÈT REZIME AK DETAY TRANZAKSYON AN -->
+        <div id="modal-step-summary" class="modal-echanj hidden">
+          <div>
+            <span class="close-modal">&times;</span>
+            <h3>Detay Tranzaksyon an</h3>
+
+            <div>
+              <p><span>Rezo:</span> <strong id="summary-rezo"></strong></p>
+              <p><span>Montan w ap vann:</span> <strong><span id="summary-amount"></span> HTG</strong></p>
+              <p><span>Frè Sistèm (<span id="summary-fee-percent"></span>%):</span> <strong>-<span id="summary-fee"></span> HTG</strong></p>
+              <hr>
+              <p><span>W ap resevwa:</span> <strong><span id="summary-net"></span> HTG</strong></p>
+            </div>
+
+            <div>
+              <button type="button" id="btn-back-to-amount">Retounen</button>
+              <button type="button" id="btn-to-step-pin">Suivant</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ETAP 3: FENÈT ANTRE PIN SEKIRITE -->
+        <div id="modal-step-pin" class="modal-echanj hidden">
+          <div>
+            <span class="close-modal">&times;</span>
+            <h3>PIN Sekirite</h3>
+            <p>Antre PIN 4 chif ou an pou konfime epi ale sou dialer la:</p>
+
+            <div>
+              <input type="password" id="input-pin-echanj" maxlength="4" placeholder="••••">
+            </div>
+
+            <div>
+              <button type="button" id="btn-back-to-summary">Retounen</button>
+              <button type="button" id="btn-final-confirm">Konfime &amp; Voye Call</button>
+            </div>
+          </div>
+        </div>
       </section>
 
+      <!-- 2C. PAJ ISTORIK TRANZAKSYON -->
+      <section id="paj-istorik" class="app-section" style="display: none;">
+        <div class="container">
 
-
-<!-- SEKSYON ISTORIK TRANZAKSYON -->
-<section id="paj-istorik" class="app-section" style="display: none;">
-  <div class="container">
-    
-    <!-- ENTÈT PAJ LA -->
-    <div class="section-header">
-      <h2>Istorik Tranzaksyon</h2>
-      <p>Gade tout aktivite ou te fè sou kont ou an.</p>
-    </div>
-
-    <!-- BANÈV TOTAL MWA A -->
-    <div class="monthly-summary-banner">
-      <span class="month-label" id="txt-current-month">NOVANM 2026</span>
-      <h3 id="txt-monthly-total" class="monthly-total-amount">+0.00 HTG</h3>
-      <p id="txt-total-count">TOTAL • 0 tranzaksyon</p>
-    </div>
-
-    <!-- BOUTON RELEVÉ DE COMPTE -->
-    <div class="statement-btn-container" style="margin-bottom: 16px;">
-      <button type="button" class="btn-statement" onclick="window.openReleveCompte()" style="width: 100%; padding: 12px; background: #192026; color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3); border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <i class="fa-solid fa-file-lines"></i> Relevé de compte
-      </button>
-    </div>
-
-    <!-- BWAT ESTATISTIK (ENTRÉES / SORTIES) -->
-    <div class="stats-cards-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-      <div class="stat-card-box inflow" style="background: #192026; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; border: 1px solid #2d3843;">
-        <div class="stat-icon-circle" style="width: 36px; height: 36px; background: rgba(0, 230, 118, 0.15); color: #00e676; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-down"></i></div>
-        <div class="stat-info" style="display: flex; flex-direction: column;">
-          <span style="font-size: 0.75rem; color: #9eaab6;">Entre</span>
-          <strong id="txt-total-entries" style="font-size: 0.9rem; color: #ffffff;">0.00 HTG</strong>
-        </div>
-      </div>
-      <div class="stat-card-box outflow" style="background: #192026; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; border: 1px solid #2d3843;">
-        <div class="stat-icon-circle" style="width: 36px; height: 36px; background: rgba(255, 82, 82, 0.15); color: #ff5252; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-up"></i></div>
-        <div class="stat-info" style="display: flex; flex-direction: column;">
-          <span style="font-size: 0.75rem; color: #9eaab6;">Sòti</span>
-          <strong id="txt-total-sorties" style="font-size: 0.9rem; color: #ffffff;">0.00 HTG</strong>
-        </div>
-      </div>
-    </div>
-
-    <!-- SEKSYON FILTÈ PA DAT -->
-    <div class="date-filter-box">
-      <i class="far fa-calendar-alt"></i>
-      <input type="date" id="filter-date-input" onchange="filterByDate()">
-      <button type="button" onclick="clearDateFilter()">Tout Dat</button>
-    </div>
-
-    <!-- ONGLÈ FILTÈ YO (TABS - Ki gen 'this' pou bouton an ka deplase) -->
-    <div class="tabs-container">
-      <button type="button" class="tab-btn-ist active" onclick="switchIstorik('tout', this)">Tout</button>
-      <button type="button" class="tab-btn-ist" onclick="switchIstorik('echanj', this)">Echanj</button>
-      <button type="button" class="tab-btn-ist" onclick="switchIstorik('retre', this)">Retrè</button>
-      <button type="button" class="tab-btn-ist" onclick="switchIstorik('echwe', this)">Echwe</button>
-    </div>
-
-    <!-- KONTNI PA ONGLÈ -->
-    <div id="list-tout" class="ist-content"></div>
-    <div id="list-echanj" class="ist-content hidden"></div>
-    <div id="list-retre" class="ist-content hidden"></div>
-    <div id="list-echwe" class="ist-content hidden"></div>
-
-  </div>
-</section>
-
-<!-- MODAL DETAY RESI TRANZAKSYON (RECEIPT) -->
-<div id="modal-receipt" class="modal-echanj hidden">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeReceipt()">&times;</span>
-    
-    <div>
-      <h3>Resi Tranzaksyon</h3>
-      <p>Echanj Plus</p>
-    </div>
-
-    <div>
-      <p><span>ID Tranzaksyon:</span> <strong id="rec-id">---</strong></p>
-      <p><span>Statut:</span> <strong id="rec-status">---</strong></p>
-      <p><span>Montan:</span> <strong id="rec-amount">---</strong></p>
-      <p><span>Metòd / Rezo:</span> <strong id="rec-method">---</strong></p>
-      <p><span>Telefòn:</span> <strong id="rec-phone">---</strong></p>
-      <p><span>Dat:</span> <strong id="rec-date">---</strong></p>
-    </div>
-
-    <div>
-      <button type="button" onclick="closeReceipt()">Fèmen</button>
-      <button type="button" onclick="shareReceipt()">
-        <i class="fab fa-whatsapp"></i> Pataje Resi
-      </button>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-<!-- SEKSYON RETRÈ -->
-
-
-
-<!-- SECTIONS ETAP RETRÈ -->
-<section id="paj-retre" class="app-section">
-  <div class="container">
-
-    <!-- ETAP 1: CHWA METÒD PEYMAN -->
-    <div id="step-select-method" class="retre-card">
-      <div class="retre-header">
-        <i class="fas fa-wallet"></i>
-        <h2>RETIRER</h2>
-      </div>
-      
-      <p class="section-subtitle">Choisissez votre moyen de paiement :</p>
-
-      <div class="payment-methods-list">
-        <!-- Natcash -->
-        <div class="method-item" onclick="selectRetreMethod('natcash', 'NatCash - Online', 50, 5000)">
-          <div class="method-logo">
-            <img src="https://i.postimg.cc/qzXB45nn/images-(2).jpg" alt="NatCash">
+          <div class="section-header">
+            <h2>Istorik Tranzaksyon</h2>
+            <p>Gade tout aktivite ou te fè sou kont ou an.</p>
           </div>
-          <div class="method-info">
-            <h3>NatCash - Online</h3>
-            <p>Min : 50 <span>HTG</span> &nbsp; Max : 5 000 <span>HTG</span></p>
+
+          <div class="monthly-summary-banner">
+            <span class="month-label" id="txt-current-month">NOVANM 2026</span>
+            <h3 id="txt-monthly-total" class="monthly-total-amount">+0.00 HTG</h3>
+            <p id="txt-total-count">TOTAL • 0 tranzaksyon</p>
           </div>
-          <i class="fas fa-chevron-right arrow-icon"></i>
-        </div>
 
-        <!-- Moncash -->
-        <div class="method-item" onclick="selectRetreMethod('moncash', 'MonCash - Online', 50, 5000)">
-          <div class="method-logo">
-            <img src="https://i.postimg.cc/fJjWDrXm/images-(1).jpg" alt="MonCash">
+          <div class="statement-btn-container" style="margin-bottom: 16px;">
+            <button type="button" class="btn-statement" onclick="window.openReleveCompte()" style="width: 100%; padding: 12px; background: #192026; color: #00e676; border: 1px solid rgba(0, 230, 118, 0.3); border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <i class="fa-solid fa-file-lines"></i> Relevé de compte
+            </button>
           </div>
-          <div class="method-info">
-            <h3>MonCash - Online</h3>
-            <p>Min : 50 <span>HTG</span> &nbsp; Max : 5 000 <span>HTG</span></p>
+
+          <div class="stats-cards-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+            <div class="stat-card-box inflow" style="background: #192026; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; border: 1px solid #2d3843;">
+              <div class="stat-icon-circle" style="width: 36px; height: 36px; background: rgba(0, 230, 118, 0.15); color: #00e676; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-down"></i></div>
+              <div class="stat-info" style="display: flex; flex-direction: column;">
+                <span style="font-size: 0.75rem; color: #9eaab6;">Entre</span>
+                <strong id="txt-total-entries" style="font-size: 0.9rem; color: #ffffff;">0.00 HTG</strong>
+              </div>
+            </div>
+            <div class="stat-card-box outflow" style="background: #192026; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; border: 1px solid #2d3843;">
+              <div class="stat-icon-circle" style="width: 36px; height: 36px; background: rgba(255, 82, 82, 0.15); color: #ff5252; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-arrow-up"></i></div>
+              <div class="stat-info" style="display: flex; flex-direction: column;">
+                <span style="font-size: 0.75rem; color: #9eaab6;">Sòti</span>
+                <strong id="txt-total-sorties" style="font-size: 0.9rem; color: #ffffff;">0.00 HTG</strong>
+              </div>
+            </div>
           </div>
-          <i class="fas fa-chevron-right arrow-icon"></i>
+
+          <div class="date-filter-box">
+            <i class="far fa-calendar-alt"></i>
+            <input type="date" id="filter-date-input" onchange="filterByDate()">
+            <button type="button" onclick="clearDateFilter()">Tout Dat</button>
+          </div>
+
+          <div class="tabs-container">
+            <button type="button" class="tab-btn-ist active" onclick="switchIstorik('tout', this)">Tout</button>
+            <button type="button" class="tab-btn-ist" onclick="switchIstorik('echanj', this)">Echanj</button>
+            <button type="button" class="tab-btn-ist" onclick="switchIstorik('retre', this)">Retrè</button>
+            <button type="button" class="tab-btn-ist" onclick="switchIstorik('echwe', this)">Echwe</button>
+          </div>
+
+          <div id="list-tout" class="ist-content"></div>
+          <div id="list-echanj" class="ist-content hidden"></div>
+          <div id="list-retre" class="ist-content hidden"></div>
+          <div id="list-echwe" class="ist-content hidden"></div>
+
+        </div>
+
+        <!-- MODAL DETAY RESI TRANZAKSYON (RECEIPT) -->
+        <div id="modal-receipt" class="modal-echanj hidden">
+          <div class="modal-content">
+            <span class="close-modal" onclick="closeReceipt()">&times;</span>
+
+            <div>
+              <h3>Resi Tranzaksyon</h3>
+              <p>Echanj Plus</p>
+            </div>
+
+            <div>
+              <p><span>ID Tranzaksyon:</span> <strong id="rec-id">---</strong></p>
+              <p><span>Statut:</span> <strong id="rec-status">---</strong></p>
+              <p><span>Montan:</span> <strong id="rec-amount">---</strong></p>
+              <p><span>Metòd / Rezo:</span> <strong id="rec-method">---</strong></p>
+              <p><span>Telefòn:</span> <strong id="rec-phone">---</strong></p>
+              <p><span>Dat:</span> <strong id="rec-date">---</strong></p>
+            </div>
+
+            <div>
+              <button type="button" onclick="closeReceipt()">Fèmen</button>
+              <button type="button" onclick="shareReceipt()">
+                <i class="fab fa-whatsapp"></i> Pataje Resi
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2D. PAJ RETRÈ -->
+      <section id="paj-retre" class="app-section">
+        <div class="container">
+
+          <!-- ETAP 1: CHWA METÒD PEYMAN -->
+          <div id="step-select-method" class="retre-card">
+            <div class="retre-header">
+              <i class="fas fa-wallet"></i>
+              <h2>RETIRER</h2>
+            </div>
+
+            <p class="section-subtitle">Choisissez votre moyen de paiement :</p>
+
+            <div class="payment-methods-list">
+              <div class="method-item" onclick="selectRetreMethod('natcash', 'NatCash - Online', 50, 5000)">
+                <div class="method-logo">
+                  <img src="https://i.postimg.cc/qzXB45nn/images-(2).jpg" alt="NatCash">
+                </div>
+                <div class="method-info">
+                  <h3>NatCash - Online</h3>
+                  <p>Min : 50 <span>HTG</span> &nbsp; Max : 5 000 <span>HTG</span></p>
+                </div>
+                <i class="fas fa-chevron-right arrow-icon"></i>
+              </div>
+
+              <div class="method-item" onclick="selectRetreMethod('moncash', 'MonCash - Online', 50, 5000)">
+                <div class="method-logo">
+                  <img src="https://i.postimg.cc/fJjWDrXm/images-(1).jpg" alt="MonCash">
+                </div>
+                <div class="method-info">
+                  <h3>MonCash - Online</h3>
+                  <p>Min : 50 <span>HTG</span> &nbsp; Max : 5 000 <span>HTG</span></p>
+                </div>
+                <i class="fas fa-chevron-right arrow-icon"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- ETAP 2: ANTRE MONTAN AN -->
+          <div id="step-enter-amount" class="retre-card hidden">
+            <div class="retre-header">
+              <button type="button" class="btn-back" onclick="goToStep('step-select-method')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <i class="fas fa-wallet"></i>
+              <h2>RETIRER</h2>
+            </div>
+
+            <div class="selected-method-badge">
+              <span id="selected-method-name">NatCash - Online</span>
+            </div>
+
+            <h3 class="step-title">Effectuez un retrait</h3>
+            <p class="step-desc">Entrez le montant à retirer</p>
+
+            <div class="input-amount-group">
+              <input type="number" id="retre-amount-input" placeholder="Montant" min="50" max="5000" required>
+              <span class="currency-tag">HTG</span>
+            </div>
+
+            <p class="min-max-text">
+              Minimum : <span id="display-min-limit">50</span> HTG &nbsp;
+              Maximum : <span id="display-max-limit">5 000</span> HTG
+            </p>
+
+            <button type="button" id="btn-validate-amount" class="btn-action-green" onclick="validateAmountStep(event)">
+              Valider
+            </button>
+
+            <p class="warning-note">
+              Assurez-vous d'avoir un compte au préalable avec le même numéro de téléphone ou la transaction sera impossible.
+            </p>
+          </div>
+
+          <!-- ETAP 3: NUMÈWO TELEFÒN AK NON TITULAIRE -->
+          <div id="step-enter-account" class="retre-card hidden">
+            <div class="retre-header">
+              <button type="button" class="btn-back" onclick="goToStep('step-enter-amount')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <i class="fas fa-wallet"></i>
+              <h2>RETIRER</h2>
+            </div>
+
+            <h3 class="step-title">Information du compte</h3>
+
+            <div class="alert-warning-box">
+              <i class="fas fa-exclamation-triangle"></i>
+              <p><strong>Atansyon:</strong> Ou dwe antre non egzak ki sou kont lan. Si non an pa koresponn ak titilè kont lan, admin lan ap <strong>rejete</strong> retrè a epi ou riske pèdi kòb la!</p>
+            </div>
+
+            <div class="form-group-custom">
+              <label for="retre-phone-input">Nimewo Telefòn / Kont</label>
+              <input type="tel" id="retre-phone-input" placeholder="Eg: 31234567" required>
+            </div>
+
+            <div class="form-group-custom">
+              <label for="retre-holder-input">Non ak Siyati Titulaires Kont lan</label>
+              <input type="text" id="retre-holder-input" placeholder="Eg: Jean Baptiste" required>
+            </div>
+
+            <button type="button" class="btn-action-green" onclick="validateAccountStep(event)">
+              Kontinye
+            </button>
+          </div>
+
+        </div>
+
+        <!-- MODAL ETAP 4: REKAPITILASYON AK DETAY TRANZAKSYON AN -->
+        <div id="modal-retre-details" class="modal-echanj hidden">
+          <div class="modal-content">
+            <h3>Détails du retrait</h3>
+            <p class="modal-subtitle">Tanpri verifye tout enfòmasyon yo anvan ou valide.</p>
+
+            <div class="details-list-box">
+              <div class="detail-row">
+                <span>Méthode:</span>
+                <strong id="dt-method">NatCash</strong>
+              </div>
+              <div class="detail-row">
+                <span>Montant:</span>
+                <strong id="dt-amount">0 HTG</strong>
+              </div>
+              <div class="detail-row">
+                <span>Numéro:</span>
+                <strong id="dt-phone">--</strong>
+              </div>
+              <div class="detail-row">
+                <span>Titulaire:</span>
+                <strong id="dt-holder">--</strong>
+              </div>
+              <div class="detail-row">
+                <span>Date &amp; Heure:</span>
+                <strong id="dt-date">--</strong>
+              </div>
+            </div>
+
+            <div class="modal-actions-row">
+              <button type="button" class="btn-secondary" onclick="closeModal('modal-retre-details')">Anule</button>
+              <button type="button" class="btn-action-green" onclick="proceedToPinStep()">Valider &amp; Entrer PIN</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL ETAP 5: ANTRE PIN -->
+        <div id="modal-retre-pin" class="modal-echanj hidden">
+          <div class="modal-content">
+            <h3>Sécurité - Code PIN</h3>
+            <p>Antre PIN 4 chif ou an pou konfime retrè a.</p>
+
+            <input type="password" id="retre-pin-input" maxlength="4" placeholder="****" class="pin-input-field">
+
+            <div class="modal-actions-row">
+              <button type="button" class="btn-secondary" onclick="closeModal('modal-retre-pin')">Anule</button>
+              <button type="button" class="btn-action-green" onclick="confirmFinalRetre()">Konfime Retrè A</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2E. PAJ PARAMÈT -->
+      <section id="paj-setting" class="app-section">
+        <div id="section-paramet" class="param-section">
+          <div class="param-header">
+            <h2>Paramèt</h2>
+            <p>Jere kont ou, nimewo resepsyon w, ak preferans Echanj Plus ou.</p>
+          </div>
+
+          <div class="param-card">
+            <div class="param-card-title">
+              <i class="fa-solid fa-user-shield"></i>
+              <span>Enfòmasyon Kont</span>
+            </div>
+
+            <div class="param-row">
+              <span class="param-label">Imèl</span>
+              <strong id="param-user-email" class="param-value">Chajman...</strong>
+            </div>
+            <div class="param-row">
+              <span class="param-label">UID Itilizatè</span>
+              <span id="param-user-uid" class="param-mono">---</span>
+            </div>
+            <div class="param-row">
+              <span class="param-label">Estati Sesyon</span>
+              <span class="param-badge-active">Konekte</span>
+            </div>
+          </div>
+
+          <div class="param-card">
+            <div class="param-card-title">
+              <i class="fa-solid fa-wallet"></i>
+              <span>Nimewo Resepsyon Pa Defo</span>
+            </div>
+            <p class="param-desc">
+              Anrejistre nimewo w abitye resevwa lajan sou li pou konvèsyon minit Digicel ak Natcom yo.
+            </p>
+
+            <div class="param-field">
+              <label for="param-default-wallet">Sèvis</label>
+              <select id="param-default-wallet" class="param-input">
+                <option value="MonCash">MonCash</option>
+                <option value="NatCash">NatCash</option>
+              </select>
+            </div>
+
+            <div class="param-field">
+              <label for="param-default-phone">Nimewo Telefòn</label>
+              <input type="tel" id="param-default-phone" placeholder="Eg: 34132015" class="param-input">
+            </div>
+
+            <button type="button" onclick="window.saveDefaultPayoutInfo(event)" class="param-btn-primary">
+              Anrejistre Nimewo a
+            </button>
+            <span id="param-save-msg" class="param-feedback"></span>
+          </div>
+
+          <div class="param-card">
+            <div class="param-card-title">
+              <i class="fa-solid fa-key"></i>
+              <span>Sekirite PIN Tranzaksyon</span>
+            </div>
+            <p class="param-desc">
+              Kreye oswa chanje PIN 4 chif ou pou pwoteje echanj ak retrè w yo.
+            </p>
+            <div class="settings-option">
+              <button type="button" id="open-pin-modal-btn" class="btn-param-pin">
+                <i class="fa-solid fa-key"></i> PIN Tranzaksyon
+              </button>
+            </div>
+          </div>
+
+          <div class="param-card">
+            <div class="param-card-title">
+              <i class="fa-solid fa-sliders"></i>
+              <span>Sistèm &amp; Done Lokal</span>
+            </div>
+            <p class="param-desc">
+              Si koòdone a oswa rechèch tranzaksyon an blokis, ou ka netwaye done lokal navigatè a.
+            </p>
+
+            <div class="param-row">
+              <span class="param-label">Vèsyon Aplikasyon</span>
+              <strong class="param-value">Echanj Plus v1.0</strong>
+            </div>
+
+            <button type="button" onclick="window.clearLocalCache(event)" class="param-btn-secondary">
+              Efase Kach Lokal (localStorage)
+            </button>
+          </div>
+
+          <div class="param-card">
+            <div class="param-card-title">
+              <i class="fa-solid fa-headset"></i>
+              <span>Règ Sèvis &amp; Asistans</span>
+            </div>
+            <p class="param-desc">
+              Suivi ak reklamasyon pou tranzaksyon ki poko valide ouvri apre yon delè 12 èdtan. Pou asistans dirèk, kontakte admin lan.
+            </p>
+
+            <a href="https://wa.me/50934132015?text=Bonjou%20Admin%20Echanj%20Plus%2C%20m%20bezwen%20asistans." target="_blank" rel="noopener noreferrer" class="param-btn-whatsapp">
+              <i class="fa-brands fa-whatsapp"></i> Kontakte Admin sou WhatsApp
+            </a>
+
+            <button type="button" onclick="window.logoutEchanjUser(event)" class="param-btn-danger">
+              <i class="fa-solid fa-right-from-bracket"></i> Dekonekte Kont lan
+            </button>
+          </div>
+
+          <!-- FENÈT MODAL PIN LA -->
+          <div id="pin-modal-overlay" class="pin-modal-overlay" style="display: none;">
+            <div class="pin-modal-card">
+              <button type="button" class="close-modal-btn" id="close-pin-modal">&times;</button>
+
+              <h3><i class="fa-solid fa-shield-halved"></i> Gestion PIN</h3>
+              <p class="modal-desc">Chwazi sa ou vle fè ak PIN tranzaksyon ou an:</p>
+
+              <div class="pin-actions">
+                <button type="button" id="btn-show-create" class="action-btn create-btn">
+                  <i class="fa-solid fa-plus-circle"></i> Kreye PIN
+                </button>
+                <button type="button" id="btn-show-change" class="action-btn change-btn">
+                  <i class="fa-solid fa-arrows-rotate"></i> Chanje PIN
+                </button>
+              </div>
+
+              <form id="create-pin-form" class="pin-form hidden">
+                <h4>Kreye yon nouvo PIN</h4>
+                <div class="form-group">
+                  <input type="password" id="create-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Antre 4 chif" inputmode="numeric" required>
+                </div>
+                <div class="form-group">
+                  <input type="password" id="confirm-create-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Konfime 4 chif yo" inputmode="numeric" required>
+                </div>
+                <button type="submit" class="btn-submit">Sove PIN mwen</button>
+                <button type="button" class="btn-back">Retounen</button>
+              </form>
+
+              <form id="change-pin-form" class="pin-form hidden">
+                <h4>Chanje PIN ou</h4>
+                <div class="form-group">
+                  <input type="password" id="old-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Ansyen PIN" inputmode="numeric" required>
+                </div>
+                <div class="form-group">
+                  <input type="password" id="new-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Nouvo PIN" inputmode="numeric" required>
+                </div>
+                <button type="submit" class="btn-submit">Mete ajou PIN la</button>
+                <button type="button" class="btn-back">Retounen</button>
+              </form>
+
+              <div id="modal-pin-status" class="status-msg"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODAL WÈ ENFÒMASYON PROFIL -->
+      <div id="modal-gade-profil" class="modal-echanj" style="display: none;">
+        <div class="profil-card">
+          <div class="profil-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0;">Detay Profil Mwen</h3>
+            <button type="button" id="close-gade-profil" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #64748b;">✕</button>
+          </div>
+          <p class="profil-desc">Men enfòmasyon ou te anrejistre sou <strong>Echanj Plus</strong>:</p>
+
+          <div class="profil-info-list" style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #cbd5e1;">
+            <p style="margin-bottom: 8px; font-size: 13.5px;"><strong>Non ak Prenon:</strong> <span id="lbl-profil-non" style="color: #0f172a;">--</span></p>
+            <p style="margin-bottom: 8px; font-size: 13.5px;"><strong>Nimewo Telefòn:</strong> <span id="lbl-profil-tel" style="color: #0f172a;">--</span></p>
+            <p style="margin-bottom: 8px; font-size: 13.5px;"><strong>Sèks:</strong> <span id="lbl-profil-seks" style="color: #0f172a;">--</span></p>
+            <p style="margin-bottom: 8px; font-size: 13.5px;"><strong>Depatman:</strong> <span id="lbl-profil-depatman" style="color: #0f172a;">--</span></p>
+            <p style="margin-bottom: 8px; font-size: 13.5px;"><strong>Komin:</strong> <span id="lbl-profil-komin" style="color: #0f172a;">--</span></p>
+            <p style="margin-bottom: 0px; font-size: 13.5px;"><strong>Zòn / Katye:</strong> <span id="lbl-profil-zon" style="color: #0f172a;">--</span></p>
+          </div>
+
+          <button type="button" id="btn-louvri-modifye" style="width: 100%; background: #0ea5e9; color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: 600; cursor: pointer;">Modifye Enfòmasyon yo</button>
         </div>
       </div>
-    </div>
 
-    <!-- ETAP 2: ANTRE MONTAN AN -->
-    <div id="step-enter-amount" class="retre-card hidden">
-      <div class="retre-header">
-        <button type="button" class="btn-back" onclick="goToStep('step-select-method')">
-          <i class="fas fa-arrow-left"></i>
-        </button>
-        <i class="fas fa-wallet"></i>
-        <h2>RETIRER</h2>
-      </div>
+      <!-- MODAL KONPLETE / MODIFYE PWOFIL -->
+      <div id="modal-profil" class="modal-echanj" style="display: none;">
+        <div class="profil-card">
+          <div class="profil-header">
+            <h3>Konplete Profil Ou</h3>
+          </div>
+          <p class="profil-desc">Tanpri bay enfòmasyon sa yo pou w ka sèvi ak <strong>Echanj Plus</strong> an sekirite.</p>
 
-      <div class="selected-method-badge">
-        <span id="selected-method-name">NatCash - Online</span>
-      </div>
+          <div class="form-group">
+            <label for="input-profil-non">Non ak Prenon:</label>
+            <input type="text" id="input-profil-non" placeholder="Egz: Jean Pierre">
+          </div>
 
-      <h3 class="step-title">Effectuez un retrait</h3>
-      <p class="step-desc">Entrez le montant à retirer</p>
+          <div class="form-group">
+            <label for="input-profil-tel">Nimewo Telefòn:</label>
+            <input type="tel" id="input-profil-tel" placeholder="+509 ...">
+          </div>
 
-      <div class="input-amount-group">
-        <input type="number" id="retre-amount-input" placeholder="Montant" min="50" max="5000" required>
-        <span class="currency-tag">HTG</span>
-      </div>
+          <div class="form-group">
+            <label for="input-profil-seks">Sèks:</label>
+            <select id="input-profil-seks">
+              <option value="">Chwazi sèks ou</option>
+              <option value="Gason">Gason</option>
+              <option value="Fanm">Fanm</option>
+            </select>
+          </div>
 
-      <p class="min-max-text">
-        Minimum : <span id="display-min-limit">50</span> HTG &nbsp; 
-        Maximum : <span id="display-max-limit">5 000</span> HTG
-      </p>
+          <div class="form-group">
+            <label for="select-depatman">Depatman:</label>
+            <select id="select-depatman">
+              <option value="">Chwazi yon depatman</option>
+              <option value="Lwès">Lwès</option>
+              <option value="Nò">Nò</option>
+              <option value="Nòdès">Nòdès</option>
+              <option value="Nòdwès">Nòdwès</option>
+              <option value="Latibonit">Latibonit</option>
+              <option value="Sant">Sant</option>
+              <option value="Grand'Anse">Grand'Anse</option>
+              <option value="Nip">Nip</option>
+              <option value="Sid">Sid</option>
+              <option value="Sidès">Sidès</option>
+            </select>
+          </div>
 
-      <button type="button" id="btn-validate-amount" class="btn-action-green" onclick="validateAmountStep(event)">
-        Valider
-      </button>
+          <div class="form-group">
+            <label for="select-komin">Komin:</label>
+            <select id="select-komin">
+              <option value="">Premye chwazi yon depatman</option>
+            </select>
+          </div>
 
-      <p class="warning-note">
-        Assurez-vous d'avoir un compte au préalable avec le même numéro de téléphone ou la transaction sera impossible.
-      </p>
-    </div>
+          <div class="form-group">
+            <label for="input-profil-zon">Zòn / Katye:</label>
+            <input type="text" id="input-profil-zon" placeholder="Egz: Bèlè, Centre-ville...">
+          </div>
 
-    <!-- ETAP 3: NUMÈWO TELEFÒN AK NON TITULAIRE -->
-    <div id="step-enter-account" class="retre-card hidden">
-      <div class="retre-header">
-        <button type="button" class="btn-back" onclick="goToStep('step-enter-amount')">
-          <i class="fas fa-arrow-left"></i>
-        </button>
-        <i class="fas fa-wallet"></i>
-        <h2>RETIRER</h2>
-      </div>
-
-      <h3 class="step-title">Information du compte</h3>
-
-      <!-- Alèti Enpòtan -->
-      <div class="alert-warning-box">
-        <i class="fas fa-exclamation-triangle"></i>
-        <p><strong>Atansyon:</strong> Ou dwe antre non egzak ki sou kont lan. Si non an pa koresponn ak titilè kont lan, admin lan ap <strong>rejete</strong> retrè a epi ou riske pèdi kòb la!</p>
-      </div>
-
-      <div class="form-group-custom">
-        <label for="retre-phone-input">Nimewo Telefòn / Kont</label>
-        <input type="tel" id="retre-phone-input" placeholder="Eg: 31234567" required>
-      </div>
-
-      <div class="form-group-custom">
-        <label for="retre-holder-input">Non ak Siyati Titulaires Kont lan</label>
-        <input type="text" id="retre-holder-input" placeholder="Eg: Jean Baptiste" required>
-      </div>
-
-      <button type="button" class="btn-action-green" onclick="validateAccountStep(event)">
-        Kontinye
-      </button>
-    </div>
-
-  </div>
-</section>
-
-<!-- MODAL ETAP 4: REKAPITILASYON AK DETAY TRANZAKSYON AN -->
-<div id="modal-retre-details" class="modal-echanj hidden">
-  <div class="modal-content">
-    <h3>Détails du retrait</h3>
-    <p class="modal-subtitle">Tanpri verifye tout enfòmasyon yo anvan ou valide.</p>
-
-    <div class="details-list-box">
-      <div class="detail-row">
-        <span>Méthode:</span>
-        <strong id="dt-method">NatCash</strong>
-      </div>
-      <div class="detail-row">
-        <span>Montant:</span>
-        <strong id="dt-amount">0 HTG</strong>
-      </div>
-      <div class="detail-row">
-        <span>Numéro:</span>
-        <strong id="dt-phone">--</strong>
-      </div>
-      <div class="detail-row">
-        <span>Titulaire:</span>
-        <strong id="dt-holder">--</strong>
-      </div>
-      <div class="detail-row">
-        <span>Date & Heure:</span>
-        <strong id="dt-date">--</strong>
-      </div>
-    </div>
-
-    <div class="modal-actions-row">
-      <button type="button" class="btn-secondary" onclick="closeModal('modal-retre-details')">Anule</button>
-      <button type="button" class="btn-action-green" onclick="proceedToPinStep()">Valider & Entrer PIN</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL ETAP 5: ANTRE PIN -->
-<div id="modal-retre-pin" class="modal-echanj hidden">
-  <div class="modal-content">
-    <h3>Sécurité - Code PIN</h3>
-    <p>Antre PIN 4 chif ou an pou konfime retrè a.</p>
-
-    <input type="password" id="retre-pin-input" maxlength="4" placeholder="****" class="pin-input-field">
-
-    <div class="modal-actions-row">
-      <button type="button" class="btn-secondary" onclick="closeModal('modal-retre-pin')">Anule</button>
-      <button type="button" class="btn-action-green" onclick="confirmFinalRetre()">Konfime Retrè A</button>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-<div id="section-paramet" class="param-section">
-  <div class="param-header">
-    <h2>Paramèt</h2>
-    <p>Jere kont ou, nimewo resepsyon w, ak preferans Echanj Plus ou.</p>
-  </div>
-
-  <!-- 1. ENFÒMASYON KONT -->
-  <div class="param-card">
-    <div class="param-card-title">
-      <i class="fa-solid fa-user-shield"></i>
-      <span>Enfòmasyon Kont</span>
-    </div>
-
-    <div class="param-row">
-      <span class="param-label">Imèl</span>
-      <strong id="param-user-email" class="param-value">Chajman...</strong>
-    </div>
-    <div class="param-row">
-      <span class="param-label">UID Itilizatè</span>
-      <span id="param-user-uid" class="param-mono">---</span>
-    </div>
-    <div class="param-row">
-      <span class="param-label">Estati Sesyon</span>
-      <span class="param-badge-active">Konekte</span>
-    </div>
-  </div>
-
-  <!-- 2. NIMEWO RESEPSYON PA DEFO -->
-  <div class="param-card">
-    <div class="param-card-title">
-      <i class="fa-solid fa-wallet"></i>
-      <span>Nimewo Resepsyon Pa Defo</span>
-    </div>
-    <p class="param-desc">
-      Anrejistre nimewo w abitye resevwa lajan sou li pou konvèsyon minit Digicel ak Natcom yo.
-    </p>
-
-    <div class="param-field">
-      <label for="param-default-wallet">Sèvis</label>
-      <select id="param-default-wallet" class="param-input">
-        <option value="MonCash">MonCash</option>
-        <option value="NatCash">NatCash</option>
-      </select>
-    </div>
-
-    <div class="param-field">
-      <label for="param-default-phone">Nimewo Telefòn</label>
-      <input type="tel" id="param-default-phone" placeholder="Eg: 34132015" class="param-input">
-    </div>
-
-    <button type="button" onclick="window.saveDefaultPayoutInfo(event)" class="param-btn-primary">
-      Anrejistre Nimewo a
-    </button>
-    <span id="param-save-msg" class="param-feedback"></span>
-  </div>
-
-  <!-- 3. SISTÈM & KACH LOKAL -->
-  <div class="param-card">
-    <div class="param-card-title">
-      <i class="fa-solid fa-sliders"></i>
-      <span>Sistèm & Done Lokal</span>
-    </div>
-    <p class="param-desc">
-      Si koòdone a oswa rechèch tranzaksyon an blokis, ou ka netwaye done lokal navigatè a.
-    </p>
-
-    <div class="param-row">
-      <span class="param-label">Vèsyon Aplikasyon</span>
-      <strong class="param-value">Echanj Plus v1.0</strong>
-    </div>
-
-    <button type="button" onclick="window.clearLocalCache(event)" class="param-btn-secondary">
-      Efase Kach Lokal (localStorage)
-    </button>
-  </div>
-
-  <!-- 4. RÈG SÈVIS & SIPÒ -->
-  <div class="param-card">
-    <div class="param-card-title">
-      <i class="fa-solid fa-headset"></i>
-      <span>Règ Sèvis & Asistans</span>
-    </div>
-    <p class="param-desc">
-      Suivi ak reklamasyon pou tranzaksyon ki poko valide ouvri apre yon delè 12 èdtan. Pou asistans dirèk, kontakte admin lan.
-    </p>
-
-    <a href="https://wa.me/50934132015?text=Bonjou%20Admin%20Echanj%20Plus%2C%20m%20bezwen%20asistans." target="_blank" rel="noopener noreferrer" class="param-btn-whatsapp">
-      <i class="fa-brands fa-whatsapp"></i> Kontakte Admin sou WhatsApp
-    </a>
-
-    <button type="button" onclick="window.logoutEchanjUser(event)" class="param-btn-danger">
-      <i class="fa-solid fa-right-from-bracket"></i> Dekonekte Kont lan
-    </button>
-  </div>
-</div>
-
-
-
-
-
-      
-
-<div id="section-paramet" class="param-section">
-  <div class="param-header">
-    <h2>Paramèt</h2>
-    <p>Jere kont ou, nimewo resepsyon w, ak preferans Echanj Plus ou.</p>
-  </div>
-
-  <!-- 1. ENFÒMASYON KONT -->
-  <div class="param-card">
-    <div class="param-card-title">
-      <i class="fa-solid fa-user-shield"></i>
-      <span>Enfòmasyon Kont</span>
-    </div>
-
-    <div class="param-row">
-      <span class="param-label">Imèl</span>
-      <strong id="param-user-email" class="param-value">Chajman...</strong>
-    </div>
-    <div class="param-row">
-      <span class="param-label">UID Itilizatè</span>
-      <span id="param-user-uid" class="param-mono">---</span>
-    </div>
-    <div class="param-row">
-      <span class="param-label">Estati Sesyon</span>
-      <span class="param-badge-active">Konekte</span>
-    </div>
-  </div>
-
-  <!-- 2. NIMEWO RESEPSYON PA DEFO -->
-  <div class="param-card">
-    <div class="param-card-title">
-      <i class="fa-solid fa-wallet"></i>
-      <span>Nimewo Resepsyon Pa Defo</span>
-    </div>
-    <p class="param-desc">
-      Anrejistre nimewo w abitye resevwa lajan sou li pou konvèsyon minit Digicel ak Natcom yo.
-    </p>
-
-    <div class="param-field">
-      <label for="param-default-wallet">Sèvis</label>
-      <select id="param-default-wallet" class="param-input">
-        <option value="MonCash">MonCash</option>
-        <option value="NatCash">NatCash</option>
-      </select>
-    </div>
-
-    <div class="param-field">
-      <label for="param-default-phone">Nimewo Telefòn</label>
-      <input type="tel" id="param-default-phone" placeholder="Eg: 34132015" class="param-input">
-    </div>
-
-    <button type="button" onclick="window.saveDefaultPayoutInfo(event)" class="param-btn-primary">
-      Anrejistre Nimewo a
-    </button>
-    <span id="param-save-msg" class="param-feedback"></span>
-  </div>
-
-  <!-- 3. SEKIRITE PIN TRANZAKSYON -->
-  <div class="param-card">
-    <div class="param-card-title">
-      <i class="fa-solid fa-key"></i>
-      <span>Sekirite PIN Tranzaksyon</span>
-    </div>
-    <p class="param-desc">
-      Kreye oswa chanje PIN 4 chif ou pou pwoteje echanj ak retrè w yo.
-    </p>
-    <div class="settings-option">
-      <button type="button" id="open-pin-modal-btn" class="btn-param-pin">
-        <i class="fa-solid fa-key"></i> PIN Tranzaksyon
-      </button>
-    </div>
-  </div>
-
-  <!-- 4. SISTÈM & KACH LOKAL -->
-  <div class="param-card">
-    <div class="param-card-title">
-      <i class="fa-solid fa-sliders"></i>
-      <span>Sistèm &amp; Done Lokal</span>
-    </div>
-    <p class="param-desc">
-      Si koòdone a oswa rechèch tranzaksyon an blokis, ou ka netwaye done lokal navigatè a.
-    </p>
-
-    <div class="param-row">
-      <span class="param-label">Vèsyon Aplikasyon</span>
-      <strong class="param-value">Echanj Plus v1.0</strong>
-    </div>
-
-    <button type="button" onclick="window.clearLocalCache(event)" class="param-btn-secondary">
-      Efase Kach Lokal (localStorage)
-    </button>
-  </div>
-
-  <!-- 5. RÈG SÈVIS & SIPÒ -->
-  <div class="param-card">
-    <div class="param-card-title">
-      <i class="fa-solid fa-headset"></i>
-      <span>Règ Sèvis &amp; Asistans</span>
-    </div>
-    <p class="param-desc">
-      Suivi ak reklamasyon pou tranzaksyon ki poko valide ouvri apre yon delè 12 èdtan. Pou asistans dirèk, kontakte admin lan.
-    </p>
-
-    <a href="https://wa.me/50934132015?text=Bonjou%20Admin%20Echanj%20Plus%2C%20m%20bezwen%20asistans." target="_blank" rel="noopener noreferrer" class="param-btn-whatsapp">
-      <i class="fa-brands fa-whatsapp"></i> Kontakte Admin sou WhatsApp
-    </a>
-
-    <button type="button" onclick="window.logoutEchanjUser(event)" class="param-btn-danger">
-      <i class="fa-solid fa-right-from-bracket"></i> Dekonekte Kont lan
-    </button>
-  </div>
-
-  <!-- FENÈT MODAL LA (KACHE PA DEFÒ JISKASKE W KLIKE SOU BOUTON AN) -->
-  <div id="pin-modal-overlay" class="pin-modal-overlay" style="display: none;">
-    <div class="pin-modal-card">
-      <button type="button" class="close-modal-btn" id="close-pin-modal">&times;</button>
-
-      <h3><i class="fa-solid fa-shield-halved"></i> Gestion PIN</h3>
-      <p class="modal-desc">Chwazi sa ou vle fè ak PIN tranzaksyon ou an:</p>
-
-      <div class="pin-actions">
-        <button type="button" id="btn-show-create" class="action-btn create-btn">
-          <i class="fa-solid fa-plus-circle"></i> Kreye PIN
-        </button>
-        <button type="button" id="btn-show-change" class="action-btn change-btn">
-          <i class="fa-solid fa-arrows-rotate"></i> Chanje PIN
-        </button>
-      </div>
-
-      <form id="create-pin-form" class="pin-form hidden">
-        <h4>Kreye yon nouvo PIN</h4>
-        <div class="form-group">
-          <input type="password" id="create-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Antre 4 chif" inputmode="numeric" required>
+          <button type="button" id="btn-save-profil">Anrejistre Profil</button>
         </div>
-        <div class="form-group">
-          <input type="password" id="confirm-create-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Konfime 4 chif yo" inputmode="numeric" required>
-        </div>
-        <button type="submit" class="btn-submit">Sove PIN mwen</button>
-        <button type="button" class="btn-back">Retounen</button>
-      </form>
+      </div>
 
-      <form id="change-pin-form" class="pin-form hidden">
-        <h4>Chanje PIN ou</h4>
-        <div class="form-group">
-          <input type="password" id="old-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Ansyen PIN" inputmode="numeric" required>
-        </div>
-        <div class="form-group">
-          <input type="password" id="new-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Nouvo PIN" inputmode="numeric" required>
-        </div>
-        <button type="submit" class="btn-submit">Mete ajou PIN la</button>
-        <button type="button" class="btn-back">Retounen</button>
-      </form>
-
-      <div id="modal-pin-status" class="status-msg"></div>
-    </div>
-  </div>
-</div>
-
-      
-
-
-      
-
-      
-  <!-- MODAL PWOFIL (Kòmanse ak display: none pou tcheke a fèt anvan) -->
-<div id="modal-profil" class="modal-echanj" style="display: none;">
-  <div class="profil-card">
-    <div class="profil-header">
-      <h3>Konplete Profil Ou</h3>
-    </div>
-    <p class="profil-desc">Tanpri bay enfòmasyon sa yo pou w ka sèvi ak <strong>Echanj Plus</strong> an sekirite.</p>
-    
-    <div class="form-group">
-      <label>Non ak Prenon:</label>
-      <input type="text" id="input-profil-non" placeholder="Egz: Jean Pierre">
-    </div>
-
-    <div class="form-group">
-      <label>Nimewo Telefòn:</label>
-      <input type="tel" id="input-profil-tel" placeholder="+509 ...">
-    </div>
-
-    <div class="form-group">
-      <label>Sèks:</label>
-      <select id="input-profil-seks">
-        <option value="">Chwazi sèks ou</option>
-        <option value="Gason">Gason</option>
-        <option value="Fanm">Fanm</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Depatman:</label>
-      <select id="select-depatman">
-        <option value="">Chwazi yon depatman</option>
-        <option value="Lwès">Lwès</option>
-        <option value="Nò">Nò</option>
-        <option value="Nòdès">Nòdès</option>
-        <option value="Nòdwès">Nòdwès</option>
-        <option value="Latibonit">Latibonit</option>
-        <option value="Sant">Sant</option>
-        <option value="Grand'Anse">Grand'Anse</option>
-        <option value="Nip">Nip</option>
-        <option value="Sid">Sid</option>
-        <option value="Sidès">Sidès</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Komin:</label>
-      <select id="select-komin">
-        <option value="">Premye chwazi yon depatman</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Zòn / Katye:</label>
-      <input type="text" id="input-profil-zon" placeholder="Egz: Bèlè, Centre-ville...">
-    </div>
-
-    <button id="btn-save-profil">Anrejistre Profil</button>
-  </div>
-</div>
-      
     </main>
 
     <!-- NAVIGASYON ANBA (SPA NAV) -->
     <nav class="bottom-nav">
-  <a href="javascript:void(0)" class="nav-item active" onclick="window.showSection('paj-akey', this)">
-    <i class="fa-solid fa-house nav-icon"></i>
-    <span class="nav-label">Akey</span>
-  </a>
-  
-  <a href="javascript:void(0)" class="nav-item" onclick="window.showSection('paj-echanj', this)">
-    <i class="fa-solid fa-bolt nav-icon"></i>
-    <span class="nav-label">Echanj</span>
-  </a>
-  
-  <a href="javascript:void(0)" class="nav-item" onclick="window.showSection('paj-istorik', this)">
-    <i class="fa-solid fa-clock-rotate-left nav-icon"></i>
-    <span class="nav-label">Istwa</span>
-  </a>
+      <a href="javascript:void(0)" class="nav-item active" onclick="window.showSection('paj-akey', this)">
+        <i class="fa-solid fa-house nav-icon"></i>
+        <span class="nav-label">Akey</span>
+      </a>
 
-  <a href="javascript:void(0)" class="nav-item" onclick="window.showSection('paj-setting', this)">
-    <i class="fa-solid fa-gear nav-icon"></i>
-    <span class="nav-label">Paramèt</span>
-  </a>
-</nav>
+      <a href="javascript:void(0)" class="nav-item" onclick="window.showSection('paj-echanj', this)">
+        <i class="fa-solid fa-bolt nav-icon"></i>
+        <span class="nav-label">Echanj</span>
+      </a>
 
+      <a href="javascript:void(0)" class="nav-item" onclick="window.showSection('paj-istorik', this)">
+        <i class="fa-solid fa-clock-rotate-left nav-icon"></i>
+        <span class="nav-label">Istwa</span>
+      </a>
+
+      <a href="javascript:void(0)" class="nav-item" onclick="window.showSection('paj-setting', this)">
+        <i class="fa-solid fa-gear nav-icon"></i>
+        <span class="nav-label">Paramèt</span>
+      </a>
+    </nav>
+
+  </div>
 
   <!-- ENPÒTASYON JAVASCRIPT YO -->
   <script type="module" src="script.js"></script>
   <script type="module" src="js/auth.js"></script>
-    <script type="module" src="istorik.js"></script>
+  <script type="module" src="istorik.js"></script>
   <script type="module" src="echanj.js"></script>
-    <script type="module" src="retre.js"></script>
-    <script type="module" src="pin-sekirite.js"></script>
-    <script type="module" src="pin.js"></script>
-     <script type="module" src="profil.js"></script>
-    <script type="module" src="sidebar.js"></script>
-    <script type="module" src="anonspdg.js"></script>
-    <script type="module" src="paramet.js"></script>
+  <script type="module" src="retre.js"></script>
+  <script type="module" src="pin-sekirite.js"></script>
+  <script type="module" src="pin.js"></script>
+  <script type="module" src="profil.js"></script>
+  <script type="module" src="sidebar.js"></script>
+  <script type="module" src="anonspdg.js"></script>
+  <script type="module" src="paramet.js"></script>
 </body>
 </html>
