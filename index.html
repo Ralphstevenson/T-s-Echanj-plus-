@@ -1038,62 +1038,165 @@
 
 
       
-      
 
-<!-- BOUTON KI NAN SEKSYON PARAMÈT LA -->
-<div class="settings-option">
-  <button id="open-pin-modal-btn" class="btn-param-pin">
-    <i class="fa-solid fa-key"></i> PIN Tranzaksyon
-  </button>
-</div>
+<div id="section-paramet" class="param-section">
+  <div class="param-header">
+    <h2>Paramèt</h2>
+    <p>Jere kont ou, nimewo resepsyon w, ak preferans Echanj Plus ou.</p>
+  </div>
 
-<!-- FENÈT MODAL LA (KI AP LOUVRI LÈ W KLIKE SOU BOUTON AN) -->
-<div id="pin-modal-overlay" class="pin-modal-overlay">
-  <div class="pin-modal-card">
-    <button class="close-modal-btn" id="close-pin-modal">&times;</button>
-    
-    <h3><i class="fa-solid fa-shield-halved"></i> Gestion PIN</h3>
-    <p class="modal-desc">Chwazi sa ou vle fè ak PIN tranzaksyon ou an:</p>
-
-    <!-- ME 2 BOUTON YO -->
-    <div class="pin-actions">
-      <button id="btn-show-create" class="action-btn create-btn">
-        <i class="fa-solid fa-plus-circle"></i> Kreye PIN
-      </button>
-      <button id="btn-show-change" class="action-btn change-btn">
-        <i class="fa-solid fa-arrows-rotate"></i> Chanje PIN
-      </button>
+  <!-- 1. ENFÒMASYON KONT -->
+  <div class="param-card">
+    <div class="param-card-title">
+      <i class="fa-solid fa-user-shield"></i>
+      <span>Enfòmasyon Kont</span>
     </div>
 
-    <!-- FORMULAIRE KREYE PIN (KACHE PA DEFOT) -->
-    <form id="create-pin-form" class="pin-form hidden">
-      <h4>Kreye yon nouvo PIN</h4>
-      <div class="form-group">
-        <input type="password" id="create-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Antre 4 chif" inputmode="numeric" required>
-      </div>
-      <div class="form-group">
-        <input type="password" id="confirm-create-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Konfime 4 chif yo" inputmode="numeric" required>
-      </div>
-      <button type="submit" class="btn-submit">Sove PIN mwen</button>
-      <button type="button" class="btn-back">Retounen</button>
-    </form>
+    <div class="param-row">
+      <span class="param-label">Imèl</span>
+      <strong id="param-user-email" class="param-value">Chajman...</strong>
+    </div>
+    <div class="param-row">
+      <span class="param-label">UID Itilizatè</span>
+      <span id="param-user-uid" class="param-mono">---</span>
+    </div>
+    <div class="param-row">
+      <span class="param-label">Estati Sesyon</span>
+      <span class="param-badge-active">Konekte</span>
+    </div>
+  </div>
 
-    <!-- FORMULAIRE CHANJE PIN (KACHE PA DEFOT) -->
-    <form id="change-pin-form" class="pin-form hidden">
-      <h4>Chanje PIN ou</h4>
-      <div class="form-group">
-        <input type="password" id="old-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Ansyen PIN" inputmode="numeric" required>
-      </div>
-      <div class="form-group">
-        <input type="password" id="new-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Nouvo PIN" inputmode="numeric" required>
-      </div>
-      <button type="submit" class="btn-submit">Mete ajou PIN la</button>
-      <button type="button" class="btn-back">Retounen</button>
-    </form>
+  <!-- 2. NIMEWO RESEPSYON PA DEFO -->
+  <div class="param-card">
+    <div class="param-card-title">
+      <i class="fa-solid fa-wallet"></i>
+      <span>Nimewo Resepsyon Pa Defo</span>
+    </div>
+    <p class="param-desc">
+      Anrejistre nimewo w abitye resevwa lajan sou li pou konvèsyon minit Digicel ak Natcom yo.
+    </p>
 
-    <div id="modal-pin-status" class="status-msg"></div>
+    <div class="param-field">
+      <label for="param-default-wallet">Sèvis</label>
+      <select id="param-default-wallet" class="param-input">
+        <option value="MonCash">MonCash</option>
+        <option value="NatCash">NatCash</option>
+      </select>
+    </div>
+
+    <div class="param-field">
+      <label for="param-default-phone">Nimewo Telefòn</label>
+      <input type="tel" id="param-default-phone" placeholder="Eg: 34132015" class="param-input">
+    </div>
+
+    <button type="button" onclick="window.saveDefaultPayoutInfo(event)" class="param-btn-primary">
+      Anrejistre Nimewo a
+    </button>
+    <span id="param-save-msg" class="param-feedback"></span>
+  </div>
+
+  <!-- 3. SEKIRITE PIN TRANZAKSYON -->
+  <div class="param-card">
+    <div class="param-card-title">
+      <i class="fa-solid fa-key"></i>
+      <span>Sekirite PIN Tranzaksyon</span>
+    </div>
+    <p class="param-desc">
+      Kreye oswa chanje PIN 4 chif ou pou pwoteje echanj ak retrè w yo.
+    </p>
+    <div class="settings-option">
+      <button type="button" id="open-pin-modal-btn" class="btn-param-pin">
+        <i class="fa-solid fa-key"></i> PIN Tranzaksyon
+      </button>
+    </div>
+  </div>
+
+  <!-- 4. SISTÈM & KACH LOKAL -->
+  <div class="param-card">
+    <div class="param-card-title">
+      <i class="fa-solid fa-sliders"></i>
+      <span>Sistèm &amp; Done Lokal</span>
+    </div>
+    <p class="param-desc">
+      Si koòdone a oswa rechèch tranzaksyon an blokis, ou ka netwaye done lokal navigatè a.
+    </p>
+
+    <div class="param-row">
+      <span class="param-label">Vèsyon Aplikasyon</span>
+      <strong class="param-value">Echanj Plus v1.0</strong>
+    </div>
+
+    <button type="button" onclick="window.clearLocalCache(event)" class="param-btn-secondary">
+      Efase Kach Lokal (localStorage)
+    </button>
+  </div>
+
+  <!-- 5. RÈG SÈVIS & SIPÒ -->
+  <div class="param-card">
+    <div class="param-card-title">
+      <i class="fa-solid fa-headset"></i>
+      <span>Règ Sèvis &amp; Asistans</span>
+    </div>
+    <p class="param-desc">
+      Suivi ak reklamasyon pou tranzaksyon ki poko valide ouvri apre yon delè 12 èdtan. Pou asistans dirèk, kontakte admin lan.
+    </p>
+
+    <a href="https://wa.me/50934132015?text=Bonjou%20Admin%20Echanj%20Plus%2C%20m%20bezwen%20asistans." target="_blank" rel="noopener noreferrer" class="param-btn-whatsapp">
+      <i class="fa-brands fa-whatsapp"></i> Kontakte Admin sou WhatsApp
+    </a>
+
+    <button type="button" onclick="window.logoutEchanjUser(event)" class="param-btn-danger">
+      <i class="fa-solid fa-right-from-bracket"></i> Dekonekte Kont lan
+    </button>
+  </div>
+
+  <!-- FENÈT MODAL LA (KACHE PA DEFÒ JISKASKE W KLIKE SOU BOUTON AN) -->
+  <div id="pin-modal-overlay" class="pin-modal-overlay" style="display: none;">
+    <div class="pin-modal-card">
+      <button type="button" class="close-modal-btn" id="close-pin-modal">&times;</button>
+
+      <h3><i class="fa-solid fa-shield-halved"></i> Gestion PIN</h3>
+      <p class="modal-desc">Chwazi sa ou vle fè ak PIN tranzaksyon ou an:</p>
+
+      <div class="pin-actions">
+        <button type="button" id="btn-show-create" class="action-btn create-btn">
+          <i class="fa-solid fa-plus-circle"></i> Kreye PIN
+        </button>
+        <button type="button" id="btn-show-change" class="action-btn change-btn">
+          <i class="fa-solid fa-arrows-rotate"></i> Chanje PIN
+        </button>
+      </div>
+
+      <form id="create-pin-form" class="pin-form hidden">
+        <h4>Kreye yon nouvo PIN</h4>
+        <div class="form-group">
+          <input type="password" id="create-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Antre 4 chif" inputmode="numeric" required>
+        </div>
+        <div class="form-group">
+          <input type="password" id="confirm-create-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Konfime 4 chif yo" inputmode="numeric" required>
+        </div>
+        <button type="submit" class="btn-submit">Sove PIN mwen</button>
+        <button type="button" class="btn-back">Retounen</button>
+      </form>
+
+      <form id="change-pin-form" class="pin-form hidden">
+        <h4>Chanje PIN ou</h4>
+        <div class="form-group">
+          <input type="password" id="old-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Ansyen PIN" inputmode="numeric" required>
+        </div>
+        <div class="form-group">
+          <input type="password" id="new-pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="Nouvo PIN" inputmode="numeric" required>
+        </div>
+        <button type="submit" class="btn-submit">Mete ajou PIN la</button>
+        <button type="button" class="btn-back">Retounen</button>
+      </form>
+
+      <div id="modal-pin-status" class="status-msg"></div>
+    </div>
   </div>
 </div>
+
+      
 
 
       
