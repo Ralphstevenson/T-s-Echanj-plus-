@@ -1011,6 +1011,120 @@
         </div>
       </section>
 
+
+
+
+<!-- 2F. PAJ DEPO (ACHTE & VANN) -->
+<section id="paj-depo" class="app-section">
+  <div class="depo-wrapper">
+
+    <!-- BANYÈ DÈNYE TRANZAKSYON -->
+    <div id="depo-last-tx-banner" class="depo-tx-banner" style="display: none;">
+      <div class="depo-tx-top">
+        <span id="depo-last-tx-status" class="depo-badge pending">An atant</span>
+        <strong id="depo-last-tx-id" class="depo-tx-id">ARS-2026-00000000</strong>
+        <button type="button" id="btn-copy-depo-tx" class="depo-btn-copy">Kopiye ID</button>
+      </div>
+      <p id="depo-last-tx-desc" class="depo-tx-desc"></p>
+    </div>
+
+    <div class="depo-header">
+      <h2>Echanj (Achte &amp; Vann)</h2>
+      <p>Vann nou (130 HTG) oswa achte nan men nou (142 HTG).</p>
+    </div>
+
+    <!-- 2 ONGLÈ SÈLMAN -->
+    <div class="depo-tabs two-tabs" role="tablist">
+      <button type="button" class="depo-tab active" data-mode="achte">
+        <i class="fa-solid fa-hand-holding-dollar"></i> Achte (130 HTG)
+      </button>
+      <button type="button" class="depo-tab" data-mode="vann">
+        <i class="fa-solid fa-paper-plane"></i> Vann (142 HTG)
+      </button>
+    </div>
+
+    <!-- KAT FÒMILÈ -->
+    <div class="depo-card">
+      <div class="depo-mode-banner">
+        <span id="depo-mode-title">Vann Bay Echanj Plus (130 HTG)</span>
+        <small id="depo-mode-subtitle">Voye sou adrès rezo ki chwazi anba a epi resevwa HTG sou balans Echanj Plus ou.</small>
+      </div>
+
+      <!-- CHWA REZO -->
+      <div class="depo-field">
+        <label for="depo-network">Chwazi Rezo</label>
+        <select id="depo-network" class="depo-input">
+          <option value="BEP20">USDT (BEP20)</option>
+          <option value="TRC20">TRX / Tron (TRC20)</option>
+        </select>
+      </div>
+
+      <!-- BWAT ADRÈS REZO A (PARÈT LÈ MOUN NAN AP VANN BAY SISTÈM LAN / ACHTE A 130 HTG) -->
+      <div id="depo-system-wallet-box" class="depo-wallet-box">
+        <div class="depo-wallet-header">
+          <span id="depo-wallet-net-title">✅ USDT (BEP20)</span>
+          <button type="button" id="btn-copy-sys-wallet" class="depo-btn-copy-wallet">
+            <i class="fa-regular fa-copy"></i> Kopiye Adrès
+          </button>
+        </div>
+        <div id="depo-sys-wallet-address" class="depo-wallet-addr" tabindex="0">0xb65a9f47d4ef8d749ccf2ab39bba36ddcc2ebcfe</div>
+        <small class="depo-wallet-warn">
+          ⚠️ Voye sèlman sou rezo ki chwazi anwo a. Chwazi move rezo ka fè w pèdi fon an.
+        </small>
+      </div>
+
+      <!-- MONTAN -->
+      <div class="depo-field">
+        <label id="depo-amount-label" for="depo-amount">Kantite Ou Ap Vann (USDT)</label>
+        <input type="number" id="depo-amount" class="depo-input" placeholder="Eg: 10" min="1" step="any">
+        <small id="depo-min-hint" class="depo-hint">Minimòm: 1 USDT</small>
+      </div>
+
+      <!-- ADRÈS WALLET / TXID -->
+      <div class="depo-field">
+        <label id="depo-target-label" for="depo-target">Hash Tranzaksyon (TXID) oswa Adrès Wallet Ou</label>
+        <input type="text" id="depo-target" class="depo-input" placeholder="Kole TXID oswa adrès wallet kote w voye l soti a">
+      </div>
+
+      <!-- REZIME KALKIL LA -->
+      <div class="depo-summary-box">
+        <div class="depo-sum-row">
+          <span>Operasyon:</span>
+          <strong id="depo-sum-op">ACHTE (130 HTG)</strong>
+        </div>
+        <div class="depo-sum-row">
+          <span>Kantite Antre:</span>
+          <strong id="depo-sum-in">0.00 USDT</strong>
+        </div>
+        <div class="depo-sum-row">
+          <span id="depo-sum-net-usdt-label">Valè Nèt Konvèti:</span>
+          <strong id="depo-sum-net-usdt">0.000000 USDT</strong>
+        </div>
+        <div class="depo-sum-row total">
+          <span id="depo-sum-out-label">Montan HTG Ou Ap Resevwa:</span>
+          <strong id="depo-sum-out">0.00 HTG</strong>
+        </div>
+      </div>
+
+      <!-- PIN SEKIRITE 4 CHIF -->
+      <div class="depo-field">
+        <label for="depo-pin-input">PIN Sekirite 4 Chif</label>
+        <input type="password" id="depo-pin-input" class="depo-input" maxlength="4" pattern="[0-9]{4}" placeholder="••••" inputmode="numeric">
+      </div>
+
+      <button type="button" id="btn-submit-depo" class="depo-btn-submit">
+        Konfime &amp; Soumèt Demann lan
+      </button>
+
+      <p id="depo-feedback" class="depo-feedback"></p>
+    </div>
+
+  </div>
+  </section>
+                                                                                   
+
+
+      
      
     </main>
 
