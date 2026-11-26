@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="ijanspdg.css">
   <link rel="stylesheet" href="paramet.css">
   <link rel="stylesheet" href="anonspdg.css">
-<link rel="stylesheet" href="crypto.css">
+<link rel="stylesheet" href="depo.css">
   
   <script>
     setTimeout(function () {
@@ -283,10 +283,12 @@
 
         <!-- BOUTON AKSYON RAPID YO -->
         <section class="quick-actions">
-          <a href="javascript:void(0)" class="action-btn">
-            <div class="action-icon deposit-icon"><i class="fa-solid fa-arrow-down-left-and-arrow-up-right-to-center"></i></div>
-            <span>Depo</span>
-          </a>
+          
+        <a href="javascript:void(0)" class="action-btn" onclick="window.showSection('paj-depo', this)">
+  <div class="action-icon deposit-icon"><i class="fa-solid fa-arrow-down-left-and-arrow-up-right-to-center"></i></div>
+  <span>Depo</span>
+        </a>
+          
           <a href="javascript:void(0)" onclick="window.showSection('paj-retre')" class="action-btn">
             <div class="action-icon withdraw-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
             <span>Retrè</span>
@@ -1166,6 +1168,6 @@
   <script type="module" src="sidebar.js"></script>
   <script type="module" src="anonspdg.js"></script>
   <script type="module" src="paramet.js"></script>
-  <script type="module" src="crypto.js"></script>
+  <script type="module" src="depo.js"></script>
 </body>
 </html>
