@@ -3,28 +3,28 @@
    ===================================================== */
 
 .ep-home-actions-wrap {
-  max-width: 680px;
+  max-width: 480px;
   margin: 0 auto;
-  padding: 12px 10px 18px;
-  background: radial-gradient(circle at 50% 0%, #101726 0%, #05070c 75%);
-  border-radius: 20px;
+  padding: 14px 12px 18px;
+  background: radial-gradient(circle at 50% 0%, #121a2a 0%, #070b14 78%);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   color: #ffffff;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* BANYÈ SEKIRITE */
 .ep-security-banner {
-  margin-bottom: 12px;
-  padding: 0 4px;
+  margin-bottom: 14px;
+  padding: 0 2px;
 }
 
 .ep-security-title {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 1.05rem;
+  gap: 7px;
+  font-size: 1rem;
   font-weight: 800;
-  letter-spacing: -0.01em;
   color: #f8fafc;
 }
 
@@ -32,16 +32,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2px 5px;
+  padding: 2px 6px;
   border-radius: 6px;
   background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
   color: #111827;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 }
 
 .ep-security-sub {
-  margin: 4px 0 8px;
-  font-size: 0.82rem;
+  margin: 4px 0 10px;
+  font-size: 0.8rem;
   color: #cbd5e1;
 }
 
@@ -55,8 +55,8 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
 }
 
 .ep-dot {
@@ -71,11 +71,12 @@
   background: linear-gradient(90deg, #eab308 0%, #facc15 100%);
 }
 
-/* 4 KAT AKSYON (VETIKAL & PI KONTRA) */
+/* 4 KAT AKSYON — GRIY 4 KOLÒN BALANSE (MODÈL MODÈN) */
 .quick-actions {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
+  align-items: stretch;
 }
 
 .action-btn {
@@ -83,16 +84,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  gap: 6px;
-  padding: 10px 4px;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 4px;
+  min-height: 92px;
   text-decoration: none;
-  color: #ffffff;
-  background: linear-gradient(180deg, #121826 0%, #070a10 100%);
-  border-radius: 14px;
-  border: 1.5px solid transparent;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: #f1f5f9;
+  background: linear-gradient(180deg, #151e30 0%, #0b101b 100%);
+  border-radius: 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .action-btn:hover {
@@ -103,53 +104,46 @@
   transform: scale(0.97);
 }
 
-/* Koulè chak kat (USDT = Vèt, RETRE = Lò/Jòn, ECHANJ = Ble, ISTORIK = Mov) */
+/* Bordure sibtil ak ekla pwòp pou chak aksyon */
 .card-usdt {
-  border-color: #10b981;
-  box-shadow:
-    0 0 10px rgba(16, 185, 129, 0.28),
-    0 8px 14px -8px rgba(16, 185, 129, 0.65);
+  border-color: rgba(16, 185, 129, 0.55);
+  box-shadow: 0 6px 14px -6px rgba(16, 185, 129, 0.35);
 }
 
 .card-retre {
-  border-color: #f59e0b;
-  box-shadow:
-    0 0 10px rgba(245, 158, 11, 0.28),
-    0 8px 14px -8px rgba(245, 158, 11, 0.65);
+  border-color: rgba(245, 158, 11, 0.55);
+  box-shadow: 0 6px 14px -6px rgba(245, 158, 11, 0.35);
 }
 
 .card-echanj {
-  border-color: #0ea5e9;
-  box-shadow:
-    0 0 10px rgba(14, 165, 233, 0.28),
-    0 8px 14px -8px rgba(14, 165, 233, 0.65);
+  border-color: rgba(14, 165, 233, 0.55);
+  box-shadow: 0 6px 14px -6px rgba(14, 165, 233, 0.35);
 }
 
 .card-istorik {
-  border-color: #a855f7;
-  box-shadow:
-    0 0 10px rgba(168, 85, 247, 0.28),
-    0 8px 14px -8px rgba(168, 85, 247, 0.65);
+  border-color: rgba(168, 85, 247, 0.55);
+  box-shadow: 0 6px 14px -6px rgba(168, 85, 247, 0.35);
 }
 
-/* ZÒN IKÒN (REDWI) */
+/* ZÒN IKÒN KARE WÒNDİ */
 .action-icon {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
   flex-shrink: 0;
 }
 
 .deposit-icon img {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   object-fit: cover;
   border-radius: 50%;
-  box-shadow: 0 3px 8px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35);
 }
 
 /* Biyè Goud "G" pou RETRE */
@@ -159,7 +153,7 @@
   justify-content: center;
   width: 34px;
   height: 20px;
-  border-radius: 5px;
+  border-radius: 6px;
   background: linear-gradient(135deg, #fde047 0%, #eab308 100%);
   color: #111827;
   font-weight: 900;
@@ -170,7 +164,7 @@
 
 .ep-g-arrow {
   position: absolute;
-  right: 0;
+  right: 1px;
   bottom: 4px;
   font-size: 0.85rem;
   color: #f8fafc;
@@ -183,7 +177,6 @@
   background: linear-gradient(180deg, #7dd3fc 0%, #0284c7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 6px rgba(14, 165, 233, 0.4));
 }
 
 /* Fèy ISTORIK */
@@ -194,8 +187,8 @@
 
 .ep-clock-mini {
   position: absolute;
-  right: 1px;
-  bottom: 2px;
+  right: 2px;
+  bottom: 3px;
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -206,25 +199,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid #0b0f19;
+  border: 1.5px solid #0b101b;
 }
 
+/* TÈKS ORIZONTAL KLÈ ANBA IKÒN */
 .action-btn > span:last-child {
-  font-size: 0.72rem;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
-  line-height: 1.15;
+  line-height: 1.2;
   text-align: center;
+  white-space: nowrap;
 }
 
-/* STATI MONCASH & NATCASH */
+/* STATI MONCASH & NATCASH — CHAK SÈVIS SOU YON SÈL LIY */
 .system-status-card {
   margin-top: 12px;
-  padding: 9px 12px;
-  background: rgba(15, 23, 42, 0.88);
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -236,7 +233,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: #e2e8f0;
   white-space: nowrap;
 }
@@ -256,13 +253,13 @@
 .gateway-divider {
   width: 1px;
   height: 16px;
-  background-color: rgba(148, 163, 184, 0.3);
+  background-color: rgba(148, 163, 184, 0.28);
 }
 
 .gw-pill {
   padding: 2px 6px;
   border-radius: 6px;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 900;
   letter-spacing: 0.02em;
   white-space: nowrap;
@@ -285,67 +282,49 @@
   font-style: italic;
 }
 
-/* ADAPTASYON SOU TELEFÒN (BOUTON PI PITI, VÈTIKAL & TÈKS VÈTIKAL AJISTE) */
-@media (max-width: 560px) {
+/* TI EKRAN TELEFÒN */
+@media (max-width: 420px) {
   .ep-home-actions-wrap {
-    padding: 10px 8px 14px;
-    border-radius: 16px;
+    padding: 12px 10px 16px;
+    border-radius: 18px;
   }
 
   .quick-actions {
-    grid-template-columns: repeat(4, 1fr);
     gap: 6px;
   }
 
   .action-btn {
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 8px 2px;
+    padding: 10px 2px;
+    min-height: 84px;
+    border-radius: 14px;
     gap: 6px;
-    border-radius: 12px;
-    min-height: 122px;
   }
 
   .action-icon {
-    width: 30px;
-    height: 30px;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
   }
 
   .deposit-icon img {
-    width: 26px;
-    height: 26px;
-  }
-
-  .ep-g-bill {
-    width: 26px;
-    height: 16px;
-    font-size: 0.64rem;
-  }
-
-  .exchange-icon i,
-  .history-icon i {
-    font-size: 1.1rem;
+    width: 32px;
+    height: 32px;
   }
 
   .action-btn > span:last-child {
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-    font-size: 0.58rem;
-    letter-spacing: 0;
-    line-height: 1;
-    max-height: 82px;
-    overflow: hidden;
-  }
-
-  .gateway-divider {
-    display: none;
+    font-size: 0.6rem;
+    letter-spacing: 0.01em;
   }
 
   .system-status-card {
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
-    padding: 8px 10px;
+    gap: 7px;
+    padding: 9px 11px;
+  }
+
+  .gateway-divider {
+    display: none;
   }
 
   .gateway-status {
@@ -353,6 +332,3 @@
     white-space: nowrap;
   }
 }
-```[cite: 4]
-
-Si w ta renmen mo tankou `ISTORIK` oswa `ECHANJ` parèt pi lejè sou ti ekran an, nou ka mete `font-size: 0.54rem` sou `.action-btn > span:last-child` nan `@media (max-width: 560px)`[cite: 4]. 
