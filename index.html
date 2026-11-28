@@ -703,6 +703,11 @@
         </div>
       </section>
 
+
+
+
+      
+
       <!-- 2D. PAJ RETRÈ -->
       <section id="paj-retre" class="app-section">
         <div class="container">
@@ -863,6 +868,12 @@
         </div>
       </section>
 
+
+
+
+
+
+      
       <!-- 2E. PAJ PARAMÈT -->
       <section id="paj-setting" class="app-section">
         <div id="section-paramet" class="param-section">
@@ -1020,6 +1031,11 @@
 
 
 
+
+      
+
+
+
       <!-- 2F. PAJ DEPO (ACHTE & VANN) -->
 <section id="paj-depo" class="app-section">
   <div class="depo-wrapper">
@@ -1113,7 +1129,7 @@
         </div>
 
         <small class="depo-momo-note">
-          ℹ️ Apre w fin voye Goud la sou MonCash oswa NatCash bay <strong>Ralph Stevenson Aristor</strong>, mete nimewo/referans peman w oswa detay tranzaksyon an nan chan anba a. N ap verifye peman an anvan n voye USDT a ba ou.
+          ℹ️ Apre w fin voye Goud la sou MonCash oswa NatCash bay <strong>Ralph Stevenson Aristor</strong>, mete ID tranzaksyon peman w lan nan chan anba a, epi apre sa mete adrès wallet USDT kote w ap resevwa l la.
         </small>
       </div>
 
@@ -1121,13 +1137,19 @@
       <div class="depo-field">
         <label id="depo-amount-label" for="depo-amount">Kantite Ou Ap Vann (USDT)</label>
         <input type="number" id="depo-amount" class="depo-input" placeholder="Eg: 10" min="1" step="any">
-        <small id="depo-min-hint" class="depo-hint">Minimòm: 1 USDT</small>
+        <small id="depo-min-hint" class="depo-hint">Minimòm: 1 USDT • Frè sèvis: 0.100000</small>
       </div>
 
-      <!-- ADRÈS WALLET / TXID / DETAY PEMAN -->
+      <!-- HASH TXID (MÒD 130) OSWA ID TRANZAKSYON MONCASH / NATCASH (MÒD 142) -->
       <div class="depo-field">
-        <label id="depo-target-label" for="depo-target">Hash Tranzaksyon (TXID) oswa Adrès Wallet Ou</label>
-        <input type="text" id="depo-target" class="depo-input" placeholder="Kole TXID oswa adrès wallet kote w voye l soti a">
+        <label id="depo-target-label" for="depo-target">Hash Tranzaksyon (TXID)</label>
+        <input type="text" id="depo-target" class="depo-input" placeholder="Kole Hash Tranzaksyon (TXID) ou te fè a">
+      </div>
+
+      <!-- ADRÈS WALLET RESEPSYON USDT KLIYAN AN (PARÈT APRÈ ID MONCASH / NATCASH NAN MÒD 142) -->
+      <div class="depo-field" id="depo-wallet-out-field" style="display: none;">
+        <label id="depo-wallet-out-label" for="depo-wallet-out">Adrès Wallet Resepsyon USDT Ou</label>
+        <input type="text" id="depo-wallet-out" class="depo-input" placeholder="Kole adrès wallet USDT ou ap resevwa l sou li a">
       </div>
 
       <!-- REZIME KALKIL LA -->
@@ -1164,7 +1186,8 @@
     </div>
 
   </div>
-        </section>
+</section>
+     
   
 
 
