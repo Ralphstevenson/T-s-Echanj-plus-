@@ -83,7 +83,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 6px;
   padding: 10px 4px;
   text-decoration: none;
@@ -285,7 +285,7 @@
   font-style: italic;
 }
 
-/* ADAPTASYON SOU TELEFÒN (BOUTON PI PITI, VÈTIKAL & TÈKS VÈTIKAL) */
+/* ADAPTASYON SOU TELEFÒN (BOUTON PI PITI, VÈTIKAL & TÈKS VÈTIKAL AJISTE) */
 @media (max-width: 560px) {
   .ep-home-actions-wrap {
     padding: 10px 8px 14px;
@@ -300,39 +300,41 @@
   .action-btn {
     flex-direction: column;
     justify-content: flex-start;
-    padding: 8px 3px;
+    padding: 8px 2px;
     gap: 6px;
     border-radius: 12px;
+    min-height: 122px;
   }
 
   .action-icon {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
 
   .deposit-icon img {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
   }
 
   .ep-g-bill {
-    width: 28px;
-    height: 17px;
-    font-size: 0.68rem;
+    width: 26px;
+    height: 16px;
+    font-size: 0.64rem;
   }
 
   .exchange-icon i,
   .history-icon i {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
   }
 
   .action-btn > span:last-child {
     writing-mode: vertical-rl;
     text-orientation: upright;
-    font-size: 0.66rem;
-    letter-spacing: 0.02em;
+    font-size: 0.58rem;
+    letter-spacing: 0;
     line-height: 1;
-    max-height: 78px;
+    max-height: 82px;
+    overflow: hidden;
   }
 
   .gateway-divider {
@@ -352,3 +354,5 @@
   }
 }
 ```[cite: 4]
+
+Si w ta renmen mo tankou `ISTORIK` oswa `ECHANJ` parèt pi lejè sou ti ekran an, nou ka mete `font-size: 0.54rem` sou `.action-btn > span:last-child` nan `@media (max-width: 560px)`[cite: 4]. 
