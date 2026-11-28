@@ -24,36 +24,36 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const rtdb = getDatabase(app);
 
-// Adrès ofisyèl Echanj Plus pou resepsyon lè kliyan ap vann bay sistèm lan (130 HTG)
+// 2 adrès rezo sistèm lan lè kliyan ap vann bay sistèm lan (130 HTG)
 const SYSTEM_WALLETS = {
   BEP20: {
     label: "✅ USDT (BEP20)",
     address: "0xb65a9f47d4ef8d749ccf2ab39bba36ddcc2ebcfe",
-    clientPlaceholder: "Kole adrès USDT (BEP20) ou a (kòmanse ak 0x...)"
+    receivePlaceholder: "Kole adrès wallet USDT (BEP20) ou a (ex: 0x...)"
   },
   TRC20: {
     label: "✅ TRX / Tron (TRC20)",
     address: "TX2Ur6faAmFrKhgqz7w5saYbq1qfjT4hw8",
-    clientPlaceholder: "Kole adrès TRX / Tron (TRC20) ou a (kòmanse ak T...)"
+    receivePlaceholder: "Kole adrès wallet TRX / Tron (TRC20) ou a (ex: T...)"
   }
 };
 
 // Règ kalkil yo:
-// 1) Achte (kliyan vann nou / 130 HTG): retire frè 0.100000 anvan miltipliye pa 130
-// 2) Vann (kliyan achte nan men nou / 142 HTG): baz * 0.97, epi retire 0.30% (0.003)
+// - achte (Vann Bay Sistèm 130 HTG): (Montan - 0.10) * 130
+// - vann (Achte USDT 142 HTG, min 12): (Montan * 0.97) - 0.30%
 const RULES = {
   achte: {
     rateHtg: 130,
     minUsdt: 1,
     fixedFeeUsdt: 0.10,
     title: "Vann Bay Echanj Plus (130 HTG)",
-    subtitle: "Kopye adrès rezo ki chwazi anba a, voye fon an, epi antre Hash Tranzaksyon (TXID) ou.",
+    subtitle: "Voye sou adrès rezo ki chwazi anba a epi resevwa HTG sou balans Echanj Plus ou.",
     amountLabel: "Kantite Ou Ap Vann (USDT)",
     placeholderAmount: "Eg: 10 oswa 15",
     minHint: "Minimòm: 1 USDT • Frè sèvis: 0.100000",
     targetLabel: "Hash Tranzaksyon (TXID)",
     placeholderTarget: "Kole Hash Tranzaksyon (TXID) ou te fè a",
-    opLabel: "ACHTE (130 HTG)",
+    opLabel: "VANN BAY SISTÈM (130 HTG)",
     netUsdtLabel: "Kantite Nèt Apre Frè (0.10):",
     outLabel: "Montan HTG Ou Ap Resevwa:"
   },
@@ -63,13 +63,14 @@ const RULES = {
     usdtFactor: 0.97,
     feePercent: 0.003, // 0.30%
     title: "Achte USDT Nan Men Echanj Plus (142 HTG)",
-    subtitle: "Antre kantite USDT w ap achte a (minimòm 12), adrès wallet ou, ak ID tranzaksyon MonCash/NatCash ou.",
+    subtitle: "Peye total HTG a sou MonCash/NatCash an premye, mete ID tranzaksyon peman an, epi mete adrès wallet USDT ou.",
     amountLabel: "Kantite USDT Ou Ap Achte",
-    placeholderAmount: "Eg: 15",
+    placeholderAmount: "Eg: 12 oswa 15",
     minHint: "Minimòm: 12 USDT • Kalkil nèt: (Kantite × 0.97) - 0.30%",
-    targetLabel: "Adrès Wallet Resepsyon Ou + ID Tranzaksyon MonCash / NatCash",
-    placeholderTarget: "Ex: Adrès Wallet ou | ID MonCash/NatCash: 123456789",
-    opLabel: "VANN (142 HTG)",
+    targetLabel: "ID Tranzaksyon MonCash oswa NatCash (Apre Peman an)",
+    placeholderTarget: "Antre ID tranzaksyon MonCash / NatCash ou sot fè a",
+    walletOutLabel: "Adrès Wallet Resepsyon USDT Ou (Apre ID Peman an)",
+    opLabel: "ACHTE USDT (142 HTG)",
     netUsdtLabel: "Kantite USDT Nèt Ou Ap Resevwa:",
     outLabel: "Montan HTG Ou Dwe Peye:"
   }
@@ -117,19 +118,29 @@ async function copyTextSafe(text) {
   }
 }
 
-function syncWalletDisplay() {
+function syncWalletAndPaymentBoxes() {
   const net = document.getElementById("depo-network")?.value || "BEP20";
   const walletInfo = SYSTEM_WALLETS[net] || SYSTEM_WALLETS.BEP20;
-  const box = document.getElementById("depo-system-wallet-box");
+
+  const sysWalletBox = document.getElementById("depo-system-wallet-box");
+  const momoBox = document.getElementById("depo-mobile-money-box");
+  const walletOutField = document.getElementById("depo-wallet-out-field");
+  const walletOutInput = document.getElementById("depo-wallet-out");
   const titleEl = document.getElementById("depo-wallet-net-title");
   const addrEl = document.getElementById("depo-sys-wallet-address");
 
   if (titleEl) titleEl.textContent = walletInfo.label;
   if (addrEl) addrEl.textContent = walletInfo.address;
 
-  // Montre bwat adrès rezo sistèm lan lè kliyan ap vann bay sistèm lan (achte a 130 HTG)
-  if (box) {
-    box.style.display = currentMode === "achte" ? "block" : "none";
+  if (currentMode === "achte") {
+    if (sysWalletBox) sysWalletBox.style.display = "block";
+    if (momoBox) momoBox.style.display = "none";
+    if (walletOutField) walletOutField.style.display = "none";
+  } else {
+    if (sysWalletBox) sysWalletBox.style.display = "none";
+    if (momoBox) momoBox.style.display = "block";
+    if (walletOutField) walletOutField.style.display = "block";
+    if (walletOutInput) walletOutInput.placeholder = walletInfo.receivePlaceholder;
   }
 }
 
@@ -137,31 +148,17 @@ function computeUsdtTransaction(mode, rawAmount) {
   const amount = Math.max(0, Number(rawAmount) || 0);
 
   if (mode === "achte") {
-    // (Montan - 0.10) * 130
     const feeUsdt = amount > 0 ? RULES.achte.fixedFeeUsdt : 0;
     const netUsdt = Math.max(0, amount - feeUsdt);
     const totalHtg = netUsdt * RULES.achte.rateHtg;
-    return {
-      amount,
-      feeUsdt,
-      netUsdt,
-      totalHtg,
-      rateHtg: RULES.achte.rateHtg
-    };
+    return { amount, feeUsdt, netUsdt, totalHtg, rateHtg: RULES.achte.rateHtg };
   }
 
-  // Mòd VANN (142 HTG): (Montan * 0.97) epi retire 0.30%
   const baseFactor = amount * RULES.vann.usdtFactor;
   const feeUsdt = baseFactor * RULES.vann.feePercent;
   const netUsdt = Math.max(0, baseFactor - feeUsdt);
   const totalHtg = amount * RULES.vann.rateHtg;
-  return {
-    amount,
-    feeUsdt,
-    netUsdt,
-    totalHtg,
-    rateHtg: RULES.vann.rateHtg
-  };
+  return { amount, feeUsdt, netUsdt, totalHtg, rateHtg: RULES.vann.rateHtg };
 }
 
 function updateSummaryUI() {
@@ -181,7 +178,12 @@ function updateSummaryUI() {
   if (netLblEl) netLblEl.textContent = cfg.netUsdtLabel;
   if (netValEl) netValEl.textContent = `${calc.netUsdt.toFixed(6)} USDT`;
   if (outLblEl) outLblEl.textContent = cfg.outLabel;
-  if (outValEl) outValEl.textContent = `${calc.totalHtg.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} HTG`;
+  if (outValEl) {
+    outValEl.textContent = `${calc.totalHtg.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })} HTG`;
+  }
 
   return calc;
 }
@@ -202,6 +204,7 @@ function switchDepoMode(mode) {
   const minHintEl = document.getElementById("depo-min-hint");
   const targetLblEl = document.getElementById("depo-target-label");
   const targetEl = document.getElementById("depo-target");
+  const walletOutLblEl = document.getElementById("depo-wallet-out-label");
 
   if (titleEl) titleEl.textContent = cfg.title;
   if (subEl) subEl.textContent = cfg.subtitle;
@@ -213,9 +216,10 @@ function switchDepoMode(mode) {
   if (minHintEl) minHintEl.textContent = cfg.minHint;
   if (targetLblEl) targetLblEl.textContent = cfg.targetLabel;
   if (targetEl) targetEl.placeholder = cfg.placeholderTarget;
+  if (walletOutLblEl && cfg.walletOutLabel) walletOutLblEl.textContent = cfg.walletOutLabel;
 
   setFeedback("");
-  syncWalletDisplay();
+  syncWalletAndPaymentBoxes();
   updateSummaryUI();
 }
 
@@ -257,7 +261,7 @@ function initDepoSection() {
   const networkSelect = document.getElementById("depo-network");
   if (networkSelect) {
     networkSelect.addEventListener("change", () => {
-      syncWalletDisplay();
+      syncWalletAndPaymentBoxes();
       setFeedback("");
     });
   }
@@ -281,6 +285,21 @@ function initDepoSection() {
       }
     });
   }
+
+  document.querySelectorAll(".depo-btn-copy-momo").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const num = btn.dataset.copy || "";
+      const copied = await copyTextSafe(num);
+      if (copied) {
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Kopye!';
+        setFeedback(`Nimewo kopye: ${num}`, "#00e676");
+        setTimeout(() => { btn.innerHTML = oldHtml; }, 1800);
+      } else {
+        setFeedback(`Nimewo: ${num}`, "#fbbf24");
+      }
+    });
+  });
 
   const amountInput = document.getElementById("depo-amount");
   if (amountInput) {
@@ -316,6 +335,7 @@ function initDepoSection() {
       const network = document.getElementById("depo-network")?.value || "BEP20";
       const sysWallet = SYSTEM_WALLETS[network]?.address || "";
       const target = (document.getElementById("depo-target")?.value || "").trim();
+      const walletOut = (document.getElementById("depo-wallet-out")?.value || "").trim();
       const pin = (document.getElementById("depo-pin-input")?.value || "").trim();
 
       if (calc.amount < cfg.minUsdt) {
@@ -323,14 +343,20 @@ function initDepoSection() {
         return;
       }
 
-      if (!target) {
-        setFeedback(
-          currentMode === "achte"
-            ? "Tanpri antre Hash Tranzaksyon (TXID) ou te fè a."
-            : "Tanpri antre adrès wallet ou ak ID tranzaksyon MonCash / NatCash la.",
-          "#ff5252"
-        );
-        return;
+      if (currentMode === "achte") {
+        if (!target) {
+          setFeedback("Tanpri antre Hash Tranzaksyon (TXID) ou te fè a.", "#ff5252");
+          return;
+        }
+      } else {
+        if (!target) {
+          setFeedback("Tanpri antre ID tranzaksyon MonCash oswa NatCash ou sot fè a an premye.", "#ff5252");
+          return;
+        }
+        if (!walletOut) {
+          setFeedback("Apre ID peman an, tanpri antre adrès wallet USDT kote w ap resevwa l la.", "#ff5252");
+          return;
+        }
       }
 
       const userSnap = await get(ref(rtdb, `users/${user.uid}`));
@@ -348,8 +374,10 @@ function initDepoSection() {
         subType: currentMode,
         network,
         systemWalletAddress: currentMode === "achte" ? sysWallet : null,
-        txHashOrPaymentRef: target,
-        target,
+        txHash: currentMode === "achte" ? target : null,
+        mobileMoneyTxId: currentMode === "vann" ? target : null,
+        receivingWalletAddress: currentMode === "vann" ? walletOut : null,
+        target: currentMode === "achte" ? target : `${target} | ${walletOut}`,
         amountUsdt: calc.amount,
         feeUsdt: Number(calc.feeUsdt.toFixed(6)),
         netUsdt: Number(calc.netUsdt.toFixed(6)),
