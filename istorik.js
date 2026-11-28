@@ -9,6 +9,22 @@ const rtdb = getDatabase(app);
 let activeTab = 'tout';
 let currentUser = null;
 
+function isUsdtTx(tx) {
+  return tx && tx.type === 'usdt_exchange';
+}
+
+function isApprovedTx(tx) {
+  const st = String(tx?.status || '').toLowerCase().trim();
+  return ['approved', 'valide', 'validated', 'success'].includes(st);
+}
+
+function getTxHtgAmount(tx) {
+  if (tx?.totalHtg !== undefined && tx?.totalHtg !== null && !Number.isNaN(Number(tx.totalHtg))) {
+    return Number(tx.totalHtg);
+  }
+  return parseFloat(tx?.amount) || 0;
+}
+
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   if (user) {
@@ -86,7 +102,9 @@ async function renderCurrentView() {
     if (monthLabelEl) monthLabelEl.textContent = currentMonthName;
 
     if (!snapshot.exists()) {
-      targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #9eaab6;">Pa gen okenn tranzaksyon ki anrejistre.</p>`;
+      targetContainer.innerHTML = activeTab === 'usdt'
+        ? ``
+        : `<p style="text-align:center; padding: 20px; color: #9eaab6;">Pa gen okenn tranzaksyon ki anrejistre.</p>`;
       updateSummaryBanner([], 0, 0, 0);
       return;
     }
@@ -96,29 +114,33 @@ async function renderCurrentView() {
     snapshot.forEach((childSnap) => {
       const tx = childSnap.val();
       tx.firebaseId = childSnap.key;
-      
+
       const txUid = tx.uid || tx.userId;
-      
-      // Nou tcheke si uid a matche oswa nou aksepte l si l egal a id itilizatè k ap kouri a
+
       if (txUid && txUid.toString().trim() === activeUser.uid.toString().trim()) {
         transactions.push(tx);
       }
     });
 
     // Triye pou mete pi resan yo anwo
-    transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    transactions.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
     let filtered = transactions.filter(tx => {
+      if (activeTab === 'usdt') return isUsdtTx(tx);
       if (activeTab === 'echanj') return tx.type === 'echanj_minit';
       if (activeTab === 'retre') return tx.type === 'retrait' || tx.type === 'retre';
-      if (activeTab === 'echwe') return tx.status === 'failed' || tx.status === 'echwe';
+      if (activeTab === 'echwe') return ['failed', 'echwe', 'rejected', 'rejete'].includes(String(tx.status || '').toLowerCase());
       return true;
     });
 
     if (selectedDate) {
       filtered = filtered.filter(tx => {
         if (!tx.createdAt) return false;
-        return tx.createdAt.startsWith(selectedDate);
+        const dt = new Date(tx.createdAt);
+        if (!Number.isNaN(dt.getTime())) {
+          return dt.toISOString().slice(0, 10) === selectedDate;
+        }
+        return String(tx.createdAt).startsWith(selectedDate);
       });
     }
 
@@ -127,6 +149,20 @@ async function renderCurrentView() {
     let monthlySum = 0;
 
     transactions.forEach(tx => {
+      if (isUsdtTx(tx)) {
+        // Pou USDT, konte nan Entre / Sòti / Total Mwa sèlman lè tranzaksyon an valide
+        if (!isApprovedTx(tx)) return;
+        const htgAmt = getTxHtgAmount(tx);
+        if (tx.subType === 'achte') {
+          totalEntries += htgAmt;
+          monthlySum += htgAmt;
+        } else if (tx.subType === 'vann') {
+          totalSorties += htgAmt;
+          monthlySum -= htgAmt;
+        }
+        return;
+      }
+
       const amt = parseFloat(tx.amount) || 0;
       if (tx.type === 'deposit' || tx.type === 'depot' || (amt > 0 && tx.type !== 'retrait' && tx.type !== 'retre')) {
         totalEntries += amt;
@@ -139,16 +175,44 @@ async function renderCurrentView() {
     updateSummaryBanner(transactions, totalEntries, totalSorties, monthlySum);
 
     if (filtered.length === 0) {
-      targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #9eaab6;">Pa gen tranzaksyon pou kritè sa yo.</p>`;
+      // Si onglet USDT poko gen tranzaksyon, kite l vid
+      targetContainer.innerHTML = activeTab === 'usdt'
+        ? ``
+        : `<p style="text-align:center; padding: 20px; color: #9eaab6;">Pa gen tranzaksyon pou kritè sa yo.</p>`;
       return;
     }
 
     let html = '';
     filtered.forEach(tx => {
       const dateFormatted = tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---';
-      const statusColor = tx.status === 'pending' ? '#ff9800' : (tx.status === 'success' ? '#00e676' : '#ff5252');
+      const stLower = String(tx.status || '').toLowerCase();
+      const statusColor = stLower === 'pending'
+        ? '#ff9800'
+        : (isApprovedTx(tx) ? '#00e676' : '#ff5252');
+
+      if (isUsdtTx(tx)) {
+        const modeLabel = tx.subType === 'vann' ? 'Achte USDT (142 HTG)' : 'Vann Bay Sistèm (130 HTG)';
+        const netUsdtDisp = Number(tx.netUsdt || 0).toFixed(6);
+        const htgDisp = getTxHtgAmount(tx).toFixed(2);
+
+        html += `
+          <div class="transaction-item" onclick="window.showReceiptFromGlobal('${tx.firebaseId}')">
+            <div>
+              <strong style="text-transform: uppercase; color: #ffffff; font-size: 14px;">USDT (${tx.network || 'BEP20'}) • ${modeLabel}</strong><br>
+              <small style="color: #9eaab6; font-size: 12px;">Nèt: <b style="color: #00e676;">${netUsdtDisp} USDT</b> • <b style="color: #fbbf24;">${htgDisp} HTG</b></small><br>
+              <small style="color: #64748b; font-size: 11px;">${dateFormatted}</small>
+            </div>
+            <div style="text-align: right;">
+              <span style="background: ${statusColor}; color: #131a22; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase;">${tx.status}</span><br>
+              <span style="color: #00e676; font-size: 12px; margin-top: 6px; display: inline-block;">Wè Reçu <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i></span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
       const titreRezo = tx.rezo ? tx.rezo.toUpperCase() : (tx.type || 'TRANZAKSYON');
-      
+
       html += `
         <div class="transaction-item" onclick="window.showReceiptFromGlobal('${tx.firebaseId}')">
           <div>
@@ -193,12 +257,22 @@ export function showReceipt(tx) {
     if (el) el.textContent = text;
   };
 
-  setElText('rec-id', tx.firebaseId || tx.id || '---');
-  setElText('rec-status', tx.status || '---');
-  setElText('rec-amount', tx.amount ? `${tx.amount} HTG` : '---');
-  setElText('rec-method', tx.rezo || tx.method || '---');
-  setElText('rec-phone', tx.userPhone || tx.phone || '---');
-  setElText('rec-date', tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---');
+  if (isUsdtTx(tx)) {
+    const modeText = tx.subType === 'vann' ? 'Achte USDT (142 HTG)' : 'Vann Bay Sistèm (130 HTG)';
+    setElText('rec-id', tx.firebaseId || tx.id || '---');
+    setElText('rec-status', tx.status || '---');
+    setElText('rec-amount', `${Number(tx.netUsdt || 0).toFixed(6)} USDT Nèt (${getTxHtgAmount(tx).toFixed(2)} HTG)`);
+    setElText('rec-method', `${modeText} • ${tx.network || 'BEP20'}`);
+    setElText('rec-phone', tx.target || tx.txHash || tx.mobileMoneyTxId || tx.receivingWalletAddress || '---');
+    setElText('rec-date', tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---');
+  } else {
+    setElText('rec-id', tx.firebaseId || tx.id || '---');
+    setElText('rec-status', tx.status || '---');
+    setElText('rec-amount', tx.amount ? `${tx.amount} HTG` : '---');
+    setElText('rec-method', tx.rezo || tx.method || '---');
+    setElText('rec-phone', tx.userPhone || tx.phone || '---');
+    setElText('rec-date', tx.createdAt ? new Date(tx.createdAt).toLocaleString() : '---');
+  }
 
   const modal = document.getElementById('modal-receipt');
   if (modal) modal.classList.remove('hidden');
@@ -223,7 +297,7 @@ export function shareReceipt() {
 
   const text = `Reçu Echanj Plus\nID: ${id}\nMontant: ${amount}\nStatut: ${status}`;
   const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-  
+
   window.open(url, '_blank');
 }
 
