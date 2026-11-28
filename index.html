@@ -300,45 +300,81 @@
 
 
         
-
-        <!-- BOUTON AKSYON RAPID YO -->
-        <section class="quick-actions">
-
-          <a href="javascript:void(0)" class="action-btn" onclick="window.showSection('paj-depo', this)">
-  <div class="action-icon deposit-icon">
-    <img src="https://i.postimg.cc/xTSGrSG5/IMG-20250317-121506-349-c95aad3bbe.png" alt="Depo">
+<div class="ep-home-actions-wrap">
+  <!-- BANYÈ SEKIRITE -->
+  <div class="ep-security-banner">
+    <div class="ep-security-title">
+      <span>Sekirite Garanti</span>
+      <span class="ep-lock-badge" aria-hidden="true">🔒</span>
+    </div>
+    <p class="ep-security-sub">
+      Tranzaksyon w yo pwoteje <strong>24/7</strong> ak <strong>Echanj Plus</strong>
+    </p>
+    <div class="ep-dots-indicator" aria-hidden="true">
+      <span class="ep-dot"></span>
+      <span class="ep-dot"></span>
+      <span class="ep-dot active"></span>
+    </div>
   </div>
-  <span>USDT</span>
-          </a>
-          
-          
-          <a href="javascript:void(0)" onclick="window.showSection('paj-retre')" class="action-btn">
-            <div class="action-icon withdraw-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
-            <span>RETRE</span>
-          </a>
-          <a href="javascript:void(0)" onclick="window.showSection('paj-echanj')" class="action-btn">
-            <div class="action-icon exchange-icon"><i class="fa-solid fa-rotate"></i></div>
-            <span>ECHANJ</span>
-          </a>
-          <a href="javascript:void(0)" onclick="window.showSection('paj-istorik')" class="action-btn">
-            <div class="action-icon history-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
-            <span>ISTORIK</span>
-          </a>
-        </section>
+
+  <!-- 4 BOUTON AKSYON RAPID -->
+  <section class="quick-actions" aria-label="Aksyon rapid">
+    <a href="javascript:void(0)" class="action-btn card-usdt" onclick="window.showSection('paj-depo', this)">
+      <div class="action-icon deposit-icon">
+        <img src="https://i.postimg.cc/xTSGrSG5/IMG-20250317-121506-349-c95aad3bbe.png" alt="USDT">
+      </div>
+      <span>USDT</span>
+    </a>
+
+    <a href="javascript:void(0)" class="action-btn card-retre" onclick="window.showSection('paj-retre', this)">
+      <div class="action-icon withdraw-icon">
+        <span class="ep-g-bill" aria-hidden="true">G</span>
+        <i class="fa-solid fa-share ep-g-arrow" aria-hidden="true"></i>
+      </div>
+      <span>RETRE</span>
+    </a>
+
+    <a href="javascript:void(0)" class="action-btn card-echanj" onclick="window.showSection('paj-echanj', this)">
+      <div class="action-icon exchange-icon">
+        <i class="fa-solid fa-rotate" aria-hidden="true"></i>
+      </div>
+      <span>ECHANJ</span>
+    </a>
+
+    <a href="javascript:void(0)" class="action-btn card-istorik" onclick="window.showSection('paj-istorik', this)">
+      <div class="action-icon history-icon">
+        <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+        <span class="ep-clock-mini" aria-hidden="true">L</span>
+      </div>
+      <span>ISTORIK</span>
+    </a>
+  </section>
+
+
+  
+
+  <!-- STATI SÈVIS PÒTAY YO -->
+  <div class="system-status-card">
+    <div class="gateway-status">
+      <span id="moncash-dot" class="dot-status online">●</span>
+      <span class="gw-pill moncash-pill">MON<em>Cash</em></span>
+      <span>MonCash: <b id="moncash-status">Operasyonèl</b></span>
+    </div>
+
+    <span class="gateway-divider" aria-hidden="true"></span>
+
+    <div class="gateway-status">
+      <span id="natcash-dot" class="dot-status online">●</span>
+      <span class="gw-pill natcash-pill">natcash</span>
+      <span>NatCash: <b id="natcash-status">Operasyonèl</b></span>
+    </div>
+  </div>
+</div>
+
 
 
 
         
-
-        <!-- STATI SÈVIS PÒTAY YO -->
-        <div class="system-status-card">
-          <div class="gateway-status">
-            <span id="moncash-dot" class="dot-status online">●</span> MonCash: <b id="moncash-status">Operasyonèl</b>
-          </div>
-          <div class="gateway-status">
-            <span id="natcash-dot" class="dot-status online">●</span> NatCash: <b id="natcash-status">Operasyonèl</b>
-          </div>
-        </div>
 
         <!-- FOOTER ÉCHANJ PLUS -->
         <style>
