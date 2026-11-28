@@ -1,0 +1,296 @@
+/* =====================================================
+   QUICK ACTIONS & GATEWAY STATUS - ECHANJ PLUS
+   ===================================================== */
+
+.ep-home-actions-wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 16px 12px 24px;
+  background: radial-gradient(circle at 50% 0%, #101726 0%, #05070c 75%);
+  border-radius: 24px;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* BANYÈ SEKIRITE */
+.ep-security-banner {
+  margin-bottom: 14px;
+  padding: 0 4px;
+}
+
+.ep-security-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #f8fafc;
+}
+
+.ep-lock-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  color: #111827;
+  font-size: 0.92rem;
+}
+
+.ep-security-sub {
+  margin: 4px 0 10px;
+  font-size: 0.92rem;
+  color: #cbd5e1;
+}
+
+.ep-security-sub strong {
+  color: #facc15;
+  font-weight: 800;
+}
+
+.ep-dots-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.ep-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background-color: #475569;
+}
+
+.ep-dot.active {
+  width: 22px;
+  background: linear-gradient(90deg, #eab308 0%, #facc15 100%);
+}
+
+/* 4 KAT AKSYON */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.action-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 8px 12px;
+  text-decoration: none;
+  color: #ffffff;
+  background: linear-gradient(180deg, #121826 0%, #070a10 100%);
+  border-radius: 18px;
+  border: 2px solid transparent;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-3px);
+}
+
+.action-btn:active {
+  transform: scale(0.97);
+}
+
+/* Koulè chak kat (USDT = Vèt, RETRE = Lò/Jòn, ECHANJ = Ble, ISTORIK = Mov) */
+.card-usdt {
+  border-color: #10b981;
+  box-shadow:
+    0 0 14px rgba(16, 185, 129, 0.35),
+    0 12px 18px -10px rgba(16, 185, 129, 0.75);
+}
+
+.card-retre {
+  border-color: #f59e0b;
+  box-shadow:
+    0 0 14px rgba(245, 158, 11, 0.35),
+    0 12px 18px -10px rgba(245, 158, 11, 0.75);
+}
+
+.card-echanj {
+  border-color: #0ea5e9;
+  box-shadow:
+    0 0 14px rgba(14, 165, 233, 0.35),
+    0 12px 18px -10px rgba(14, 165, 233, 0.75);
+}
+
+.card-istorik {
+  border-color: #a855f7;
+  box-shadow:
+    0 0 14px rgba(168, 85, 247, 0.35),
+    0 12px 18px -10px rgba(168, 85, 247, 0.75);
+}
+
+/* ZÒN IKÒN */
+.action-icon {
+  position: relative;
+  width: 66px;
+  height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+}
+
+.deposit-icon img {
+  width: 62px;
+  height: 62px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.45);
+}
+
+/* Biyè Goud "G" pou RETRE */
+.ep-g-bill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 30px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #fde047 0%, #eab308 100%);
+  color: #111827;
+  font-weight: 900;
+  font-size: 1.05rem;
+  border: 2px solid #fef08a;
+  box-shadow: 0 4px 10px rgba(234, 179, 8, 0.35);
+}
+
+.ep-g-arrow {
+  position: absolute;
+  right: 2px;
+  bottom: 8px;
+  font-size: 1.25rem;
+  color: #f8fafc;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
+}
+
+/* Flèch ECHANJ */
+.exchange-icon i {
+  font-size: 2.3rem;
+  background: linear-gradient(180deg, #7dd3fc 0%, #0284c7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 3px 8px rgba(14, 165, 233, 0.45));
+}
+
+/* Fèy ISTORIK */
+.history-icon i {
+  font-size: 2.2rem;
+  color: #e2e8f0;
+}
+
+.ep-clock-mini {
+  position: absolute;
+  right: 5px;
+  bottom: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  color: #111827;
+  font-size: 0.78rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0b0f19;
+}
+
+.action-btn > span:last-child {
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* STATI MONCASH & NATCASH */
+.system-status-card {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gateway-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.88rem;
+  color: #e2e8f0;
+}
+
+.gateway-status b {
+  color: #22c55e;
+  font-weight: 800;
+}
+
+.dot-status.online {
+  color: #22c55e;
+  font-size: 0.72rem;
+}
+
+.gateway-divider {
+  width: 1px;
+  height: 20px;
+  background-color: rgba(148, 163, 184, 0.3);
+}
+
+.gw-pill {
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.moncash-pill {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.moncash-pill em {
+  font-style: normal;
+  color: #fde047;
+}
+
+.natcash-pill {
+  background-color: #facc15;
+  color: #111827;
+  border-radius: 999px;
+  font-style: italic;
+}
+
+/* ADAPTASYON POU TI EKRAN */
+@media (max-width: 560px) {
+  .quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .gateway-divider {
+    display: none;
+  }
+
+  .system-status-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
