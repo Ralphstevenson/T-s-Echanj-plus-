@@ -103,7 +103,7 @@ async function renderCurrentView() {
 
     if (!snapshot.exists()) {
       targetContainer.innerHTML = activeTab === 'usdt'
-        ? ``
+        ? `<p style="text-align:center; padding: 20px; color: #9eaab6;">pa gen transaksyon pou krite sa yo .</p>`
         : `<p style="text-align:center; padding: 20px; color: #9eaab6;">Pa gen okenn tranzaksyon ki anrejistre.</p>`;
       updateSummaryBanner([], 0, 0, 0);
       return;
@@ -175,9 +175,8 @@ async function renderCurrentView() {
     updateSummaryBanner(transactions, totalEntries, totalSorties, monthlySum);
 
     if (filtered.length === 0) {
-      // Si onglet USDT poko gen tranzaksyon, kite l vid
       targetContainer.innerHTML = activeTab === 'usdt'
-        ? ``
+        ? `<p style="text-align:center; padding: 20px; color: #9eaab6;">pa gen transaksyon pou krite sa yo .</p>`
         : `<p style="text-align:center; padding: 20px; color: #9eaab6;">Pa gen tranzaksyon pou kritè sa yo.</p>`;
       return;
     }
