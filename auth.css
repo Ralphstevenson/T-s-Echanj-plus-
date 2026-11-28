@@ -1,0 +1,317 @@
+/* ============================================================
+   PAJ KONEKSYON AK ENSKRIPSYON (AUTH PAGE) - GOLDEN PREMIUM
+   Adapte ak nouvo HTML san defòme okenn eleman
+   ============================================================ */
+
+.auth-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background:
+    linear-gradient(rgba(5, 10, 20, 0.58), rgba(5, 10, 20, 0.72)),
+    url("https://i.postimg.cc/P5zTMtrT/20260711-030437.jpg") no-repeat center center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  box-sizing: border-box;
+  z-index: 10002;
+  overflow-y: auto;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ALÈT / MESAJ ERÈ OUBYEN SIKSÈ */
+.alert-msg {
+  width: 100%;
+  max-width: 390px;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  background: rgba(17, 24, 39, 0.85);
+  color: #facc15;
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.alert-msg:empty {
+  display: none;
+}
+
+/* KAD FÒMILÈ A (.form-section) */
+.auth-container .form-section {
+  width: 100%;
+  max-width: 390px;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: rgba(17, 24, 39, 0.68);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 28px;
+  padding: 26px 22px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(250, 204, 21, 0.2);
+  text-align: center;
+  box-sizing: border-box;
+  animation: fadeInAuth 0.4s ease-out;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(250, 204, 21, 0.35) transparent;
+}
+
+@keyframes fadeInAuth {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* BANYÈ TIT (CONNEXION / INSCRIPTION) */
+.auth-header-banner {
+  font-size: 20px;
+  font-weight: 800;
+  color: #facc15;
+  margin: 0 0 20px 0;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+/* SISTÈM INPUT GROUP YO */
+.auth-container .input-group {
+  position: relative;
+  margin-bottom: 13px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.auth-container .input-group:focus-within {
+  border-color: #facc15;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.15);
+}
+
+/* Prefiks 🇭🇹 +509 */
+.auth-container .prefix {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 11px 0 13px;
+  height: 46px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #facc15;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Ikòn agoch (.input-icon) */
+.auth-container .input-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 46px;
+  color: #facc15;
+  font-size: 14px;
+  opacity: 0.9;
+  flex-shrink: 0;
+}
+
+/* Chan Input la */
+.auth-container .input-group input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 46px;
+  background: transparent;
+  border: none;
+  padding: 0 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #ffffff;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.auth-container .input-group input::placeholder {
+  color: rgba(255, 255, 255, 0.42);
+  font-weight: 500;
+}
+
+/* Bouton montre / kache modpas (.toggle-pwd) */
+.auth-container .toggle-pwd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 46px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.auth-container .toggle-pwd:hover {
+  color: #facc15;
+}
+
+/* LIS RÈG MODPAS (.rules-list) */
+.auth-container .rules-list {
+  list-style: none;
+  margin: 4px 0 14px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-sizing: border-box;
+}
+
+.auth-container .rules-list li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.62);
+  transition: color 0.2s ease;
+}
+
+.auth-container .rules-list li .status-icon {
+  font-weight: 800;
+  font-size: 11px;
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+  color: #f87171;
+}
+
+.auth-container .rules-list li.valid,
+.auth-container .rules-list li.active-rule {
+  color: #4ade80;
+}
+
+.auth-container .rules-list li.valid .status-icon,
+.auth-container .rules-list li.active-rule .status-icon {
+  color: #4ade80;
+}
+
+/* MOT DE PASSE OUBLIÉ */
+.auth-container .forgot-pass-container {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.auth-container .forgot-pass-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(250, 204, 21, 0.85);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.auth-container .forgot-pass-link:hover {
+  color: #facc15;
+  text-decoration: underline;
+}
+
+/* BOUTON SOUMÈT (.submit-btn.btn-primary-green) */
+.auth-container .submit-btn.btn-primary-green {
+  width: 100%;
+  height: 48px;
+  background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  color: #000000;
+  border: none;
+  border-radius: 14px;
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(234, 179, 8, 0.25);
+  transition: all 0.2s ease;
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-container .submit-btn.btn-primary-green:hover:not(:disabled) {
+  filter: brightness(1.05);
+  box-shadow: 0 6px 20px rgba(234, 179, 8, 0.35);
+}
+
+.auth-container .submit-btn.btn-primary-green:active:not(:disabled) {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.15);
+}
+
+.auth-container .submit-btn.btn-primary-green:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* LYEN CHÈNJE ONGLÈ (.switch-auth-text) */
+.auth-container .switch-auth-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.68);
+  margin-top: 18px;
+  line-height: 1.45;
+}
+
+.auth-container .switch-auth-text a {
+  color: #facc15;
+  font-weight: 700;
+  text-decoration: none;
+  margin-left: 3px;
+  transition: opacity 0.2s ease;
+}
+
+.auth-container .switch-auth-text a:hover {
+  opacity: 0.82;
+  text-decoration: underline;
+}
+
+/* Klas pou kache eleman */
+.auth-container .hidden {
+  display: none !important;
+}
+
+/* Ti ekran */
+@media (max-width: 400px) {
+  .auth-container .form-section {
+    padding: 22px 16px;
+    border-radius: 22px;
+  }
+
+  .auth-header-banner {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+}
