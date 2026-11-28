@@ -1,52 +1,446 @@
-/* =====================================================
-   2F. PAJ DEPO (ACHTE & VANN) - ECHANJ PLUS
-   ===================================================== */
-
-:root {
-  --depo-bg: #f4f7fb;
-  --depo-card-bg: #ffffff;
-  --depo-text: #0f172a;
-  --depo-muted: #64748b;
-  --depo-border: #e2e8f0;
-  --depo-primary: #0f4c81;
-  --depo-primary-dark: #093256;
-  --depo-accent: #10b981;
-  --depo-moncash: #d91e2a;
-  --depo-natcash: #0077b6;
-  --depo-warning-bg: #fffbeb;
-  --depo-warning-border: #fde68a;
-  --depo-warning-text: #92400e;
-  --depo-summary-bg: #f8fafc;
-  --depo-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
-  --depo-radius-lg: 18px;
-  --depo-radius-md: 12px;
-  --depo-radius-sm: 8px;
+/* =========================================================
+   BOUTON DEPO NAN AKÈY (.quick-actions)
+   ========================================================= */
+.depo-action-btn .deposit-icon {
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid rgba(0, 230, 118, 0.45);
+  background: #111824;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.depo-action-btn:hover .deposit-icon,
+.depo-action-btn:active .deposit-icon {
+  transform: translateY(-2px);
+  border-color: #00e676;
+  box-shadow: 0 6px 16px rgba(0, 230, 118, 0.24);
+}
+
+.depo-action-btn .deposit-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+}
+
+/* =========================================================
+   PAJ DEPO (#paj-depo)
+   ========================================================= */
 #paj-depo {
-  padding: 20px 14px 48px;
-  background-color: var(--depo-bg);
+  background: #070b12;
   min-height: 100vh;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: var(--depo-text);
 }
 
 .depo-wrapper {
-  max-width: 540px;
+  padding: 16px 14px 96px 14px;
+  max-width: 480px;
   margin: 0 auto;
+  color: #ffffff;
+  box-sizing: border-box;
+}
+
+.depo-wrapper *,
+.depo-wrapper *::before,
+.depo-wrapper *::after {
+  box-sizing: border-box;
+}
+
+.depo-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.depo-header p {
+  margin: 0 0 14px 0;
+  font-size: 12.5px;
+  color: #9eaab6;
+  line-height: 1.45;
+}
+
+/* 2 ONGLÈ (VANN BAY SISTÈM 130 / ACHTE USDT 142) */
+.depo-tabs.two-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.depo-tab {
+  background: #131a22;
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.depo-tab.active {
+  background: rgba(0, 230, 118, 0.16);
+  border-color: #00e676;
+  color: #00e676;
+  box-shadow: 0 4px 14px rgba(0, 230, 118, 0.14);
+}
+
+/* KAT FÒMILÈ PRENSIPAL */
+.depo-card {
+  background: #111824;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  padding: 15px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.depo-mode-banner {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #00e676;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+
+.depo-mode-banner span {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+
+.depo-mode-banner small {
+  display: block;
+  font-size: 11.5px;
+  color: #9eaab6;
+  line-height: 1.45;
+}
+
+/* BWAT ADRÈS REZO KRIPTO (MÒD 130 HTG) */
+.depo-wallet-box {
+  background: rgba(0, 230, 118, 0.07);
+  border: 1px solid rgba(0, 230, 118, 0.45);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+.depo-wallet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.depo-wallet-header span {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #00e676;
+}
+
+.depo-btn-copy-wallet {
+  background: #00e676;
+  color: #04120b;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 11px;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.depo-btn-copy-wallet:active {
+  transform: scale(0.97);
+}
+
+.depo-btn-copy-wallet.copied {
+  background: #38bdf8;
+  color: #041018;
+}
+
+.depo-wallet-addr {
+  display: block;
+  width: 100%;
+  background: #070b12;
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11.5px;
+  line-height: 1.45;
+  word-break: break-all;
+  user-select: all;
+  -webkit-user-select: all;
+}
+
+.depo-wallet-warn {
+  display: block;
+  margin-top: 7px;
+  font-size: 11px;
+  color: #fbbf24;
+  line-height: 1.4;
+}
+
+/* BWAT MONCASH & NATCASH (MÒD 142 HTG) */
+.depo-momo-box {
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+.depo-momo-header {
+  margin-bottom: 10px;
+}
+
+.depo-momo-header span {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #fbbf24;
+  margin-bottom: 3px;
+}
+
+.depo-momo-header small {
+  display: block;
+  font-size: 11px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.depo-momo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 420px) {
+  .depo-momo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.depo-momo-card {
+  background: #070b12;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.depo-momo-card.moncash {
+  border-top: 3px solid #ef4444;
+}
+
+.depo-momo-card.natcash {
+  border-top: 3px solid #38bdf8;
+}
+
+.depo-momo-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.depo-momo-brand {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.depo-btn-copy-momo {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 7px;
+  padding: 4px 8px;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.depo-btn-copy-momo:hover {
+  border-color: #00e676;
+  color: #00e676;
+}
+
+.depo-momo-num {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #00e676;
+  margin-bottom: 4px;
+  user-select: all;
+  -webkit-user-select: all;
+}
+
+.depo-momo-name {
+  font-size: 11px;
+  color: #cbd5e1;
+  line-height: 1.35;
+}
+
+.depo-momo-name strong {
+  color: #ffffff;
+}
+
+.depo-momo-note {
+  display: block;
+  margin-top: 10px;
+  font-size: 11px;
+  color: #cbd5e1;
+  line-height: 1.45;
+}
+
+/* CHAN FÒMILÈ */
+.depo-field {
+  margin-bottom: 12px;
+}
+
+.depo-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-bottom: 5px;
+}
+
+.depo-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #fbbf24;
+  line-height: 1.35;
+}
+
+.depo-input {
+  width: 100%;
+  background: #070b12;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.depo-input::placeholder {
+  color: #64748b;
+}
+
+.depo-input:focus {
+  border-color: #00e676;
+  box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.12);
+}
+
+/* REZIME KALKIL LA */
+.depo-summary-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(251, 191, 36, 0.28);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 14px 0;
+}
+
+.depo-sum-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #cbd5e1;
+  margin-bottom: 7px;
+}
+
+.depo-sum-row strong {
+  text-align: right;
+  color: #ffffff;
+}
+
+.depo-sum-row.total {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 8px;
+  margin-bottom: 0;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #00e676;
+}
+
+.depo-sum-row.total strong {
+  color: #00e676;
+}
+
+/* BOUTON SOUMÈT & FIDBAK */
+.depo-btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, #00e676 0%, #00b85c 100%);
+  color: #04120b;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.2s ease;
+}
+
+.depo-btn-submit:hover {
+  filter: brightness(1.05);
+}
+
+.depo-btn-submit:active {
+  transform: scale(0.99);
+}
+
+.depo-btn-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.depo-feedback {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  min-height: 16px;
+  text-align: center;
+  word-break: break-word;
 }
 
 /* BANYÈ DÈNYE TRANZAKSYON */
 .depo-tx-banner {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: #ffffff;
-  padding: 14px 16px;
-  border-radius: var(--depo-radius-md);
-  box-shadow: var(--depo-shadow);
-  border-left: 4px solid var(--depo-accent);
+  background: #131a22;
+  border-left: 4px solid #fbbf24;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+.depo-tx-banner.approved {
+  border-left-color: #00e676;
 }
 
 .depo-tx-top {
@@ -58,486 +452,43 @@
 }
 
 .depo-badge {
-  font-size: 0.72rem;
+  font-size: 10px;
   font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 4px 10px;
-  border-radius: 999px;
 }
 
 .depo-badge.pending {
-  background-color: rgba(245, 158, 11, 0.2);
+  background: rgba(251, 191, 36, 0.2);
   color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
-.depo-badge.approved,
-.depo-badge.completed {
-  background-color: rgba(16, 185, 129, 0.2);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.4);
+.depo-badge.approved {
+  background: rgba(0, 230, 118, 0.2);
+  color: #00e676;
 }
 
 .depo-tx-id {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.85rem;
-  letter-spacing: 0.03em;
-  color: #e2e8f0;
+  font-size: 12px;
+  color: #ffffff;
 }
 
 .depo-btn-copy {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--depo-radius-sm);
-  padding: 4px 10px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-}
-
-.depo-btn-copy:hover {
-  background: rgba(255, 255, 255, 0.22);
-}
-
-.depo-btn-copy:active {
-  transform: scale(0.97);
 }
 
 .depo-tx-desc {
-  margin: 8px 0 0;
-  font-size: 0.84rem;
+  margin: 8px 0 0 0;
+  font-size: 12px;
   color: #cbd5e1;
-  line-height: 1.45;
-}
-
-/* ANTÈT PAJ LA */
-.depo-header {
-  text-align: center;
-  padding: 4px 8px;
-}
-
-.depo-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--depo-text);
-}
-
-.depo-header p {
-  margin: 6px 0 0;
-  font-size: 0.9rem;
-  color: var(--depo-muted);
-}
-
-/* ONGLÈ ACHTE & VANN */
-.depo-tabs.two-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  background-color: #e2e8f0;
-  padding: 5px;
-  border-radius: var(--depo-radius-md);
-}
-
-.depo-tab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 11px 12px;
-  border: none;
-  border-radius: var(--depo-radius-sm);
-  background-color: transparent;
-  color: #475569;
-  font-size: 0.84rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.depo-tab:hover {
-  color: var(--depo-text);
-}
-
-.depo-tab.active {
-  background-color: var(--depo-card-bg);
-  color: var(--depo-primary);
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
-}
-
-/* KAT FÒMILÈ PRENSIPAL */
-.depo-card {
-  background-color: var(--depo-card-bg);
-  border: 1px solid var(--depo-border);
-  border-radius: var(--depo-radius-lg);
-  padding: 20px;
-  box-shadow: var(--depo-shadow);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.depo-mode-banner {
-  background: linear-gradient(135deg, rgba(15, 76, 129, 0.06) 0%, rgba(16, 185, 129, 0.06) 100%);
-  border: 1px solid rgba(15, 76, 129, 0.14);
-  border-radius: var(--depo-radius-md);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.depo-mode-banner span {
-  font-size: 0.96rem;
-  font-weight: 800;
-  color: var(--depo-primary);
-}
-
-.depo-mode-banner small {
-  font-size: 0.8rem;
-  color: var(--depo-muted);
   line-height: 1.4;
 }
-
-/* CHAN FÒMILÈ */
-.depo-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.depo-field label {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: #334155;
-}
-
-.depo-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 11px 14px;
-  font-size: 0.94rem;
-  color: var(--depo-text);
-  background-color: #ffffff;
-  border: 1.5px solid var(--depo-border);
-  border-radius: var(--depo-radius-sm);
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.depo-input:focus {
-  border-color: var(--depo-primary);
-  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.12);
-}
-
-#depo-pin-input {
-  text-align: center;
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 0.55em;
-}
-
-.depo-hint {
-  font-size: 0.76rem;
-  color: var(--depo-muted);
-}
-
-/* BWAT ADRÈS WALLET SISTÈM LAN */
-.depo-wallet-box {
-  background-color: var(--depo-summary-bg);
-  border: 1.5px solid #cbd5e1;
-  border-radius: var(--depo-radius-md);
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.depo-wallet-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.depo-wallet-header span {
-  font-size: 0.86rem;
-  font-weight: 800;
-  color: var(--depo-text);
-}
-
-.depo-btn-copy-wallet {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background-color: var(--depo-primary);
-  color: #ffffff;
-  border: none;
-  border-radius: var(--depo-radius-sm);
-  padding: 6px 11px;
-  font-size: 0.76rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-}
-
-.depo-btn-copy-wallet:hover {
-  background-color: var(--depo-primary-dark);
-}
-
-.depo-btn-copy-wallet:active {
-  transform: scale(0.97);
-}
-
-.depo-wallet-addr {
-  background-color: #ffffff;
-  border: 1px dashed #94a3b8;
-  border-radius: var(--depo-radius-sm);
-  padding: 10px 12px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.82rem;
-  color: #0f172a;
-  word-break: break-all;
-  user-select: all;
-}
-
-.depo-wallet-addr:focus {
-  outline: 2px solid var(--depo-primary);
-  outline-offset: 2px;
-}
-
-.depo-wallet-warn {
-  background-color: var(--depo-warning-bg);
-  border: 1px solid var(--depo-warning-border);
-  color: var(--depo-warning-text);
-  padding: 8px 10px;
-  border-radius: var(--depo-radius-sm);
-  font-size: 0.76rem;
-  line-height: 1.4;
-  font-weight: 500;
-}
-
-/* BWAT MONCASH & NATCASH */
-.depo-momo-box {
-  background-color: #f8fafc;
-  border: 1.5px solid #cbd5e1;
-  border-radius: var(--depo-radius-md);
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.depo-momo-header {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.depo-momo-header span {
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: var(--depo-text);
-}
-
-.depo-momo-header small {
-  font-size: 0.78rem;
-  color: var(--depo-muted);
-  line-height: 1.4;
-}
-
-.depo-momo-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.depo-momo-card {
-  background-color: #ffffff;
-  border: 1px solid var(--depo-border);
-  border-radius: var(--depo-radius-sm);
-  padding: 11px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.depo-momo-card.moncash {
-  border-top: 3px solid var(--depo-moncash);
-}
-
-.depo-momo-card.natcash {
-  border-top: 3px solid var(--depo-natcash);
-}
-
-.depo-momo-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.depo-momo-brand {
-  font-size: 0.84rem;
-  font-weight: 800;
-  color: var(--depo-text);
-}
-
-.depo-btn-copy-momo {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background-color: #f1f5f9;
-  color: #0f172a;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  padding: 3px 8px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-}
-
-.depo-btn-copy-momo:hover {
-  background-color: #e2e8f0;
-}
-
-.depo-btn-copy-momo:active {
-  transform: scale(0.96);
-}
-
-.depo-momo-num {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.86rem;
-  font-weight: 800;
-  color: var(--depo-primary);
-}
-
-.depo-momo-name {
-  font-size: 0.76rem;
-  color: #334155;
-  line-height: 1.35;
-}
-
-.depo-momo-note {
-  background-color: var(--depo-warning-bg);
-  border: 1px solid var(--depo-warning-border);
-  color: var(--depo-warning-text);
-  padding: 9px 11px;
-  border-radius: var(--depo-radius-sm);
-  font-size: 0.76rem;
-  line-height: 1.45;
-}
-
-/* REZIME KALKIL LA */
-.depo-summary-box {
-  background-color: var(--depo-summary-bg);
-  border: 1px solid var(--depo-border);
-  border-radius: var(--depo-radius-md);
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
-.depo-sum-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 0.85rem;
-  color: #475569;
-}
-
-.depo-sum-row strong {
-  color: var(--depo-text);
-  font-weight: 700;
-  text-align: right;
-}
-
-.depo-sum-row.total {
-  margin-top: 4px;
-  padding-top: 10px;
-  border-top: 1.5px dashed #cbd5e1;
-  font-size: 0.95rem;
-}
-
-.depo-sum-row.total span {
-  font-weight: 800;
-  color: var(--depo-text);
-}
-
-.depo-sum-row.total strong {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--depo-accent);
-}
-
-/* BOUTON SOUMÈT */
-.depo-btn-submit {
-  width: 100%;
-  padding: 14px 18px;
-  background: linear-gradient(135deg, var(--depo-primary) 0%, var(--depo-primary-dark) 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: var(--depo-radius-md);
-  font-size: 0.96rem;
-  font-weight: 800;
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  box-shadow: 0 6px 16px rgba(15, 76, 129, 0.25);
-  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
-}
-
-.depo-btn-submit:hover {
-  filter: brightness(1.05);
-  box-shadow: 0 8px 20px rgba(15, 76, 129, 0.32);
-}
-
-.depo-btn-submit:active {
-  transform: scale(0.99);
-}
-
-/* FIDBAK / MESAJ ERÈ OUBYEN SIKSÈ */
-.depo-feedback {
-  margin: 0;
-  font-size: 0.84rem;
-  font-weight: 600;
-  text-align: center;
-  min-height: 18px;
-}
-
-.depo-feedback.error {
-  color: #dc2626;
-}
-
-.depo-feedback.success {
-  color: #059669;
-}
-
-/* ADAPTASYON POU TI EKRAN */
-@media (max-width: 480px) {
-  .depo-momo-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 420px) {
-  .depo-card {
-    padding: 16px 14px;
-  }
-
-  .depo-tab {
-    font-size: 0.78rem;
-    padding: 10px 8px;
-  }
-
-  .depo-header h2 {
-    font-size: 1.32rem;
-  }
-    }
-                   
