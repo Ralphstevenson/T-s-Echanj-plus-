@@ -5,24 +5,24 @@
 .ep-home-actions-wrap {
   max-width: 680px;
   margin: 0 auto;
-  padding: 16px 12px 24px;
+  padding: 12px 10px 18px;
   background: radial-gradient(circle at 50% 0%, #101726 0%, #05070c 75%);
-  border-radius: 24px;
+  border-radius: 20px;
   color: #ffffff;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* BANYÈ SEKIRITE */
 .ep-security-banner {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   padding: 0 4px;
 }
 
 .ep-security-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 1.25rem;
+  gap: 6px;
+  font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: -0.01em;
   color: #f8fafc;
@@ -32,16 +32,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2px 6px;
+  padding: 2px 5px;
   border-radius: 6px;
   background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
   color: #111827;
-  font-size: 0.92rem;
+  font-size: 0.8rem;
 }
 
 .ep-security-sub {
-  margin: 4px 0 10px;
-  font-size: 0.92rem;
+  margin: 4px 0 8px;
+  font-size: 0.82rem;
   color: #cbd5e1;
 }
 
@@ -54,28 +54,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding-bottom: 10px;
+  gap: 6px;
+  padding-bottom: 8px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.22);
 }
 
 .ep-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 999px;
   background-color: #475569;
 }
 
 .ep-dot.active {
-  width: 22px;
+  width: 18px;
   background: linear-gradient(90deg, #eab308 0%, #facc15 100%);
 }
 
-/* 4 KAT AKSYON */
+/* 4 KAT AKSYON (VETIKAL & PI KONTRA) */
 .quick-actions {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 8px;
 }
 
 .action-btn {
@@ -83,20 +83,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 14px 8px 12px;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 4px;
   text-decoration: none;
   color: #ffffff;
   background: linear-gradient(180deg, #121826 0%, #070a10 100%);
-  border-radius: 18px;
-  border: 2px solid transparent;
+  border-radius: 14px;
+  border: 1.5px solid transparent;
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .action-btn:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
 .action-btn:active {
@@ -107,48 +107,49 @@
 .card-usdt {
   border-color: #10b981;
   box-shadow:
-    0 0 14px rgba(16, 185, 129, 0.35),
-    0 12px 18px -10px rgba(16, 185, 129, 0.75);
+    0 0 10px rgba(16, 185, 129, 0.28),
+    0 8px 14px -8px rgba(16, 185, 129, 0.65);
 }
 
 .card-retre {
   border-color: #f59e0b;
   box-shadow:
-    0 0 14px rgba(245, 158, 11, 0.35),
-    0 12px 18px -10px rgba(245, 158, 11, 0.75);
+    0 0 10px rgba(245, 158, 11, 0.28),
+    0 8px 14px -8px rgba(245, 158, 11, 0.65);
 }
 
 .card-echanj {
   border-color: #0ea5e9;
   box-shadow:
-    0 0 14px rgba(14, 165, 233, 0.35),
-    0 12px 18px -10px rgba(14, 165, 233, 0.75);
+    0 0 10px rgba(14, 165, 233, 0.28),
+    0 8px 14px -8px rgba(14, 165, 233, 0.65);
 }
 
 .card-istorik {
   border-color: #a855f7;
   box-shadow:
-    0 0 14px rgba(168, 85, 247, 0.35),
-    0 12px 18px -10px rgba(168, 85, 247, 0.75);
+    0 0 10px rgba(168, 85, 247, 0.28),
+    0 8px 14px -8px rgba(168, 85, 247, 0.65);
 }
 
-/* ZÒN IKÒN */
+/* ZÒN IKÒN (REDWI) */
 .action-icon {
   position: relative;
-  width: 66px;
-  height: 66px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
+  border-radius: 12px;
+  flex-shrink: 0;
 }
 
 .deposit-icon img {
-  width: 62px;
-  height: 62px;
+  width: 36px;
+  height: 36px;
   object-fit: cover;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 3px 8px rgba(16, 185, 129, 0.4);
 }
 
 /* Biyè Goud "G" pou RETRE */
@@ -156,109 +157,115 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 30px;
-  border-radius: 6px;
+  width: 34px;
+  height: 20px;
+  border-radius: 5px;
   background: linear-gradient(135deg, #fde047 0%, #eab308 100%);
   color: #111827;
   font-weight: 900;
-  font-size: 1.05rem;
-  border: 2px solid #fef08a;
-  box-shadow: 0 4px 10px rgba(234, 179, 8, 0.35);
+  font-size: 0.78rem;
+  border: 1.5px solid #fef08a;
+  box-shadow: 0 3px 8px rgba(234, 179, 8, 0.3);
 }
 
 .ep-g-arrow {
   position: absolute;
-  right: 2px;
-  bottom: 8px;
-  font-size: 1.25rem;
+  right: 0;
+  bottom: 4px;
+  font-size: 0.85rem;
   color: #f8fafc;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85);
 }
 
 /* Flèch ECHANJ */
 .exchange-icon i {
-  font-size: 2.3rem;
+  font-size: 1.45rem;
   background: linear-gradient(180deg, #7dd3fc 0%, #0284c7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 3px 8px rgba(14, 165, 233, 0.45));
+  filter: drop-shadow(0 2px 6px rgba(14, 165, 233, 0.4));
 }
 
 /* Fèy ISTORIK */
 .history-icon i {
-  font-size: 2.2rem;
+  font-size: 1.4rem;
   color: #e2e8f0;
 }
 
 .ep-clock-mini {
   position: absolute;
-  right: 5px;
-  bottom: 6px;
-  width: 24px;
-  height: 24px;
+  right: 1px;
+  bottom: 2px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
   color: #111827;
-  font-size: 0.78rem;
+  font-size: 0.58rem;
   font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #0b0f19;
+  border: 1.5px solid #0b0f19;
 }
 
 .action-btn > span:last-child {
-  font-size: 0.92rem;
-  font-weight: 900;
+  font-size: 0.72rem;
+  font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  line-height: 1.15;
+  text-align: center;
 }
 
 /* STATI MONCASH & NATCASH */
 .system-status-card {
-  margin-top: 14px;
-  padding: 10px 14px;
+  margin-top: 12px;
+  padding: 9px 12px;
   background: rgba(15, 23, 42, 0.88);
   border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .gateway-status {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  font-size: 0.88rem;
+  gap: 6px;
+  font-size: 0.78rem;
   color: #e2e8f0;
+  white-space: nowrap;
 }
 
 .gateway-status b {
   color: #22c55e;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .dot-status.online {
   color: #22c55e;
-  font-size: 0.72rem;
+  font-size: 0.65rem;
+  flex-shrink: 0;
 }
 
 .gateway-divider {
   width: 1px;
-  height: 20px;
+  height: 16px;
   background-color: rgba(148, 163, 184, 0.3);
 }
 
 .gw-pill {
-  padding: 2px 7px;
+  padding: 2px 6px;
   border-radius: 6px;
-  font-size: 0.74rem;
+  font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .moncash-pill {
@@ -278,11 +285,54 @@
   font-style: italic;
 }
 
-/* ADAPTASYON POU TI EKRAN */
+/* ADAPTASYON SOU TELEFÒN (BOUTON PI PITI, VÈTIKAL & TÈKS VÈTIKAL) */
 @media (max-width: 560px) {
+  .ep-home-actions-wrap {
+    padding: 10px 8px 14px;
+    border-radius: 16px;
+  }
+
   .quick-actions {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .action-btn {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 8px 3px;
+    gap: 6px;
+    border-radius: 12px;
+  }
+
+  .action-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .deposit-icon img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .ep-g-bill {
+    width: 28px;
+    height: 17px;
+    font-size: 0.68rem;
+  }
+
+  .exchange-icon i,
+  .history-icon i {
+    font-size: 1.15rem;
+  }
+
+  .action-btn > span:last-child {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    font-size: 0.66rem;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    max-height: 78px;
   }
 
   .gateway-divider {
@@ -292,5 +342,13 @@
   .system-status-card {
     flex-direction: column;
     align-items: flex-start;
+    gap: 6px;
+    padding: 8px 10px;
+  }
+
+  .gateway-status {
+    font-size: 0.75rem;
+    white-space: nowrap;
   }
 }
+```[cite: 4]
