@@ -32,6 +32,8 @@ onAuthStateChanged(auth, (user) => {
   } else {
     const targetContainer = document.getElementById(`list-${activeTab}`);
     if (targetContainer) {
+      targetContainer.classList.remove('hidden');
+      targetContainer.style.display = 'block';
       targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #9eaab6;">Tanpri konekte pou w wè istorik ou an.</p>`;
     }
   }
@@ -52,12 +54,14 @@ export function switchIstorik(targetId, btn) {
 
   document.querySelectorAll('.ist-content').forEach(div => {
     div.classList.add('hidden');
+    div.style.display = 'none';
     div.innerHTML = '';
   });
 
   const targetContainer = document.getElementById(`list-${targetId}`);
   if (targetContainer) {
     targetContainer.classList.remove('hidden');
+    targetContainer.style.display = 'block';
   }
 
   renderCurrentView();
@@ -85,6 +89,8 @@ async function renderCurrentView() {
   const targetContainer = document.getElementById(`list-${activeTab}`);
   if (!targetContainer) return;
 
+  targetContainer.classList.remove('hidden');
+  targetContainer.style.display = 'block';
   targetContainer.innerHTML = `<p style="text-align:center; padding: 20px; color: #9eaab6;">N ap chache tranzaksyon yo...</p>`;
 
   const dateInput = document.getElementById('filter-date-input');
